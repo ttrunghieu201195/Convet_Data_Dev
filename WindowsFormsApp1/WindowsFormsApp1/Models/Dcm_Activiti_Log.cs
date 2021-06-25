@@ -15,7 +15,8 @@ namespace WindowsFormsApp1.Models
         public string action { get; set; }
         public long doc_id { get; set; }
         public string approved { get; set; }
-        public string comment {get; set; }
+        public string comment_ {get; set; }
+        public string comment_full { get; set; }
         public string formid { get; set; } = "formConvert";
         public string action_code { get; set; } = "CHUYEN_THONGBAO";
     }

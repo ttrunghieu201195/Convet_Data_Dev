@@ -89,6 +89,7 @@
     <Compile Include="Controller\Import_Abstract.cs" />
     <Compile Include="Controller\Import_VanBan_Flow.cs" />
     <Compile Include="Models\Dcm_Activiti_Log.cs" />
+    <Compile Include="Models\Dcm_Assign.cs" />
     <Compile Include="Models\Dcm_Attach_File.cs" />
     <Compile Include="Models\Dcm_Doc.cs" />
     <Compile Include="Form_Convert.cs">
@@ -99,6 +100,7 @@
     </Compile>
     <Compile Include="Controller\Import_VanBan.cs" />
     <Compile Include="Models\Dcm_Doc_Relation.cs" />
+    <Compile Include="Models\Dcm_Donvi_Nhan.cs" />
     <Compile Include="Models\Dcm_Track.cs" />
     <Compile Include="Models\Fem_File.cs" />
     <Compile Include="Program.cs" />

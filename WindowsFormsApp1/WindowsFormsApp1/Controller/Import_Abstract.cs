@@ -10,7 +10,7 @@ namespace WindowsFormsApp1.Controller
 {
     abstract class Import_Abstract
     {
-        public void exportdataFromPostgres(NpgsqlConnection postgresConnection, string query)
+        public void exportdataFromPostgres(NpgsqlConnection postgresConnection, string query, Common.VB_TYPE type_vb)
         {
             try
             {
@@ -26,7 +26,7 @@ namespace WindowsFormsApp1.Controller
                 resetListData();
                 foreach (DataRow row in dataTable.Rows)
                 {
-                    ParseData(row);
+                    ParseData(row, type_vb);
                 }
             }
             catch (Exception e)
@@ -36,6 +36,6 @@ namespace WindowsFormsApp1.Controller
         }
 
         protected abstract void resetListData();
-        protected abstract void ParseData(DataRow row);
+        protected abstract void ParseData(DataRow row, Common.VB_TYPE type_vb);
     }
 }

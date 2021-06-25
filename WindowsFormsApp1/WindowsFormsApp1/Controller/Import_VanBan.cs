@@ -154,7 +154,7 @@ namespace WindowsFormsApp1
                         dcm_Doc.priority_code = "KHAN";
                         break;
                     case "3":
-                        dcm_Doc.priority_code = "HOATOC";
+                        dcm_Doc.priority_code = "THUONGKHAN";
                         break;
                     default:
                         dcm_Doc.priority_code = "THUONG";
@@ -253,6 +253,9 @@ namespace WindowsFormsApp1
                         break;
                     case "3":
                         dcm_Doc.confidential_code = "TOIMAT";
+                        break;
+                    case "4":
+                        dcm_Doc.confidential_code = "TUYETMAT";
                         break;
                     default:
                         dcm_Doc.confidential_code = "THUONG";
@@ -576,7 +579,7 @@ namespace WindowsFormsApp1
                     string schema = row["schema"].ToString();
                     if (schema != null && schema != String.Empty)
                     {
-                        appendToListDcmTrack(dcm_Doc.id_VanBan, configs.schema, vb_banhanh_den_donvi, schema, dcm_Doc.ngay_van_ban);
+                        appendToListDcmTrack(dcm_Doc.id_VanBan, configs.schema, vb_banhanh_den_donvi + Constants.INCREASEID_VBDI, schema, dcm_Doc.ngay_van_ban);
                     }
                 }
             }
@@ -650,8 +653,8 @@ namespace WindowsFormsApp1
             dcm_Track.doc_id_source = doc_id_sour;
             dcm_Track.schema_id_source = schema_id_sour;
             dcm_Track.date_ins = date_ins;
-            dcm_Track.parent = doc_id_des + "|" + schema_id_des;
-            dcm_Track.child = doc_id_sour + "|" + schema_id_sour;
+            dcm_Track.parent = schema_id_sour + "|" + doc_id_sour;
+            dcm_Track.child = schema_id_des + "|" + doc_id_des;
             dcm_Tracks.Add(dcm_Track);
         }
 

@@ -96,12 +96,36 @@ namespace WindowsFormsApp1
             return years;
         }
 
+        public static string getValue_VaiTro(string vaitro)
+        {
+            switch (vaitro)
+            {
+                case "0":
+                    vaitro = "THONG_BAO";
+                    break;
+                case "1":
+                    vaitro = "INVOLVED";
+                    break;
+                case "2":
+                    vaitro = "RECEIVE";
+                    break;
+                default:
+                    vaitro = "INVOLVED";
+                    break;
+            }
+            return vaitro;
+        }
+
         public static void UpdateSeqToDB(OracleConnection oracleConnection, Configs configs)
         {
             UpdateSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_DOC_RELATION, ++Import_VanBan.SEQ_DCM_DOC_RELATION - Constants.INCREASEID_OTHERS);
             UpdateSeq(oracleConnection, configs.schema, Constants.SEQ_FEM_FILE, ++Import_VanBan.SEQ_FEM_FILE - Constants.INCREASEID_OTHERS);
             UpdateSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_ATTACH_FILE, ++Import_VanBan.SEQ_DCM_ATTACH_FILE - Constants.INCREASEID_OTHERS);
-            UpdateSeq(oracleConnection, "CLOUD_ADMIN", Constants.SEQ_DCM_TRACK, ++Import_VanBan.SEQ_DCM_TRACK - Constants.INCREASEID_OTHERS);
+            UpdateSeq(oracleConnection, "CLOUD_ADMIN_DEV_BLU_2", Constants.SEQ_DCM_TRACK, ++Import_VanBan.SEQ_DCM_TRACK - Constants.INCREASEID_OTHERS);
+
+            UpdateSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_ACTIVITI_LOG, ++Import_VanBan_Flow.SEQ_DCM_ACTIVITI_LOG - Constants.INCREASEID_OTHERS);
+            UpdateSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_ASSIGN, ++Import_VanBan_Flow.SEQ_DCM_ASSIGN - Constants.INCREASEID_OTHERS);
+            UpdateSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_DONVI_NHAN, ++Import_VanBan_Flow.SEQ_DCM_DONVI_NHAN - Constants.INCREASEID_OTHERS);
         }
         
         public static void InitialSeqFromDB(OracleConnection oracleConnection, Configs configs)
@@ -109,7 +133,11 @@ namespace WindowsFormsApp1
             Import_VanBan.SEQ_DCM_DOC_RELATION = getCurrentSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_DOC_RELATION) + Constants.INCREASEID_OTHERS;
             Import_VanBan.SEQ_FEM_FILE = getCurrentSeq(oracleConnection, configs.schema, Constants.SEQ_FEM_FILE) + Constants.INCREASEID_OTHERS;
             Import_VanBan.SEQ_DCM_ATTACH_FILE = getCurrentSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_ATTACH_FILE) + Constants.INCREASEID_OTHERS;
-            Import_VanBan.SEQ_DCM_TRACK = getCurrentSeq(oracleConnection, "CLOUD_ADMIN", Constants.SEQ_DCM_TRACK) + Constants.INCREASEID_OTHERS;
+            Import_VanBan.SEQ_DCM_TRACK = getCurrentSeq(oracleConnection, "CLOUD_ADMIN_DEV_BLU_2", Constants.SEQ_DCM_TRACK) + Constants.INCREASEID_OTHERS;
+
+            Import_VanBan_Flow.SEQ_DCM_ACTIVITI_LOG = getCurrentSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_ACTIVITI_LOG) + Constants.INCREASEID_OTHERS;
+            Import_VanBan_Flow.SEQ_DCM_ASSIGN = getCurrentSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_ASSIGN) + Constants.INCREASEID_OTHERS;
+            Import_VanBan_Flow.SEQ_DCM_DONVI_NHAN = getCurrentSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_DONVI_NHAN) + Constants.INCREASEID_OTHERS;
         }
     }
 }
