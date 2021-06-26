@@ -279,46 +279,55 @@ namespace WindowsFormsApp1
             
         }
 
-        public void insert_Dcm_Activiti_Log(OracleConnection oracleConnection, Configs configs, string query, List<Dcm_Activiti_Log> data)
+        public void insert_Dcm_Activiti_Log(OracleConnection oracleConnection, Configs configs, string query, List<Dcm_Activiti_Log> data_list)
         {
             try
             {
-                if (data.Count > 0)
+                if (data_list.Count > 0)
                 {
+                    Console.WriteLine("Total data to dcm_activiti_log: " + data_list.Count);
 
-                    OracleCommand cmd = oracleConnection.CreateCommand();
-                    cmd.CommandType = CommandType.Text;
+                    List<List<Dcm_Activiti_Log>> splited_data =  Common.SplitList(data_list);
+                    Console.WriteLine("Total splited data to dcm_activiti_log: " + splited_data.Count);
 
-                    cmd.ArrayBindCount = data.Count;
+                    foreach (List<Dcm_Activiti_Log> data in splited_data)
+                    {
+                        OracleCommand cmd = oracleConnection.CreateCommand();
+                        cmd.CommandType = CommandType.Text;
 
-                    cmd.CommandText = string.Format(query, configs.schema);
+                        cmd.ArrayBindCount = data.Count;
 
-                    cmd.Parameters.Add("ID", OracleDbType.Int64);
-                    cmd.Parameters.Add("TASK_KEY", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("UPDATED_DATE", OracleDbType.Date);
-                    cmd.Parameters.Add("UPDATED_BY", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("ACTION", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("DOC_ID", OracleDbType.Int64);
-                    cmd.Parameters.Add("APPROVED", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("COMMENT_", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("COMMENT_FULL", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("FORMID", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("ACTION_CODE", OracleDbType.Varchar2);
+                        cmd.CommandText = string.Format(query, configs.schema);
 
-                    cmd.Parameters["ID"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.id).ToArray();
-                    cmd.Parameters["TASK_KEY"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.task_key).ToArray();
-                    cmd.Parameters["UPDATED_DATE"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.updated_date).ToArray();
-                    cmd.Parameters["UPDATED_BY"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.updated_by).ToArray();
-                    cmd.Parameters["ACTION"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.action).ToArray();
-                    cmd.Parameters["DOC_ID"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.doc_id).ToArray();
-                    cmd.Parameters["APPROVED"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.approved).ToArray();
-                    cmd.Parameters["COMMENT_"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.comment_).ToArray();
-                    cmd.Parameters["COMMENT_FULL"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.comment_full).ToArray();
-                    cmd.Parameters["FORMID"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.formid).ToArray();
-                    cmd.Parameters["ACTION_CODE"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.action_code).ToArray();
+                        cmd.Parameters.Add("ID", OracleDbType.Int64);
+                        cmd.Parameters.Add("TASK_KEY", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("UPDATED_DATE", OracleDbType.Date);
+                        cmd.Parameters.Add("UPDATED_BY", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("ACTION", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("DOC_ID", OracleDbType.Int64);
+                        cmd.Parameters.Add("APPROVED", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("COMMENT_", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("COMMENT_FULL", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("FORMID", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("ACTION_CODE", OracleDbType.Varchar2);
 
-                    cmd.ExecuteNonQuery();
-                    cmd.Dispose();
+                        cmd.Parameters["ID"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.id).ToArray();
+                        cmd.Parameters["TASK_KEY"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.task_key).ToArray();
+                        cmd.Parameters["UPDATED_DATE"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.updated_date).ToArray();
+                        cmd.Parameters["UPDATED_BY"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.updated_by).ToArray();
+                        cmd.Parameters["ACTION"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.action).ToArray();
+                        cmd.Parameters["DOC_ID"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.doc_id).ToArray();
+                        cmd.Parameters["APPROVED"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.approved).ToArray();
+                        cmd.Parameters["COMMENT_"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.comment_).ToArray();
+                        cmd.Parameters["COMMENT_FULL"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.comment_full).ToArray();
+                        cmd.Parameters["FORMID"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.formid).ToArray();
+                        cmd.Parameters["ACTION_CODE"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.action_code).ToArray();
+
+                        cmd.ExecuteNonQuery();
+                        cmd.Dispose();
+
+                        Console.WriteLine("Imported data to dcm_activiti_log: " + data.Count);
+                    }
                 }
             } catch (Exception ex)
             {

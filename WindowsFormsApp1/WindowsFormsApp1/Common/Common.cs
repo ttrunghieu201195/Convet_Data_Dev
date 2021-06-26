@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using WindowsFormsApp1.Models;
 
 namespace WindowsFormsApp1
 {
@@ -138,6 +139,22 @@ namespace WindowsFormsApp1
             Import_VanBan_Flow.SEQ_DCM_ACTIVITI_LOG = getCurrentSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_ACTIVITI_LOG) + Constants.INCREASEID_OTHERS;
             Import_VanBan_Flow.SEQ_DCM_ASSIGN = getCurrentSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_ASSIGN) + Constants.INCREASEID_OTHERS;
             Import_VanBan_Flow.SEQ_DCM_DONVI_NHAN = getCurrentSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_DONVI_NHAN) + Constants.INCREASEID_OTHERS;
+        }
+
+        public static List<List<T>> SplitList<T>(List<T> data) where T:class
+        {
+            int totalRecords = data.Count;
+            int totalSplittedRecords = 10000;
+
+            int numOfSubList = totalRecords / totalSplittedRecords + (totalRecords % totalSplittedRecords > 0 ? 1 : 0);
+
+            List<List<T>> list_obj = new List<List<T>>();
+            for (int  i = 0; i < numOfSubList; i++)
+            {
+                list_obj.Add(data.GetRange(i * totalSplittedRecords, (totalRecords - i * totalSplittedRecords) > totalSplittedRecords ? totalSplittedRecords : (totalRecords - i * totalSplittedRecords)));
+            }
+
+            return list_obj;
         }
     }
 }
