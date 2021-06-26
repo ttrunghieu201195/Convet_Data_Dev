@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Convert_Data.Controller;
 using Convert_Data.Models;
+using WindowsFormsApp1.Controller;
 
 namespace Convert_Data
 {
@@ -133,6 +134,9 @@ namespace Convert_Data
 
             UpdateSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_LOG, ++Import_VanBan_Log.SEQ_DCM_LOG - Constants.INCREASEID_OTHERS);
             UpdateSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_LOG_READ, ++Import_VanBan_Log.SEQ_DCM_LOG_READ - Constants.INCREASEID_OTHERS);
+
+            UpdateSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_SOVB_TEMPLATESINHSO, ++Import_SoVanBan.SEQ_DCM_SOVB_TEMPLATESINHSO - Constants.INCREASEID_OTHERS);
+            UpdateSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_QUYTAC_NHAYSO, ++Import_SoVanBan.SEQ_DCM_QUYTAC_NHAYSO - Constants.INCREASEID_OTHERS);
         }
         
         public static void InitialSeqFromDB(OracleConnection oracleConnection, Configs configs)
@@ -148,6 +152,9 @@ namespace Convert_Data
             
             Import_VanBan_Log.SEQ_DCM_LOG = getCurrentSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_LOG) + Constants.INCREASEID_OTHERS;
             Import_VanBan_Log.SEQ_DCM_LOG_READ = getCurrentSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_LOG_READ) + Constants.INCREASEID_OTHERS;
+
+            Import_SoVanBan.SEQ_DCM_SOVB_TEMPLATESINHSO = getCurrentSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_SOVB_TEMPLATESINHSO) + Constants.INCREASEID_OTHERS;
+            Import_SoVanBan.SEQ_DCM_QUYTAC_NHAYSO = getCurrentSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_QUYTAC_NHAYSO) + Constants.INCREASEID_OTHERS;
         }
 
         private static void createSeq(OracleConnection oracleConnection, Configs configs, string seqName, long new_value)
@@ -189,5 +196,6 @@ namespace Convert_Data
             }
             Delete(oracleConnection, "CLOUD_ADMIN_DEV_BLU_2", Constants.sql_delete_DCM_TRACK);
         }
+
     }
 }

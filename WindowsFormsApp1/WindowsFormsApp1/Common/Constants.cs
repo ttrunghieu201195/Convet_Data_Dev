@@ -437,6 +437,22 @@ namespace Convert_Data
             + " and b.organizationid = 3528 and b.yeardocument = '2015' "
             + " order by id_vanban";
         #endregion sql_log_xuly_vb_den
+
+        #region sql_danhmuc_sovanban
+        public static string sql_danhmuc_sovanban = "SELECT a.id \"ID\",  "
+            + "  a.name \"ten_sovb\", "
+            + "  case when a.type = 0 then 1 else 2 end \"loai_so\", "
+            + "  ' 01/01/2011' \"ngay_mo_so\", "
+            + "  ' 01/01/2021' \"ngay_het_hieuluc\", "
+            + "  'admin.tblu,huynhthichucly@baclieu.gov.vn' \"nguoi_quantri\", "
+            + "  'admin.tblu,huynhthichucly@baclieu.gov.vn' \"nguoi_theodoi\", "
+            + "        a.position \"stt\", "
+            + "  b.\"UNIT_ID\" \"UNIT_CODE\" "
+            + " FROM \"public\".\"book\" a, \"public\".\"organization_hrm_unit\" b "
+            + " where a.organizationid = 3528 and b.\"ORGANIZATIONID\" = a.organizationid "
+            + " order by \"loai_so\", \"stt\"";
+        #endregion sql_danhmuc_sovanban
+
         #endregion postgres 
 
 
@@ -512,6 +528,26 @@ namespace Convert_Data
         public static string sql_delete_DCM_LOG_READ = "DELETE FROM {0}.DCM_LOG_READ";
         #endregion delete table
 
+        # region sql_get_dcm_type
+        public static string sql_get_dcm_type = "select code from {0}.dcm_type";
+        #endregion sql_get_dcm_type
+
+        #region insert_sovanban
+        public static string sql_insert_sovanban = "INSERT INTO {0}.DCM_SOVANBAN(ID,NAME,SOBATDAU,MA_LOAI_SO,NGAY_BATDAU_SUDUNG,NGAY_DONGSO"
+                + ",UNIT_CODE,CODE,NGUOI_THEODOI,NGUOI_QUANTRI,STT_HIENTHI) VALUES(:ID,:NAME,:SOBATDAU,:MA_LOAI_SO,:NGAY_BATDAU_SUDUNG,:NGAY_DONGSO"
+                +",:UNIT_CODE,:CODE,:NGUOI_THEODOI,:NGUOI_QUANTRI,:STT_HIENTHI)";
+        #endregion insert_sovanban
+
+        #region
+        public static string sql_insert_Dcm_SoVB_TemplateSinhSo = "INSERT INTO {0}.DCM_SOVB_TEMPLATESINHSO(ID,SOVANBAN_CODE,TYPE_CODE,TEMPLATE_SINH_SOVB_CODE)"
+            + " VALUES(:ID,:SOVANBAN_CODE,:TYPE_CODE,:TEMPLATE_SINH_SOVB_CODE)";
+        #endregion
+
+        #region
+        public static string sql_insert_DCM_QUYTAC_NHAYSO = "INSERT INTO {0}.DCM_QUYTAC_NHAYSO(ID,MA_QUYTAC,SOVANBAN_CODE,TYPE_CODE) "
+            +" VALUES(:ID,:MA_QUYTAC,:SOVANBAN_CODE,:TYPE_CODE)";
+        #endregion
+
         #endregion oracle query
 
         #endregion query data
@@ -532,5 +568,8 @@ namespace Convert_Data
 
         public static string SEQ_DCM_LOG = "DCM_LOG_SEQ";
         public static string SEQ_DCM_LOG_READ = "DCM_LOG_READ_SEQ";
+
+        public static string SEQ_DCM_SOVB_TEMPLATESINHSO = "DCM_SOVB_TEMPLATESINHSO_SEQ";
+        public static string SEQ_DCM_QUYTAC_NHAYSO = "DCM_QUYTAC_NHAYSO_SEQ";
     }
 }

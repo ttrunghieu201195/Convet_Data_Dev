@@ -124,5 +124,10 @@ namespace Convert_Data.Controller
 			dcm_Logs.Clear();
 
 		}
+
+        protected override void ParseData(DataRow row, Common.VB_TYPE type_vb, DataTable dcm_type)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
