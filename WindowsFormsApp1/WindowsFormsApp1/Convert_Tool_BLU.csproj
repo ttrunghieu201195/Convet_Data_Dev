@@ -88,6 +88,7 @@
     <Compile Include="Common\Constants.cs" />
     <Compile Include="Controller\Import_Abstract.cs" />
     <Compile Include="Controller\Import_VanBan_Flow.cs" />
+    <Compile Include="Controller\Import_VanBan_Log.cs" />
     <Compile Include="Models\Dcm_Activiti_Log.cs" />
     <Compile Include="Models\Dcm_Assign.cs" />
     <Compile Include="Models\Dcm_Attach_File.cs" />
@@ -101,12 +102,14 @@
     <Compile Include="Controller\Import_VanBan.cs" />
     <Compile Include="Models\Dcm_Doc_Relation.cs" />
     <Compile Include="Models\Dcm_Donvi_Nhan.cs" />
+    <Compile Include="Models\Dcm_Log.cs" />
     <Compile Include="Models\Dcm_Track.cs" />
     <Compile Include="Models\Fem_File.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form_Convert.resx">
       <DependentUpon>Form_Convert.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

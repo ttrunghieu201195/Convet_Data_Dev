@@ -3,10 +3,12 @@ using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using WindowsFormsApp1.Controller;
 using WindowsFormsApp1.Models;
 
@@ -15,9 +17,9 @@ namespace WindowsFormsApp1
     class Import_VanBan_Flow : Import_Abstract
     {
         // list dcm_activiti_log
-        private static List<Dcm_Activiti_Log> dcm_Activiti_Logs = new List<Dcm_Activiti_Log>();
-        private static List<Dcm_Assign> dcm_Assigns = new List<Dcm_Assign>();
-        private static List<Dcm_Donvi_Nhan> dcm_Donvi_Nhans = new List<Dcm_Donvi_Nhan>();
+        private List<Dcm_Activiti_Log> dcm_Activiti_Logs = new List<Dcm_Activiti_Log>();
+        private List<Dcm_Assign> dcm_Assigns = new List<Dcm_Assign>();
+        private List<Dcm_Donvi_Nhan> dcm_Donvi_Nhans = new List<Dcm_Donvi_Nhan>();
 
         // SEQ
         public static long SEQ_DCM_ACTIVITI_LOG;
@@ -193,11 +195,11 @@ namespace WindowsFormsApp1
             }
             dcm_Activiti_Logs.Add(dcm_Activiti_Log);
 
-            appendToListDcmAssign(dcm_Activiti_Log.id, dcm_Activiti_Log.doc_id, dcm_Activiti_Log.updated_by, dcm_Activiti_Log.updated_date, ds_nguoinhan, ds_vaitro_nguoinhan, ds_trangthai_xuly, ds_thoigian_xuly);
+            appendToListDcmAssign(dcm_Activiti_Log.id, dcm_Activiti_Log.doc_id, dcm_Activiti_Log.updated_by, dcm_Activiti_Log.updated_date, ds_nguoinhan, ds_vaitro_nguoinhan, ds_trangthai_xuly, ds_thoigian_xuly, truoc_banhanh);
             appendToListDcmDonviNhan(dcm_Activiti_Log.id, dcm_Activiti_Log.doc_id, ds_donvi_nhan, ds_vaitro_donvi, ds_agent_id, dcm_Activiti_Log.updated_date, ds_trangthai_xuly_donvi, ds_thoigian_xuly_donvi, truoc_banhanh);
         }
 
-        private void appendToListDcmAssign(long id_acti_log, long idVB, string nguoi_gui, DateTime thoigian_gui, string ds_nguoinhan, string ds_vaitro_nguoinhan, string ds_trangthai_xuly, string ds_thoigian_xuly)
+        private void appendToListDcmAssign(long id_acti_log, long idVB, string nguoi_gui, DateTime thoigian_gui, string ds_nguoinhan, string ds_vaitro_nguoinhan, string ds_trangthai_xuly, string ds_thoigian_xuly, int? truoc_banhanh)
         {
             string[] nguoi_nhan_arr = ds_nguoinhan.Split(';');
             string[] dsvaitro_nguoinhan_arr = ds_vaitro_nguoinhan.Split(';');
@@ -232,8 +234,9 @@ namespace WindowsFormsApp1
                         dcm_Assign.ngay_xuly = xuly_date;
                     }
 
-                    dcm_Assign.activiti_log_id = id_acti_log;
-
+                    dcm_Assign.activiti_log_id = dcm_Assign.assignee == dcm_Assign.assigner ? 0 : id_acti_log;
+                    dcm_Assign.truoc_banhanh = truoc_banhanh;
+                    
                     dcm_Assigns.Add(dcm_Assign);
                 }
             }
@@ -248,7 +251,7 @@ namespace WindowsFormsApp1
 
             string[] ds_agent_id = agent_id.Split(';');
 
-            if (ds_donvi_arr.Length > 0 && ds_donvi_arr.Length == ds_vaitro_donvi_arr.Length && ds_vaitro_donvi_arr == ds_trangthai_xuly_donvi_arr && ds_trangthai_xuly_donvi_arr == ds_thoigian_xuly_donvi_arr)
+            if (ds_donvi_arr.Length > 0 && ds_donvi_arr.Length == ds_vaitro_donvi_arr.Length && ds_vaitro_donvi_arr.Length == ds_trangthai_xuly_donvi_arr.Length && ds_trangthai_xuly_donvi_arr.Length == ds_thoigian_xuly_donvi_arr.Length)
             {
                 for (int i = 0; i < ds_donvi_arr.Length; i++)
                 {
@@ -274,6 +277,9 @@ namespace WindowsFormsApp1
 
                     dcm_Donvi_Nhans.Add(dcm_Donvi_Nhan);
                 }
+            } else
+            {
+                MessageBox.Show("error ne");
             }
 
             
@@ -285,6 +291,7 @@ namespace WindowsFormsApp1
             {
                 if (data_list.Count > 0)
                 {
+                    Stopwatch timer = new Stopwatch();
                     Console.WriteLine("Total data to dcm_activiti_log: " + data_list.Count);
 
                     List<List<Dcm_Activiti_Log>> splited_data =  Common.SplitList(data_list);
@@ -292,6 +299,7 @@ namespace WindowsFormsApp1
 
                     foreach (List<Dcm_Activiti_Log> data in splited_data)
                     {
+                        timer.Start();
                         OracleCommand cmd = oracleConnection.CreateCommand();
                         cmd.CommandType = CommandType.Text;
 
@@ -325,8 +333,9 @@ namespace WindowsFormsApp1
 
                         cmd.ExecuteNonQuery();
                         cmd.Dispose();
-
-                        Console.WriteLine("Imported data to dcm_activiti_log: " + data.Count);
+                        timer.Stop();
+                        Console.WriteLine("Imported data to dcm_activiti_log: " + data.Count + "/" + timer.ElapsedMilliseconds/1000 + "(s)");
+                        timer.Reset();
                     }
                 }
             } catch (Exception ex)
@@ -335,41 +344,53 @@ namespace WindowsFormsApp1
             }
         }
 
-        public void insert_Dcm_Assign(OracleConnection oracleConnection, Configs configs, string query, List<Dcm_Assign> data)
+        public void insert_Dcm_Assign(OracleConnection oracleConnection, Configs configs, string query, List<Dcm_Assign> data_list)
         {
             try
             {
-                if (data.Count > 0)
+                if (data_list.Count > 0)
                 {
-                    OracleCommand cmd = oracleConnection.CreateCommand();
-                    cmd.CommandType = CommandType.Text;
+                    Stopwatch timer = new Stopwatch();
+                    Console.WriteLine("Total data to dcm_assign: " + data_list.Count);
 
-                    cmd.ArrayBindCount = data.Count;
+                    List<List<Dcm_Assign>> splited_data = Common.SplitList(data_list);
+                    Console.WriteLine("Total splited data to dcm_assign: " + splited_data.Count);
+                    foreach (List<Dcm_Assign> data in splited_data)
+                    {
+                        timer.Start();
+                        OracleCommand cmd = oracleConnection.CreateCommand();
+                        cmd.CommandType = CommandType.Text;
 
-                    cmd.CommandText = string.Format(query, configs.schema);
+                        cmd.ArrayBindCount = data.Count;
 
-                    cmd.Parameters.Add("ID", OracleDbType.Int64);
-                    cmd.Parameters.Add("DOCUMENT_ID", OracleDbType.Int64);
-                    cmd.Parameters.Add("ASSIGNEE", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("ASSIGNER", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("ASSIGNED_DATE", OracleDbType.Date);
-                    cmd.Parameters.Add("ROLE_TYPE_CODE", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("XU_LY", OracleDbType.Int64);
-                    cmd.Parameters.Add("NGAY_XULY", OracleDbType.Date);
-                    cmd.Parameters.Add("ACTIVITI_LOG_ID", OracleDbType.Int64);
+                        cmd.CommandText = string.Format(query, configs.schema);
 
-                    cmd.Parameters["ID"].Value = data.Select(dcm_assign => dcm_assign.id).ToArray();
-                    cmd.Parameters["DOCUMENT_ID"].Value = data.Select(dcm_assign => dcm_assign.document_id).ToArray();
-                    cmd.Parameters["ASSIGNEE"].Value = data.Select(dcm_assign => dcm_assign.assignee).ToArray();
-                    cmd.Parameters["ASSIGNER"].Value = data.Select(dcm_assign => dcm_assign.assigner).ToArray();
-                    cmd.Parameters["ASSIGNED_DATE"].Value = data.Select(dcm_assign => dcm_assign.assigned_date).ToArray();
-                    cmd.Parameters["ROLE_TYPE_CODE"].Value = data.Select(dcm_assign => dcm_assign.role_type_code).ToArray();
-                    cmd.Parameters["XU_LY"].Value = data.Select(dcm_assign => dcm_assign.xu_ly).ToArray();
-                    cmd.Parameters["NGAY_XULY"].Value = data.Select(dcm_assign => dcm_assign.ngay_xuly).ToArray();
-                    cmd.Parameters["ACTIVITI_LOG_ID"].Value = data.Select(dcm_assign => dcm_assign.activiti_log_id).ToArray();
+                        cmd.Parameters.Add("ID", OracleDbType.Int64);
+                        cmd.Parameters.Add("DOCUMENT_ID", OracleDbType.Int64);
+                        cmd.Parameters.Add("ASSIGNEE", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("ASSIGNER", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("ASSIGNED_DATE", OracleDbType.Date);
+                        cmd.Parameters.Add("ROLE_TYPE_CODE", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("XU_LY", OracleDbType.Int64);
+                        cmd.Parameters.Add("NGAY_XULY", OracleDbType.Date);
+                        cmd.Parameters.Add("ACTIVITI_LOG_ID", OracleDbType.Int64);
 
-                    cmd.ExecuteNonQuery();
-                    cmd.Dispose();
+                        cmd.Parameters["ID"].Value = data.Select(dcm_assign => dcm_assign.id).ToArray();
+                        cmd.Parameters["DOCUMENT_ID"].Value = data.Select(dcm_assign => dcm_assign.document_id).ToArray();
+                        cmd.Parameters["ASSIGNEE"].Value = data.Select(dcm_assign => dcm_assign.assignee).ToArray();
+                        cmd.Parameters["ASSIGNER"].Value = data.Select(dcm_assign => dcm_assign.assigner).ToArray();
+                        cmd.Parameters["ASSIGNED_DATE"].Value = data.Select(dcm_assign => dcm_assign.assigned_date).ToArray();
+                        cmd.Parameters["ROLE_TYPE_CODE"].Value = data.Select(dcm_assign => dcm_assign.role_type_code).ToArray();
+                        cmd.Parameters["XU_LY"].Value = data.Select(dcm_assign => dcm_assign.xu_ly).ToArray();
+                        cmd.Parameters["NGAY_XULY"].Value = data.Select(dcm_assign => dcm_assign.ngay_xuly).ToArray();
+                        cmd.Parameters["ACTIVITI_LOG_ID"].Value = data.Select(dcm_assign => dcm_assign.activiti_log_id).ToArray();
+
+                        cmd.ExecuteNonQuery();
+                        cmd.Dispose();
+                        timer.Stop();
+                        Console.WriteLine("Imported data to dcm_assign: " + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        timer.Reset();
+                    }
                 }
             }
             catch (Exception ex)
@@ -378,47 +399,60 @@ namespace WindowsFormsApp1
             }
         }
 
-        public void insert_Dcm_Donvi_Nhan(OracleConnection oracleConnection, Configs configs, string query, List<Dcm_Donvi_Nhan> data)
+        public void insert_Dcm_Donvi_Nhan(OracleConnection oracleConnection, Configs configs, string query, List<Dcm_Donvi_Nhan> data_list)
         {
             try
             {
-                if (data.Count > 0)
+                if (data_list.Count > 0)
                 {
-                    OracleCommand cmd = oracleConnection.CreateCommand();
-                    cmd.CommandType = CommandType.Text;
+                    Stopwatch timer = new Stopwatch();
+                    Console.WriteLine("Total data to dcm_donvi_nhan: " + data_list.Count);
 
-                    cmd.ArrayBindCount = data.Count;
+                    List<List<Dcm_Donvi_Nhan>> splited_data = Common.SplitList(data_list);
+                    Console.WriteLine("Total splited data to dcm_donvi_nhan: " + splited_data.Count);
+                    foreach (List<Dcm_Donvi_Nhan> data in splited_data)
+                    {
+                        timer.Start();
 
-                    cmd.CommandText = string.Format(query, configs.schema);
+                        OracleCommand cmd = oracleConnection.CreateCommand();
+                        cmd.CommandType = CommandType.Text;
 
-                    cmd.Parameters.Add("ID", OracleDbType.Int64);
-                    cmd.Parameters.Add("DOC_ID", OracleDbType.Int64);
-                    cmd.Parameters.Add("XULY_CHINH", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("AGENT_ID", OracleDbType.Int64);
-                    cmd.Parameters.Add("UNIT_ID", OracleDbType.Int64);
-                    cmd.Parameters.Add("ROLE_TYPE_CODE", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("DONVI_TRONG_NGOAI", OracleDbType.Int64);
-                    cmd.Parameters.Add("ACTIVITI_LOG_ID", OracleDbType.Int64);
-                    cmd.Parameters.Add("ASSIGNED_DATE", OracleDbType.Date);
-                    cmd.Parameters.Add("XU_LY", OracleDbType.Int64);
-                    cmd.Parameters.Add("TRUOC_BANHANH", OracleDbType.Int64);
-                    cmd.Parameters.Add("TRANGTHAI_GUI", OracleDbType.Int64);
+                        cmd.ArrayBindCount = data.Count;
 
-                    cmd.Parameters["ID"].Value = data.Select(dcm_donvi_nhan => dcm_donvi_nhan.ID).ToArray();
-                    cmd.Parameters["DOC_ID"].Value = data.Select(dcm_donvi_nhan => dcm_donvi_nhan.DOC_ID).ToArray();
-                    cmd.Parameters["XULY_CHINH"].Value = data.Select(dcm_donvi_nhan => dcm_donvi_nhan.XULY_CHINH).ToArray();
-                    cmd.Parameters["AGENT_ID"].Value = data.Select(dcm_donvi_nhan => dcm_donvi_nhan.AGENT_ID).ToArray();
-                    cmd.Parameters["UNIT_ID"].Value = data.Select(dcm_donvi_nhan => dcm_donvi_nhan.UNIT_ID).ToArray();
-                    cmd.Parameters["ROLE_TYPE_CODE"].Value = data.Select(dcm_donvi_nhan => dcm_donvi_nhan.ROLE_TYPE_CODE).ToArray();
-                    cmd.Parameters["DONVI_TRONG_NGOAI"].Value = data.Select(dcm_donvi_nhan => dcm_donvi_nhan.DONVI_TRONG_NGOAI).ToArray();
-                    cmd.Parameters["ACTIVITI_LOG_ID"].Value = data.Select(dcm_donvi_nhan => dcm_donvi_nhan.ACTIVITI_LOG_ID).ToArray();
-                    cmd.Parameters["ASSIGNED_DATE"].Value = data.Select(dcm_donvi_nhan => dcm_donvi_nhan.ASSIGNED_DATE).ToArray();
-                    cmd.Parameters["XU_LY"].Value = data.Select(dcm_donvi_nhan => dcm_donvi_nhan.XU_LY).ToArray();
-                    cmd.Parameters["TRUOC_BANHANH"].Value = data.Select(dcm_donvi_nhan => dcm_donvi_nhan.TRUOC_BANHANH).ToArray();
-                    cmd.Parameters["TRANGTHAI_GUI"].Value = data.Select(dcm_donvi_nhan => dcm_donvi_nhan.TRANGTHAI_GUI).ToArray();
+                        cmd.CommandText = string.Format(query, configs.schema);
 
-                    cmd.ExecuteNonQuery();
-                    cmd.Dispose();
+                        cmd.Parameters.Add("ID", OracleDbType.Int64);
+                        cmd.Parameters.Add("DOC_ID", OracleDbType.Int64);
+                        cmd.Parameters.Add("XULY_CHINH", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("AGENT_ID", OracleDbType.Int64);
+                        cmd.Parameters.Add("UNIT_ID", OracleDbType.Int64);
+                        cmd.Parameters.Add("ROLE_TYPE_CODE", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("DONVI_TRONG_NGOAI", OracleDbType.Int64);
+                        cmd.Parameters.Add("ACTIVITI_LOG_ID", OracleDbType.Int64);
+                        cmd.Parameters.Add("ASSIGNED_DATE", OracleDbType.Date);
+                        cmd.Parameters.Add("XU_LY", OracleDbType.Int64);
+                        cmd.Parameters.Add("TRUOC_BANHANH", OracleDbType.Int64);
+                        cmd.Parameters.Add("TRANGTHAI_GUI", OracleDbType.Int64);
+
+                        cmd.Parameters["ID"].Value = data.Select(dcm_donvi_nhan => dcm_donvi_nhan.ID).ToArray();
+                        cmd.Parameters["DOC_ID"].Value = data.Select(dcm_donvi_nhan => dcm_donvi_nhan.DOC_ID).ToArray();
+                        cmd.Parameters["XULY_CHINH"].Value = data.Select(dcm_donvi_nhan => dcm_donvi_nhan.XULY_CHINH).ToArray();
+                        cmd.Parameters["AGENT_ID"].Value = data.Select(dcm_donvi_nhan => dcm_donvi_nhan.AGENT_ID).ToArray();
+                        cmd.Parameters["UNIT_ID"].Value = data.Select(dcm_donvi_nhan => dcm_donvi_nhan.UNIT_ID).ToArray();
+                        cmd.Parameters["ROLE_TYPE_CODE"].Value = data.Select(dcm_donvi_nhan => dcm_donvi_nhan.ROLE_TYPE_CODE).ToArray();
+                        cmd.Parameters["DONVI_TRONG_NGOAI"].Value = data.Select(dcm_donvi_nhan => dcm_donvi_nhan.DONVI_TRONG_NGOAI).ToArray();
+                        cmd.Parameters["ACTIVITI_LOG_ID"].Value = data.Select(dcm_donvi_nhan => dcm_donvi_nhan.ACTIVITI_LOG_ID).ToArray();
+                        cmd.Parameters["ASSIGNED_DATE"].Value = data.Select(dcm_donvi_nhan => dcm_donvi_nhan.ASSIGNED_DATE).ToArray();
+                        cmd.Parameters["XU_LY"].Value = data.Select(dcm_donvi_nhan => dcm_donvi_nhan.XU_LY).ToArray();
+                        cmd.Parameters["TRUOC_BANHANH"].Value = data.Select(dcm_donvi_nhan => dcm_donvi_nhan.TRUOC_BANHANH).ToArray();
+                        cmd.Parameters["TRANGTHAI_GUI"].Value = data.Select(dcm_donvi_nhan => dcm_donvi_nhan.TRANGTHAI_GUI).ToArray();
+
+                        cmd.ExecuteNonQuery();
+                        cmd.Dispose();
+                        timer.Stop();
+                        Console.WriteLine("Imported data to dcm_donvi_nhan: " + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        timer.Reset();
+                    }
                 }
             }
             catch (Exception ex)

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using WindowsFormsApp1.Controller;
 using WindowsFormsApp1.Models;
 
 namespace WindowsFormsApp1
@@ -127,6 +128,9 @@ namespace WindowsFormsApp1
             UpdateSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_ACTIVITI_LOG, ++Import_VanBan_Flow.SEQ_DCM_ACTIVITI_LOG - Constants.INCREASEID_OTHERS);
             UpdateSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_ASSIGN, ++Import_VanBan_Flow.SEQ_DCM_ASSIGN - Constants.INCREASEID_OTHERS);
             UpdateSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_DONVI_NHAN, ++Import_VanBan_Flow.SEQ_DCM_DONVI_NHAN - Constants.INCREASEID_OTHERS);
+
+            UpdateSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_LOG, ++Import_VanBan_Log.SEQ_DCM_LOG - Constants.INCREASEID_OTHERS);
+            UpdateSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_LOG_READ, ++Import_VanBan_Log.SEQ_DCM_LOG_READ - Constants.INCREASEID_OTHERS);
         }
         
         public static void InitialSeqFromDB(OracleConnection oracleConnection, Configs configs)
@@ -135,10 +139,21 @@ namespace WindowsFormsApp1
             Import_VanBan.SEQ_FEM_FILE = getCurrentSeq(oracleConnection, configs.schema, Constants.SEQ_FEM_FILE) + Constants.INCREASEID_OTHERS;
             Import_VanBan.SEQ_DCM_ATTACH_FILE = getCurrentSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_ATTACH_FILE) + Constants.INCREASEID_OTHERS;
             Import_VanBan.SEQ_DCM_TRACK = getCurrentSeq(oracleConnection, "CLOUD_ADMIN_DEV_BLU_2", Constants.SEQ_DCM_TRACK) + Constants.INCREASEID_OTHERS;
-
+            
             Import_VanBan_Flow.SEQ_DCM_ACTIVITI_LOG = getCurrentSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_ACTIVITI_LOG) + Constants.INCREASEID_OTHERS;
             Import_VanBan_Flow.SEQ_DCM_ASSIGN = getCurrentSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_ASSIGN) + Constants.INCREASEID_OTHERS;
             Import_VanBan_Flow.SEQ_DCM_DONVI_NHAN = getCurrentSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_DONVI_NHAN) + Constants.INCREASEID_OTHERS;
+            
+            Import_VanBan_Log.SEQ_DCM_LOG = getCurrentSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_LOG) + Constants.INCREASEID_OTHERS;
+            Import_VanBan_Log.SEQ_DCM_LOG_READ = getCurrentSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_LOG_READ) + Constants.INCREASEID_OTHERS;
+        }
+
+        private static void createSeq(OracleConnection oracleConnection, Configs configs, string seqName, long new_value)
+        {
+            string sql = "CREATE SEQUENCE " + configs.schema + "." + seqName + " START WITH " + new_value;
+            OracleCommand cmd = new OracleCommand(sql, oracleConnection);
+            cmd = new OracleCommand(sql, oracleConnection);
+            cmd.ExecuteNonQuery();
         }
 
         public static List<List<T>> SplitList<T>(List<T> data) where T:class
@@ -155,6 +170,13 @@ namespace WindowsFormsApp1
             }
 
             return list_obj;
+        }
+
+        public static void Delete(OracleConnection oracleConnection, string schema, string query)
+        {
+            
+            OracleCommand cmd = new OracleCommand(string.Format(query,schema), oracleConnection);
+            cmd.ExecuteNonQuery();
         }
     }
 }

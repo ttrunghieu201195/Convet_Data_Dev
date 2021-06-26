@@ -3,6 +3,7 @@ using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -601,6 +602,8 @@ namespace WindowsFormsApp1
             // cong van den di (2: van ban di, 1: van ban den)
             dcm_Doc.congvan_dendi = 1;
 
+            dcm_Doc.trang_thai = 13;
+
             // Process key
             dcm_Doc.process_key = "VAN_BAN_DEN_CAP1_UBBL_6563: 1:175549970";
 
@@ -658,91 +661,105 @@ namespace WindowsFormsApp1
             dcm_Tracks.Add(dcm_Track);
         }
 
-        public static void insert_Dcm_Doc(OracleConnection oracleConnection, Configs configs, string query, List<Dcm_Doc> data)
+        public static void insert_Dcm_Doc(OracleConnection oracleConnection, Configs configs, string query, List<Dcm_Doc> data_list)
         {
             try
             {
-                if (data.Count > 0)
+                if (data_list.Count > 0)
                 {
-                    OracleCommand cmd = oracleConnection.CreateCommand();
-                    cmd.CommandType = CommandType.Text;
+                    Stopwatch timer = new Stopwatch();
+                    Console.WriteLine("Total data to dcm_doc: " + data_list.Count);
 
-                    cmd.ArrayBindCount = data.Count;
+                    List<List<Dcm_Doc>> splited_data = Common.SplitList(data_list);
+                    Console.WriteLine("Total splited data to dcm_doc: " + splited_data.Count);
 
-                    cmd.CommandText = string.Format(query, configs.schema);
+                    foreach (List<Dcm_Doc> data in splited_data)
+                    {
+                        timer.Start();
+                        OracleCommand cmd = oracleConnection.CreateCommand();
+                        cmd.CommandType = CommandType.Text;
 
-                    cmd.Parameters.Add("ID", OracleDbType.Int64);
-                    cmd.Parameters.Add("DCMTYPE_CODE", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("TRICH_YEU", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("SO_KYHIEU", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("SO_DEN_DI", OracleDbType.Int64);
-                    cmd.Parameters.Add("NGUOI_KY_CHINH", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("NGUOI_SOAN", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("SO_VANBAN_CODE", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("NGAY_TAO", OracleDbType.Date);
-                    cmd.Parameters.Add("NGAY_VAN_BAN", OracleDbType.Date);
-                    cmd.Parameters.Add("NGAY_DEN_DI", OracleDbType.Date);
-                    cmd.Parameters.Add("SO_BAN", OracleDbType.Int64);
-                    cmd.Parameters.Add("SO_TRANG", OracleDbType.Int64);
-                    cmd.Parameters.Add("PRIORITY_CODE", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("CONFIDENTIAL_CODE", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("LINHVUC_CODE", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("HINHTHUC_GUI_CODE", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("HAN_GIAIQUYET", OracleDbType.Date);
-                    cmd.Parameters.Add("CONGVAN_DENDI", OracleDbType.Int64);
-                    cmd.Parameters.Add("TRANG_THAI", OracleDbType.Int64);
-                    cmd.Parameters.Add("ngay_ban_hanh", OracleDbType.Date);
-                    cmd.Parameters.Add("donvi_soanthao", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("DONVI_BANHANH", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("unit_id", OracleDbType.Int64);
-                    cmd.Parameters.Add("DONVI_NHANNGOAI", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("NGUOI_SOANTHAO", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("CHUCVU_NGUOIKY", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("DOC_NOTE", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("VB_TRINH_KY", OracleDbType.Int64);
-                    cmd.Parameters.Add("SO_TRINH_KY", OracleDbType.Int64);
-                    cmd.Parameters.Add("GHI_CHU", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("NGAY_TRINH_KY", OracleDbType.Date);
-                    cmd.Parameters.Add("NGAY_KY", OracleDbType.Date);
-                    cmd.Parameters.Add("PROCESS_KEY", OracleDbType.Varchar2);
+                        cmd.ArrayBindCount = data.Count;
 
-                    cmd.Parameters["ID"].Value = data.Select(dcm_doc => dcm_doc.id_VanBan).ToArray();
-                    cmd.Parameters["DCMTYPE_CODE"].Value = data.Select(dcm_doc => dcm_doc.dcmtype_code).ToArray();
-                    cmd.Parameters["TRICH_YEU"].Value = data.Select(dcm_doc => dcm_doc.trich_yeu).ToArray();
-                    cmd.Parameters["SO_KYHIEU"].Value = data.Select(dcm_doc => dcm_doc.so_kyhieu).ToArray();
-                    cmd.Parameters["SO_DEN_DI"].Value = data.Select(dcm_doc => dcm_doc.so_den_di).ToArray();
-                    cmd.Parameters["NGUOI_KY_CHINH"].Value = data.Select(dcm_doc => dcm_doc.nguoi_ky_chinh).ToArray();
-                    cmd.Parameters["NGUOI_SOAN"].Value = data.Select(dcm_doc => dcm_doc.nguoi_vaoso).ToArray();
-                    cmd.Parameters["SO_VANBAN_CODE"].Value = data.Select(dcm_doc => dcm_doc.so_vanban_code).ToArray();
-                    cmd.Parameters["NGAY_TAO"].Value = data.Select(dcm_doc => dcm_doc.ngay_tao).ToArray();
-                    cmd.Parameters["NGAY_VAN_BAN"].Value = data.Select(dcm_doc => dcm_doc.ngay_van_ban).ToArray();
-                    cmd.Parameters["NGAY_DEN_DI"].Value = data.Select(dcm_doc => dcm_doc.ngay_den_di).ToArray();
-                    cmd.Parameters["SO_BAN"].Value = data.Select(dcm_doc => dcm_doc.so_ban).ToArray();
-                    cmd.Parameters["SO_TRANG"].Value = data.Select(dcm_doc => dcm_doc.so_trang).ToArray();
-                    cmd.Parameters["PRIORITY_CODE"].Value = data.Select(dcm_doc => dcm_doc.priority_code).ToArray();
-                    cmd.Parameters["CONFIDENTIAL_CODE"].Value = data.Select(dcm_doc => dcm_doc.confidential_code).ToArray();
-                    cmd.Parameters["LINHVUC_CODE"].Value = data.Select(dcm_doc => dcm_doc.linhvuc_code).ToArray();
-                    cmd.Parameters["HINHTHUC_GUI_CODE"].Value = data.Select(dcm_doc => dcm_doc.hinhthuc_gui_code).ToArray();
-                    cmd.Parameters["HAN_GIAIQUYET"].Value = data.Select(dcm_doc => dcm_doc.han_giaiquyet).ToArray();
-                    cmd.Parameters["CONGVAN_DENDI"].Value = data.Select(dcm_doc => dcm_doc.congvan_dendi).ToArray();
-                    cmd.Parameters["TRANG_THAI"].Value = data.Select(dcm_doc => dcm_doc.trang_thai).ToArray();
-                    cmd.Parameters["ngay_ban_hanh"].Value = data.Select(dcm_doc => dcm_doc.ngay_ban_hanh).ToArray();
-                    cmd.Parameters["donvi_soanthao"].Value = data.Select(dcm_doc => dcm_doc.donvi_soanthao).ToArray();
-                    cmd.Parameters["DONVI_BANHANH"].Value = data.Select(dcm_doc => dcm_doc.coquan_banhanh).ToArray();
-                    cmd.Parameters["unit_id"].Value = data.Select(dcm_doc => dcm_doc.unit_id).ToArray();
-                    cmd.Parameters["DONVI_NHANNGOAI"].Value = data.Select(dcm_doc => dcm_doc.dv_nhanngoai).ToArray();
-                    cmd.Parameters["NGUOI_SOANTHAO"].Value = data.Select(dcm_doc => dcm_doc.nguoi_soan).ToArray();
-                    cmd.Parameters["CHUCVU_NGUOIKY"].Value = data.Select(dcm_doc => dcm_doc.chucvu_nguoiky).ToArray();
-                    cmd.Parameters["DOC_NOTE"].Value = data.Select(dcm_doc => dcm_doc.doc_note).ToArray();
-                    cmd.Parameters["VB_TRINH_KY"].Value = data.Select(dcm_doc => dcm_doc.vb_trinhky).ToArray();
-                    cmd.Parameters["SO_TRINH_KY"].Value = data.Select(dcm_doc => dcm_doc.so_trinhky).ToArray();
-                    cmd.Parameters["GHI_CHU"].Value = data.Select(dcm_doc => dcm_doc.ghi_chu).ToArray();
-                    cmd.Parameters["NGAY_TRINH_KY"].Value = data.Select(dcm_doc => dcm_doc.ngay_trinhky).ToArray();
-                    cmd.Parameters["NGAY_KY"].Value = data.Select(dcm_doc => dcm_doc.ngay_ky).ToArray();
-                    cmd.Parameters["PROCESS_KEY"].Value = data.Select(dcm_doc => dcm_doc.process_key).ToArray();
+                        cmd.CommandText = string.Format(query, configs.schema);
 
-                    cmd.ExecuteNonQuery();
-                    cmd.Dispose();
+                        cmd.Parameters.Add("ID", OracleDbType.Int64);
+                        cmd.Parameters.Add("DCMTYPE_CODE", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("TRICH_YEU", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("SO_KYHIEU", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("SO_DEN_DI", OracleDbType.Int64);
+                        cmd.Parameters.Add("NGUOI_KY_CHINH", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("NGUOI_SOAN", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("SO_VANBAN_CODE", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("NGAY_TAO", OracleDbType.Date);
+                        cmd.Parameters.Add("NGAY_VAN_BAN", OracleDbType.Date);
+                        cmd.Parameters.Add("NGAY_DEN_DI", OracleDbType.Date);
+                        cmd.Parameters.Add("SO_BAN", OracleDbType.Int64);
+                        cmd.Parameters.Add("SO_TRANG", OracleDbType.Int64);
+                        cmd.Parameters.Add("PRIORITY_CODE", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("CONFIDENTIAL_CODE", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("LINHVUC_CODE", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("HINHTHUC_GUI_CODE", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("HAN_GIAIQUYET", OracleDbType.Date);
+                        cmd.Parameters.Add("CONGVAN_DENDI", OracleDbType.Int64);
+                        cmd.Parameters.Add("TRANG_THAI", OracleDbType.Int64);
+                        cmd.Parameters.Add("ngay_ban_hanh", OracleDbType.Date);
+                        cmd.Parameters.Add("donvi_soanthao", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("DONVI_BANHANH", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("unit_id", OracleDbType.Int64);
+                        cmd.Parameters.Add("DONVI_NHANNGOAI", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("NGUOI_SOANTHAO", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("CHUCVU_NGUOIKY", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("DOC_NOTE", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("VB_TRINH_KY", OracleDbType.Int64);
+                        cmd.Parameters.Add("SO_TRINH_KY", OracleDbType.Int64);
+                        cmd.Parameters.Add("GHI_CHU", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("NGAY_TRINH_KY", OracleDbType.Date);
+                        cmd.Parameters.Add("NGAY_KY", OracleDbType.Date);
+                        cmd.Parameters.Add("PROCESS_KEY", OracleDbType.Varchar2);
+
+                        cmd.Parameters["ID"].Value = data.Select(dcm_doc => dcm_doc.id_VanBan).ToArray();
+                        cmd.Parameters["DCMTYPE_CODE"].Value = data.Select(dcm_doc => dcm_doc.dcmtype_code).ToArray();
+                        cmd.Parameters["TRICH_YEU"].Value = data.Select(dcm_doc => dcm_doc.trich_yeu).ToArray();
+                        cmd.Parameters["SO_KYHIEU"].Value = data.Select(dcm_doc => dcm_doc.so_kyhieu).ToArray();
+                        cmd.Parameters["SO_DEN_DI"].Value = data.Select(dcm_doc => dcm_doc.so_den_di).ToArray();
+                        cmd.Parameters["NGUOI_KY_CHINH"].Value = data.Select(dcm_doc => dcm_doc.nguoi_ky_chinh).ToArray();
+                        cmd.Parameters["NGUOI_SOAN"].Value = data.Select(dcm_doc => dcm_doc.nguoi_vaoso).ToArray();
+                        cmd.Parameters["SO_VANBAN_CODE"].Value = data.Select(dcm_doc => dcm_doc.so_vanban_code).ToArray();
+                        cmd.Parameters["NGAY_TAO"].Value = data.Select(dcm_doc => dcm_doc.ngay_tao).ToArray();
+                        cmd.Parameters["NGAY_VAN_BAN"].Value = data.Select(dcm_doc => dcm_doc.ngay_van_ban).ToArray();
+                        cmd.Parameters["NGAY_DEN_DI"].Value = data.Select(dcm_doc => dcm_doc.ngay_den_di).ToArray();
+                        cmd.Parameters["SO_BAN"].Value = data.Select(dcm_doc => dcm_doc.so_ban).ToArray();
+                        cmd.Parameters["SO_TRANG"].Value = data.Select(dcm_doc => dcm_doc.so_trang).ToArray();
+                        cmd.Parameters["PRIORITY_CODE"].Value = data.Select(dcm_doc => dcm_doc.priority_code).ToArray();
+                        cmd.Parameters["CONFIDENTIAL_CODE"].Value = data.Select(dcm_doc => dcm_doc.confidential_code).ToArray();
+                        cmd.Parameters["LINHVUC_CODE"].Value = data.Select(dcm_doc => dcm_doc.linhvuc_code).ToArray();
+                        cmd.Parameters["HINHTHUC_GUI_CODE"].Value = data.Select(dcm_doc => dcm_doc.hinhthuc_gui_code).ToArray();
+                        cmd.Parameters["HAN_GIAIQUYET"].Value = data.Select(dcm_doc => dcm_doc.han_giaiquyet).ToArray();
+                        cmd.Parameters["CONGVAN_DENDI"].Value = data.Select(dcm_doc => dcm_doc.congvan_dendi).ToArray();
+                        cmd.Parameters["TRANG_THAI"].Value = data.Select(dcm_doc => dcm_doc.trang_thai).ToArray();
+                        cmd.Parameters["ngay_ban_hanh"].Value = data.Select(dcm_doc => dcm_doc.ngay_ban_hanh).ToArray();
+                        cmd.Parameters["donvi_soanthao"].Value = data.Select(dcm_doc => dcm_doc.donvi_soanthao).ToArray();
+                        cmd.Parameters["DONVI_BANHANH"].Value = data.Select(dcm_doc => dcm_doc.coquan_banhanh).ToArray();
+                        cmd.Parameters["unit_id"].Value = data.Select(dcm_doc => dcm_doc.unit_id).ToArray();
+                        cmd.Parameters["DONVI_NHANNGOAI"].Value = data.Select(dcm_doc => dcm_doc.dv_nhanngoai).ToArray();
+                        cmd.Parameters["NGUOI_SOANTHAO"].Value = data.Select(dcm_doc => dcm_doc.nguoi_soan).ToArray();
+                        cmd.Parameters["CHUCVU_NGUOIKY"].Value = data.Select(dcm_doc => dcm_doc.chucvu_nguoiky).ToArray();
+                        cmd.Parameters["DOC_NOTE"].Value = data.Select(dcm_doc => dcm_doc.doc_note).ToArray();
+                        cmd.Parameters["VB_TRINH_KY"].Value = data.Select(dcm_doc => dcm_doc.vb_trinhky).ToArray();
+                        cmd.Parameters["SO_TRINH_KY"].Value = data.Select(dcm_doc => dcm_doc.so_trinhky).ToArray();
+                        cmd.Parameters["GHI_CHU"].Value = data.Select(dcm_doc => dcm_doc.ghi_chu).ToArray();
+                        cmd.Parameters["NGAY_TRINH_KY"].Value = data.Select(dcm_doc => dcm_doc.ngay_trinhky).ToArray();
+                        cmd.Parameters["NGAY_KY"].Value = data.Select(dcm_doc => dcm_doc.ngay_ky).ToArray();
+                        cmd.Parameters["PROCESS_KEY"].Value = data.Select(dcm_doc => dcm_doc.process_key).ToArray();
+
+                        cmd.ExecuteNonQuery();
+                        cmd.Dispose();
+
+                        timer.Stop();
+                        Console.WriteLine("Imported data to dcm_doc: " + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        timer.Reset();
+                    }
                 }
             }
             catch (Exception e)
@@ -751,29 +768,43 @@ namespace WindowsFormsApp1
             }
         }
 
-        public static void insert_Dcm_Doc_Relation (OracleConnection oracleConnection, Configs configs, string query, List<Dcm_Doc_Relation> data)
+        public static void insert_Dcm_Doc_Relation (OracleConnection oracleConnection, Configs configs, string query, List<Dcm_Doc_Relation> data_list)
         {
             try
             {
-                if (data.Count > 0)
+                if (data_list.Count > 0)
                 {
-                    OracleCommand cmd = oracleConnection.CreateCommand();
-                    cmd.CommandType = CommandType.Text;
+                    Stopwatch timer = new Stopwatch();
+                    Console.WriteLine("Total data to Dcm_Doc_Relation: " + data_list.Count);
 
-                    cmd.ArrayBindCount = data.Count;
+                    List<List<Dcm_Doc_Relation>> splited_data = Common.SplitList(data_list);
+                    Console.WriteLine("Total splited data to Dcm_Doc_Relation: " + splited_data.Count);
 
-                    cmd.CommandText = string.Format(query, configs.schema);
+                    foreach (List<Dcm_Doc_Relation> data in splited_data)
+                    {
+                        timer.Start();
+                        OracleCommand cmd = oracleConnection.CreateCommand();
+                        cmd.CommandType = CommandType.Text;
 
-                    cmd.Parameters.Add("ID", OracleDbType.Int64);
-                    cmd.Parameters.Add("DCM_ID", OracleDbType.Int64);
-                    cmd.Parameters.Add("DCM_DOCUMENT_ID", OracleDbType.Int64);
+                        cmd.ArrayBindCount = data.Count;
 
-                    cmd.Parameters["ID"].Value = data.Select(dcm_doc_relation => dcm_doc_relation.id).ToArray();
-                    cmd.Parameters["DCM_ID"].Value = data.Select(dcm_doc_relation => dcm_doc_relation.dcm_id).ToArray();
-                    cmd.Parameters["DCM_DOCUMENT_ID"].Value = data.Select(dcm_doc_relation => dcm_doc_relation.dcm_document_id).ToArray();
+                        cmd.CommandText = string.Format(query, configs.schema);
 
-                    cmd.ExecuteNonQuery();
-                    cmd.Dispose();
+                        cmd.Parameters.Add("ID", OracleDbType.Int64);
+                        cmd.Parameters.Add("DCM_ID", OracleDbType.Int64);
+                        cmd.Parameters.Add("DCM_DOCUMENT_ID", OracleDbType.Int64);
+
+                        cmd.Parameters["ID"].Value = data.Select(dcm_doc_relation => dcm_doc_relation.id).ToArray();
+                        cmd.Parameters["DCM_ID"].Value = data.Select(dcm_doc_relation => dcm_doc_relation.dcm_id).ToArray();
+                        cmd.Parameters["DCM_DOCUMENT_ID"].Value = data.Select(dcm_doc_relation => dcm_doc_relation.dcm_document_id).ToArray();
+
+                        cmd.ExecuteNonQuery();
+                        cmd.Dispose();
+
+                        timer.Stop();
+                        Console.WriteLine("Imported data to Dcm_Doc_Relation: " + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        timer.Reset();
+                    }
                 }
             } catch (Exception e)
             {
@@ -781,41 +812,55 @@ namespace WindowsFormsApp1
             }
         }
 
-        public static void insert_fem_file(OracleConnection oracleConnection, Configs configs, string query, List<Fem_File> data)
+        public static void insert_fem_file(OracleConnection oracleConnection, Configs configs, string query, List<Fem_File> data_list)
         {
             try
             {
-                if (data.Count > 0)
+                if (data_list.Count > 0)
                 {
-                    OracleCommand cmd = oracleConnection.CreateCommand();
-                    cmd.CommandType = CommandType.Text;
+                    Stopwatch timer = new Stopwatch();
+                    Console.WriteLine("Total data to Fem_File: " + data_list.Count);
 
-                    cmd.ArrayBindCount = data.Count;
+                    List<List<Fem_File>> splited_data = Common.SplitList(data_list);
+                    Console.WriteLine("Total splited data to Fem_File: " + splited_data.Count);
 
-                    cmd.CommandText = string.Format(query, configs.schema);
+                    foreach (List<Fem_File> data in splited_data)
+                    {
+                        timer.Start();
+                        OracleCommand cmd = oracleConnection.CreateCommand();
+                        cmd.CommandType = CommandType.Text;
 
-                    cmd.Parameters.Add("ID", OracleDbType.Int64);
-                    cmd.Parameters.Add("FILE_TYPE_ID", OracleDbType.Int64);
-                    cmd.Parameters.Add("NAME", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("HDD_FILE", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("DESCRIBE", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("FILE_SIZE", OracleDbType.Int64);
-                    cmd.Parameters.Add("IS_PRIVATE_FILE", OracleDbType.Int64);
-                    cmd.Parameters.Add("CREATOR", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("IS_DELETED", OracleDbType.Int64);
+                        cmd.ArrayBindCount = data.Count;
 
-                    cmd.Parameters["ID"].Value = data.Select(fem_file => fem_file.id).ToArray();
-                    cmd.Parameters["FILE_TYPE_ID"].Value = data.Select(fem_file => fem_file.file_type_id).ToArray();
-                    cmd.Parameters["NAME"].Value = data.Select(fem_file => fem_file.name).ToArray();
-                    cmd.Parameters["HDD_FILE"].Value = data.Select(fem_file => fem_file.hdd_file).ToArray();
-                    cmd.Parameters["DESCRIBE"].Value = data.Select(fem_file => fem_file.description).ToArray();
-                    cmd.Parameters["FILE_SIZE"].Value = data.Select(fem_file => fem_file.file_size).ToArray();
-                    cmd.Parameters["IS_PRIVATE_FILE"].Value = data.Select(fem_file => fem_file.is_private_file).ToArray();
-                    cmd.Parameters["CREATOR"].Value = data.Select(fem_file => fem_file.creator).ToArray();
-                    cmd.Parameters["IS_DELETED"].Value = data.Select(fem_file => fem_file.is_delete).ToArray();
+                        cmd.CommandText = string.Format(query, configs.schema);
 
-                    cmd.ExecuteNonQuery();
-                    cmd.Dispose();
+                        cmd.Parameters.Add("ID", OracleDbType.Int64);
+                        cmd.Parameters.Add("FILE_TYPE_ID", OracleDbType.Int64);
+                        cmd.Parameters.Add("NAME", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("HDD_FILE", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("DESCRIBE", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("FILE_SIZE", OracleDbType.Int64);
+                        cmd.Parameters.Add("IS_PRIVATE_FILE", OracleDbType.Int64);
+                        cmd.Parameters.Add("CREATOR", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("IS_DELETED", OracleDbType.Int64);
+
+                        cmd.Parameters["ID"].Value = data.Select(fem_file => fem_file.id).ToArray();
+                        cmd.Parameters["FILE_TYPE_ID"].Value = data.Select(fem_file => fem_file.file_type_id).ToArray();
+                        cmd.Parameters["NAME"].Value = data.Select(fem_file => fem_file.name).ToArray();
+                        cmd.Parameters["HDD_FILE"].Value = data.Select(fem_file => fem_file.hdd_file).ToArray();
+                        cmd.Parameters["DESCRIBE"].Value = data.Select(fem_file => fem_file.description).ToArray();
+                        cmd.Parameters["FILE_SIZE"].Value = data.Select(fem_file => fem_file.file_size).ToArray();
+                        cmd.Parameters["IS_PRIVATE_FILE"].Value = data.Select(fem_file => fem_file.is_private_file).ToArray();
+                        cmd.Parameters["CREATOR"].Value = data.Select(fem_file => fem_file.creator).ToArray();
+                        cmd.Parameters["IS_DELETED"].Value = data.Select(fem_file => fem_file.is_delete).ToArray();
+
+                        cmd.ExecuteNonQuery();
+                        cmd.Dispose();
+
+                        timer.Stop();
+                        Console.WriteLine("Imported data to Fem_File: " + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        timer.Reset();
+                    }
                 }
             }
             catch (Exception e)
@@ -824,31 +869,45 @@ namespace WindowsFormsApp1
             }
         }
 
-        public static void insert_Dcm_Attach_File(OracleConnection oracleConnection, Configs configs, string query, List<Dcm_Attach_File> data)
+        public static void insert_Dcm_Attach_File(OracleConnection oracleConnection, Configs configs, string query, List<Dcm_Attach_File> data_list)
         {
             try
             {
-                if (data.Count > 0)
+                if (data_list.Count > 0)
                 {
-                    OracleCommand cmd = oracleConnection.CreateCommand();
-                    cmd.CommandType = CommandType.Text;
+                    Stopwatch timer = new Stopwatch();
+                    Console.WriteLine("Total data to dcm_attach_file: " + data_list.Count);
 
-                    cmd.ArrayBindCount = data.Count;
+                    List<List<Dcm_Attach_File>> splited_data = Common.SplitList(data_list);
+                    Console.WriteLine("Total splited data to dcm_attach_file: " + splited_data.Count);
 
-                    cmd.CommandText = string.Format(query,configs.schema);
+                    foreach (List<Dcm_Attach_File> data in splited_data)
+                    {
+                        timer.Start();
+                        OracleCommand cmd = oracleConnection.CreateCommand();
+                        cmd.CommandType = CommandType.Text;
 
-                    cmd.Parameters.Add("ATTACHMENT_ID", OracleDbType.Int64);
-                    cmd.Parameters.Add("DOC_ID", OracleDbType.Int64);
-                    cmd.Parameters.Add("TRANG_THAI", OracleDbType.Int64);
-                    cmd.Parameters.Add("FILE_ID", OracleDbType.Int64);
+                        cmd.ArrayBindCount = data.Count;
 
-                    cmd.Parameters["ATTACHMENT_ID"].Value = data.Select(dcm_doc_attach_file => dcm_doc_attach_file.id).ToArray();
-                    cmd.Parameters["DOC_ID"].Value = data.Select(dcm_doc_attach_file => dcm_doc_attach_file.id_vb).ToArray();
-                    cmd.Parameters["TRANG_THAI"].Value = data.Select(dcm_doc_attach_file => dcm_doc_attach_file.trang_thai).ToArray();
-                    cmd.Parameters["FILE_ID"].Value = data.Select(dcm_doc_attach_file => dcm_doc_attach_file.file_id).ToArray();
+                        cmd.CommandText = string.Format(query, configs.schema);
 
-                    cmd.ExecuteNonQuery();
-                    cmd.Dispose();
+                        cmd.Parameters.Add("ATTACHMENT_ID", OracleDbType.Int64);
+                        cmd.Parameters.Add("DOC_ID", OracleDbType.Int64);
+                        cmd.Parameters.Add("TRANG_THAI", OracleDbType.Int64);
+                        cmd.Parameters.Add("FILE_ID", OracleDbType.Int64);
+
+                        cmd.Parameters["ATTACHMENT_ID"].Value = data.Select(dcm_doc_attach_file => dcm_doc_attach_file.id).ToArray();
+                        cmd.Parameters["DOC_ID"].Value = data.Select(dcm_doc_attach_file => dcm_doc_attach_file.id_vb).ToArray();
+                        cmd.Parameters["TRANG_THAI"].Value = data.Select(dcm_doc_attach_file => dcm_doc_attach_file.trang_thai).ToArray();
+                        cmd.Parameters["FILE_ID"].Value = data.Select(dcm_doc_attach_file => dcm_doc_attach_file.file_id).ToArray();
+
+                        cmd.ExecuteNonQuery();
+                        cmd.Dispose();
+
+                        timer.Stop();
+                        Console.WriteLine("Imported data to Dcm_Attach_File: " + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        timer.Reset();
+                    }
                 }
             }
             catch (Exception e)
@@ -857,39 +916,53 @@ namespace WindowsFormsApp1
             }
         }
 
-        public static void insert_Dcm_Track(OracleConnection oracleConnection, Configs configs, string query, List<Dcm_Track> data)
+        public static void insert_Dcm_Track(OracleConnection oracleConnection, Configs configs, string query, List<Dcm_Track> data_list)
         {
             try
             {
-                if (data.Count > 0)
+                if (data_list.Count > 0)
                 {
-                    OracleCommand cmd = oracleConnection.CreateCommand();
-                    cmd.CommandType = CommandType.Text;
+                    Stopwatch timer = new Stopwatch();
+                    Console.WriteLine("Total data to dcm_track: " + data_list.Count);
 
-                    cmd.ArrayBindCount = data.Count;
+                    List<List<Dcm_Track>> splited_data = Common.SplitList(data_list);
+                    Console.WriteLine("Total splited data to dcm_track: " + splited_data.Count);
 
-                    cmd.CommandText = string.Format(query, configs.schema);
+                    foreach (List<Dcm_Track> data in splited_data)
+                    {
+                        timer.Start();
+                        OracleCommand cmd = oracleConnection.CreateCommand();
+                        cmd.CommandType = CommandType.Text;
 
-                    cmd.Parameters.Add("ID", OracleDbType.Int64);
-                    cmd.Parameters.Add("DOC_ID", OracleDbType.Int64);
-                    cmd.Parameters.Add("SCHEMA_ID", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("DOC_ID_SOURCE", OracleDbType.Int64);
-                    cmd.Parameters.Add("SCHEMA_ID_SOURCE", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("DATE_INS", OracleDbType.Date);
-                    cmd.Parameters.Add("PARENT", OracleDbType.Varchar2);
-                    cmd.Parameters.Add("CHILD", OracleDbType.Varchar2);
+                        cmd.ArrayBindCount = data.Count;
 
-                    cmd.Parameters["ID"].Value = data.Select(dcm_track => dcm_track.id).ToArray();
-                    cmd.Parameters["DOC_ID"].Value = data.Select(dcm_track => dcm_track.doc_id).ToArray();
-                    cmd.Parameters["SCHEMA_ID"].Value = data.Select(dcm_track => dcm_track.schema_id).ToArray();
-                    cmd.Parameters["DOC_ID_SOURCE"].Value = data.Select(dcm_track => dcm_track.doc_id_source).ToArray();
-                    cmd.Parameters["SCHEMA_ID_SOURCE"].Value = data.Select(dcm_track => dcm_track.schema_id_source).ToArray();
-                    cmd.Parameters["DATE_INS"].Value = data.Select(dcm_track => dcm_track.date_ins).ToArray();
-                    cmd.Parameters["PARENT"].Value = data.Select(dcm_track => dcm_track.parent).ToArray();
-                    cmd.Parameters["CHILD"].Value = data.Select(dcm_track => dcm_track.child).ToArray();
+                        cmd.CommandText = string.Format(query, "CLOUD_ADMIN_DEV_BLU_2");
 
-                    cmd.ExecuteNonQuery();
-                    cmd.Dispose();
+                        cmd.Parameters.Add("ID", OracleDbType.Int64);
+                        cmd.Parameters.Add("DOC_ID", OracleDbType.Int64);
+                        cmd.Parameters.Add("SCHEMA_ID", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("DOC_ID_SOURCE", OracleDbType.Int64);
+                        cmd.Parameters.Add("SCHEMA_ID_SOURCE", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("DATE_INS", OracleDbType.Date);
+                        cmd.Parameters.Add("PARENT", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("CHILD", OracleDbType.Varchar2);
+
+                        cmd.Parameters["ID"].Value = data.Select(dcm_track => dcm_track.id).ToArray();
+                        cmd.Parameters["DOC_ID"].Value = data.Select(dcm_track => dcm_track.doc_id).ToArray();
+                        cmd.Parameters["SCHEMA_ID"].Value = data.Select(dcm_track => dcm_track.schema_id).ToArray();
+                        cmd.Parameters["DOC_ID_SOURCE"].Value = data.Select(dcm_track => dcm_track.doc_id_source).ToArray();
+                        cmd.Parameters["SCHEMA_ID_SOURCE"].Value = data.Select(dcm_track => dcm_track.schema_id_source).ToArray();
+                        cmd.Parameters["DATE_INS"].Value = data.Select(dcm_track => dcm_track.date_ins).ToArray();
+                        cmd.Parameters["PARENT"].Value = data.Select(dcm_track => dcm_track.parent).ToArray();
+                        cmd.Parameters["CHILD"].Value = data.Select(dcm_track => dcm_track.child).ToArray();
+
+                        cmd.ExecuteNonQuery();
+                        cmd.Dispose();
+
+                        timer.Stop();
+                        Console.WriteLine("Imported data to Dcm_Track: " + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        timer.Reset();
+                    }
                 }
             }
             catch (Exception e)

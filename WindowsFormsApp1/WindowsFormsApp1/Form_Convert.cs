@@ -59,6 +59,30 @@ namespace WindowsFormsApp1
                 // Initial seq from db
                 Common.InitialSeqFromDB(oracleConnection, configs);
 
+                if (chkbox_deleteCategory.Checked)
+                {
+                    timer.Reset();
+                    timer.Start();
+                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Deleting Categories ..."));
+                    Import_VanBan.exportdataFromPostgres(postgresConnection, configs, Constants.sql_thongtin_vb_di, Common.VB_TYPE.VB_DI);
+                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Deleted Categories!"));
+                    timer.Stop();
+                    //Console.WriteLine("Total exported data: " + Import_VanBan.getDcm_Docs().Count);
+                    Console.WriteLine("Consumption of exported data: " + timer.ElapsedMilliseconds / 1000 + "(s)");
+                }
+
+                if (chkbox_DeleteDoc.Checked)
+                {
+                    timer.Reset();
+                    timer.Start();
+                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Deleting Docs ..."));
+                    Common.Delete(oracleConnection, configs.schema, Constants.sql_delete_dcm_doc);
+                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Deleted Docs!"));
+                    timer.Stop();
+                    //Console.WriteLine("Total exported data: " + Import_VanBan.getDcm_Docs().Count);
+                    Console.WriteLine("Consumption of exported data: " + timer.ElapsedMilliseconds / 1000 + "(s)");
+                }
+
                 // So van ban
                 if (this.chkBox_Book.Checked)
                 {
@@ -93,6 +117,7 @@ namespace WindowsFormsApp1
                 if (this.chkbox_OutGoing_Info.Checked)
                 {
                     // Export data
+                    timer.Reset();
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exporting data from Postgres ..."));
                     Import_VanBan.exportdataFromPostgres(postgresConnection, configs, Constants.sql_thongtin_vb_di, Common.VB_TYPE.VB_DI);
@@ -102,15 +127,17 @@ namespace WindowsFormsApp1
                     Console.WriteLine("Consumption of exported data: " + timer.ElapsedMilliseconds / 1000 + "(s)");
 
                     // Import to dcm_doc
+                    timer.Reset();
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting outgoing doc to Dcm_Doc ..."));
-                    //Import_VanBan.insert_Dcm_Doc(oracleConnection, configs, Constants.sql_insert_dcm_doc, Import_VanBan.getDcm_Docs());
+                    Import_VanBan.insert_Dcm_Doc(oracleConnection, configs, Constants.sql_insert_dcm_doc, Import_VanBan.getDcm_Docs());
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted outgoing doc to Dcm_Doc!"));
                     timer.Stop();
                     Console.WriteLine("Total imported data to dcm_doc: " + Import_VanBan.getDcm_Docs().Count);
                     Console.WriteLine("Consumption of imported data to dcm_doc: " + timer.ElapsedMilliseconds / 1000 + "(s)");
 
                     // Import to dcm_doc_relation
+                    timer.Reset();
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting outgoing doc to Dcm_Doc_Relation ..."));
                     Import_VanBan.insert_Dcm_Doc_Relation(oracleConnection, configs, Constants.sql_insert_dcm_doc_relation, Import_VanBan.getDcm_Doc_Relations());
@@ -120,18 +147,20 @@ namespace WindowsFormsApp1
                     Console.WriteLine("Consumption of imported data to dcm_doc_relation: " + timer.ElapsedMilliseconds / 1000 + "(s)");
 
                     // Import to fem_file
+                    timer.Reset();
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting outgoing doc to fem_file ..."));
-                    //Import_VanBan.insert_fem_file(oracleConnection, configs, Constants.sql_insert_fem_file, Import_VanBan.getFem_Files());
+                    Import_VanBan.insert_fem_file(oracleConnection, configs, Constants.sql_insert_fem_file, Import_VanBan.getFem_Files());
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted outgoing doc to fem_file!"));
                     timer.Stop();
                     Console.WriteLine("Total imported data to fem_file: " + Import_VanBan.getFem_Files().Count);
                     Console.WriteLine("Consumption of imported data to fem_file: " + timer.ElapsedMilliseconds / 1000 + "(s)");
 
                     // Import to dcm_attach_file
+                    timer.Reset();
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting outgoing doc to dcm_attach_file ..."));
-                    //Import_VanBan.insert_Dcm_Attach_File(oracleConnection, configs, Constants.sql_insert_dcm_attach_file, Import_VanBan.getDcm_Attach_Files());
+                    Import_VanBan.insert_Dcm_Attach_File(oracleConnection, configs, Constants.sql_insert_dcm_attach_file, Import_VanBan.getDcm_Attach_Files());
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted outgoing doc to dcm_attach_file!"));
                     timer.Stop();
                     Console.WriteLine("Total imported data to dcm_attach_file: " + Import_VanBan.getDcm_Attach_Files().Count);
@@ -142,6 +171,7 @@ namespace WindowsFormsApp1
                 if (this.chkbox_OutGoing_Flow.Checked)
                 {
                     // Export data
+                    timer.Reset();
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exporting outgoing doc flow data from Postgres ..."));
                     Import_VanBan_Flow import_Outgoing_Doc_Flow = new Import_VanBan_Flow();
@@ -151,43 +181,76 @@ namespace WindowsFormsApp1
                     Console.WriteLine("Consumption of exported outgoing doc flow data: " + timer.ElapsedMilliseconds / 1000 + "(s)");
 
                     // Import to dcm_activiti_log
+                    timer.Reset();
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting outgoing doc to dcm_activiti_log ..."));
                     import_Outgoing_Doc_Flow.insert_Dcm_Activiti_Log(oracleConnection, configs, Constants.sql_insert_dcm_activiti_log, import_Outgoing_Doc_Flow.GetDcm_Activiti_Logs());
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted outgoing doc to dcm_activiti_log!"));
                     timer.Stop();
-                    Console.WriteLine("Total imported data to dcm_activiti_log: " + import_Outgoing_Doc_Flow.GetDcm_Activiti_Logs());
+                    Console.WriteLine("Total imported data to dcm_activiti_log: " + import_Outgoing_Doc_Flow.GetDcm_Activiti_Logs().Count);
                     Console.WriteLine("Consumption of imported data to dcm_activiti_log: " + timer.ElapsedMilliseconds / 1000 + "(s)");
 
                     // Import to dcm_assign
+                    timer.Reset();
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting outgoing doc to dcm_assign ..."));
-                    //import_Outgoing_Doc_Flow.insert_Dcm_Assign(oracleConnection, configs, Constants.sql_insert_dcm_assign, import_Outgoing_Doc_Flow.GetDcm_Assigns());
+                    import_Outgoing_Doc_Flow.insert_Dcm_Assign(oracleConnection, configs, Constants.sql_insert_dcm_assign, import_Outgoing_Doc_Flow.GetDcm_Assigns());
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted outgoing doc to dcm_assign!"));
                     timer.Stop();
-                    Console.WriteLine("Total imported data to dcm_assign: " + import_Outgoing_Doc_Flow.GetDcm_Assigns());
+                    Console.WriteLine("Total imported data to dcm_assign: " + import_Outgoing_Doc_Flow.GetDcm_Assigns().Count);
                     Console.WriteLine("Consumption of imported data to dcm_assign: " + timer.ElapsedMilliseconds / 1000 + "(s)");
 
                     // Import to dcm_donvi_nhan
+                    timer.Reset();
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting outgoing doc to dcm_donvi_nhan ..."));
-                    //import_Outgoing_Doc_Flow.insert_Dcm_Donvi_Nhan(oracleConnection, configs, Constants.sql_insert_dcm_donvi_nhan, import_Outgoing_Doc_Flow.GetDcm_Donvi_Nhans());
+                    import_Outgoing_Doc_Flow.insert_Dcm_Donvi_Nhan(oracleConnection, configs, Constants.sql_insert_dcm_donvi_nhan, import_Outgoing_Doc_Flow.GetDcm_Donvi_Nhans());
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted outgoing doc to dcm_donvi_nhan!"));
                     timer.Stop();
-                    Console.WriteLine("Total imported data to dcm_donvi_nhan: " + import_Outgoing_Doc_Flow.GetDcm_Donvi_Nhans());
+                    Console.WriteLine("Total imported data to dcm_donvi_nhan: " + import_Outgoing_Doc_Flow.GetDcm_Donvi_Nhans().Count);
                     Console.WriteLine("Consumption of imported data to dcm_donvi_nhan: " + timer.ElapsedMilliseconds / 1000 + "(s)");
                 }
 
                 // Log xu ly van ban di
                 if (this.chkbox_OutGoing_Log.Checked)
                 {
+                    // Export data
+                    timer.Reset();
+                    timer.Start();
+                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exporting outgoing doc log data from Postgres ..."));
+                    Import_VanBan_Log import_VanBan_Log = new Import_VanBan_Log();
+                    import_VanBan_Log.exportdataFromPostgres(postgresConnection, Constants.sql_log_xuly_vb_di, Common.VB_TYPE.VB_DI);
+                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported outgoing doc data from Postgres!"));
+                    timer.Stop();
+                    //Console.WriteLine("Total incoming doc exported data: " + Import_VanBan.getDcm_Docs().Count);
+                    Console.WriteLine("Consumption of exported outgoing doc data: " + timer.ElapsedMilliseconds / 1000 + "(s)");
 
+                    // Import to dcm_log
+                    timer.Reset();
+                    timer.Start();
+                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting outgoing doc to dcm_log ..."));
+                    import_VanBan_Log.insert_Dcm_Log(oracleConnection, configs, Constants.sql_insert_dcm_log, import_VanBan_Log.getDcm_Logs());
+                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted outgoing doc to dcm_log!"));
+                    timer.Stop();
+                    Console.WriteLine("Total imported data to dcm_log: " + import_VanBan_Log.getDcm_Logs().Count);
+                    Console.WriteLine("Consumption of imported data to dcm_log: " + timer.ElapsedMilliseconds / 1000 + "(s)");
+
+                    // Import to dcm_log_read
+                    timer.Reset();
+                    timer.Start();
+                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting outgoing doc to dcm_log_read ..."));
+                    import_VanBan_Log.insert_Dcm_Log(oracleConnection, configs, Constants.sql_insert_dcm_log_read, import_VanBan_Log.getDcm_Log_Reads());
+                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted outgoing doc to dcm_log_read!"));
+                    timer.Stop();
+                    Console.WriteLine("Total imported data to dcm_log_read: " + import_VanBan_Log.getDcm_Log_Reads().Count);
+                    Console.WriteLine("Consumption of imported data to dcm_log_read: " + timer.ElapsedMilliseconds / 1000 + "(s)");
                 }
 
                 // Thong tin van ban den
                 if (this.chkbox_InComing_Info.Checked)
                 {
                     // Export data
+                    timer.Reset();
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exporting incoming doc data from Postgres ..."));
                     Import_VanBan.exportdataFromPostgres(postgresConnection, configs, Constants.sql_thongtin_vb_den, Common.VB_TYPE.VB_DEN);
@@ -197,15 +260,17 @@ namespace WindowsFormsApp1
                     Console.WriteLine("Consumption of exported incoming doc data: " + timer.ElapsedMilliseconds / 1000 + "(s)");
 
                     // Import to dcm_doc
+                    timer.Reset();
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting incoming doc to Dcm_Doc ..."));
-                    //Import_VanBan.insert_Dcm_Doc(oracleConnection, configs, Constants.sql_insert_dcm_doc, Import_VanBan.getDcm_Docs());
+                    Import_VanBan.insert_Dcm_Doc(oracleConnection, configs, Constants.sql_insert_dcm_doc, Import_VanBan.getDcm_Docs());
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted incoming doc to Dcm_Doc!"));
                     timer.Stop();
                     Console.WriteLine("Total imported data to dcm_doc: " + Import_VanBan.getDcm_Docs().Count);
                     Console.WriteLine("Consumption of imported data to dcm_doc: " + timer.ElapsedMilliseconds / 1000 + "(s)");
 
                     // Import to dcm_doc_relation
+                    timer.Reset();
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting incoming doc to Dcm_Doc_Relation ..."));
                     Import_VanBan.insert_Dcm_Doc_Relation(oracleConnection, configs, Constants.sql_insert_dcm_doc_relation, Import_VanBan.getDcm_Doc_Relations());
@@ -215,24 +280,27 @@ namespace WindowsFormsApp1
                     Console.WriteLine("Consumption of imported data to dcm_doc_relation: " + timer.ElapsedMilliseconds / 1000 + "(s)");
 
                     // Import to fem_file
+                    timer.Reset();
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting incoming doc to fem_file ..."));
-                    //Import_VanBan.insert_fem_file(oracleConnection, configs, Constants.sql_insert_fem_file, Import_VanBan.getFem_Files());
+                    Import_VanBan.insert_fem_file(oracleConnection, configs, Constants.sql_insert_fem_file, Import_VanBan.getFem_Files());
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted incoming doc to fem_file!"));
                     timer.Stop();
                     Console.WriteLine("Total imported data to fem_file: " + Import_VanBan.getFem_Files().Count);
                     Console.WriteLine("Consumption of imported data to fem_file: " + timer.ElapsedMilliseconds / 1000 + "(s)");
 
                     // Import to dcm_attach_file
+                    timer.Reset();
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting incoming doc to dcm_attach_file ..."));
-                    //Import_VanBan.insert_Dcm_Attach_File(oracleConnection, configs, Constants.sql_insert_dcm_attach_file, Import_VanBan.getDcm_Attach_Files());
+                    Import_VanBan.insert_Dcm_Attach_File(oracleConnection, configs, Constants.sql_insert_dcm_attach_file, Import_VanBan.getDcm_Attach_Files());
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted incoming doc to dcm_attach_file!"));
                     timer.Stop();
                     Console.WriteLine("Total imported data to dcm_attach_file: " + Import_VanBan.getDcm_Attach_Files().Count);
                     Console.WriteLine("Consumption of imported data to dcm_attach_file: " + timer.ElapsedMilliseconds / 1000 + "(s)");
 
                     // Import to dcm_track
+                    timer.Reset();
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting incoming doc to dcm_track ..."));
                     Import_VanBan.insert_Dcm_Track(oracleConnection, configs, Constants.sql_insert_dcm_track, Import_VanBan.getDcm_Tracks());
@@ -246,6 +314,7 @@ namespace WindowsFormsApp1
                 if (this.chkbox_InComing_Flow.Checked)
                 {
                     // Export data
+                    timer.Reset();
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exporting incoming doc flow data from Postgres ..."));
                     Import_VanBan_Flow import_Incoming_Doc_Flow = new Import_VanBan_Flow();
@@ -255,37 +324,69 @@ namespace WindowsFormsApp1
                     Console.WriteLine("Consumption of exported incoming doc flow data: " + timer.ElapsedMilliseconds / 1000 + "(s)");
 
                     // Import to dcm_activiti_log
+                    timer.Reset();
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting incoming doc to dcm_activiti_log ..."));
                     import_Incoming_Doc_Flow.insert_Dcm_Activiti_Log(oracleConnection, configs, Constants.sql_insert_dcm_activiti_log, import_Incoming_Doc_Flow.GetDcm_Activiti_Logs());
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted incoming doc to dcm_activiti_log!"));
                     timer.Stop();
-                    Console.WriteLine("Total imported data to dcm_activiti_log: " + import_Incoming_Doc_Flow.GetDcm_Activiti_Logs());
+                    Console.WriteLine("Total imported data to dcm_activiti_log: " + import_Incoming_Doc_Flow.GetDcm_Activiti_Logs().Count);
                     Console.WriteLine("Consumption of imported data to dcm_activiti_log: " + timer.ElapsedMilliseconds / 1000 + "(s)");
 
                     // Import to dcm_assign
+                    timer.Reset();
                     timer.Start();
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting outgoing doc to dcm_assign ..."));
+                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting incoming doc to dcm_assign ..."));
                     import_Incoming_Doc_Flow.insert_Dcm_Assign(oracleConnection, configs, Constants.sql_insert_dcm_assign, import_Incoming_Doc_Flow.GetDcm_Assigns());
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted outgoing doc to dcm_assign!"));
+                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted incoming doc to dcm_assign!"));
                     timer.Stop();
-                    Console.WriteLine("Total imported data to dcm_assign: " + import_Incoming_Doc_Flow.GetDcm_Assigns());
+                    Console.WriteLine("Total imported data to dcm_assign: " + import_Incoming_Doc_Flow.GetDcm_Assigns().Count);
                     Console.WriteLine("Consumption of imported data to dcm_assign: " + timer.ElapsedMilliseconds / 1000 + "(s)");
 
                     // Import to dcm_donvi_nhan
+                    timer.Reset();
                     timer.Start();
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting outgoing doc to dcm_donvi_nhan ..."));
+                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting incoming doc to dcm_donvi_nhan ..."));
                     import_Incoming_Doc_Flow.insert_Dcm_Donvi_Nhan(oracleConnection, configs, Constants.sql_insert_dcm_donvi_nhan, import_Incoming_Doc_Flow.GetDcm_Donvi_Nhans());
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted outgoing doc to dcm_donvi_nhan!"));
+                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted incoming doc to dcm_donvi_nhan!"));
                     timer.Stop();
-                    Console.WriteLine("Total imported data to dcm_donvi_nhan: " + import_Incoming_Doc_Flow.GetDcm_Donvi_Nhans());
+                    Console.WriteLine("Total imported data to dcm_donvi_nhan: " + import_Incoming_Doc_Flow.GetDcm_Donvi_Nhans().Count);
                     Console.WriteLine("Consumption of imported data to dcm_donvi_nhan: " + timer.ElapsedMilliseconds / 1000 + "(s)");
                 }
 
                 // Log xu ly van ban den
                 if (this.chkbox_InComing_Log.Checked)
                 {
+                    // Export data
+                    timer.Reset();
+                    timer.Start();
+                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exporting incoming doc log data from Postgres ..."));
+                    Import_VanBan_Log import_VanBan_Log = new Import_VanBan_Log();
+                    import_VanBan_Log.exportdataFromPostgres(postgresConnection, Constants.sql_log_xuly_vb_den, Common.VB_TYPE.VB_DEN);
+                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported incoming doc data from Postgres!"));
+                    timer.Stop();
+                    //Console.WriteLine("Total incoming doc exported data: " + Import_VanBan.getDcm_Docs().Count);
+                    Console.WriteLine("Consumption of exported incoming doc data: " + timer.ElapsedMilliseconds / 1000 + "(s)");
 
+                    // Import to dcm_log
+                    timer.Reset();
+                    timer.Start();
+                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting incoming doc to dcm_log ..."));
+                    import_VanBan_Log.insert_Dcm_Log(oracleConnection, configs, Constants.sql_insert_dcm_log, import_VanBan_Log.getDcm_Logs());
+                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted incoming doc to dcm_log!"));
+                    timer.Stop();
+                    Console.WriteLine("Total imported data to dcm_log: " + import_VanBan_Log.getDcm_Logs().Count);
+                    Console.WriteLine("Consumption of imported data to dcm_log: " + timer.ElapsedMilliseconds / 1000 + "(s)");
+
+                    // Import to dcm_log_read
+                    timer.Reset();
+                    timer.Start();
+                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting incoming doc to dcm_log_read ..."));
+                    import_VanBan_Log.insert_Dcm_Log(oracleConnection, configs, Constants.sql_insert_dcm_log_read, import_VanBan_Log.getDcm_Log_Reads());
+                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted incoming doc to dcm_log_read!"));
+                    timer.Stop();
+                    Console.WriteLine("Total imported data to dcm_log_read: " + import_VanBan_Log.getDcm_Log_Reads().Count);
+                    Console.WriteLine("Consumption of imported data to dcm_log_read: " + timer.ElapsedMilliseconds / 1000 + "(s)");
                 }
             }
             catch (Exception ex)

@@ -17,5 +17,6 @@ namespace WindowsFormsApp1.Models
         public int xu_ly { get; set; }
         public DateTime? ngay_xuly { get; set; } = null;
         public long activiti_log_id { get; set; }
+        public int? truoc_banhanh { get; set; } = null;
     }
 }

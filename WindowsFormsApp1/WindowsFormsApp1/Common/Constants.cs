@@ -15,7 +15,7 @@ namespace WindowsFormsApp1
         private static string postgres_user = "postgres";
         private static string postgres_pass = "root";
         public static string postgres_connstring = String.Format("Server={0};Port={1};" +
-                "User Id={2};Password={3};Database={4};",
+                "User Id={2};Password={3};Database={4};Timeout=300;CommandTimeout=300",
                 postgres_host, postgres_port, postgres_user,
                 postgres_pass, postgres_db);
         #endregion
@@ -331,7 +331,7 @@ namespace WindowsFormsApp1
             + " FROM \"dms_ubnd_baclieu_release\".\"public\".\"documentincomingdetail\" b"
             + " where a.id = b.documentid and b.assignuserid is null"
             + " group by b.documentid) trang_thai_xuly_donvi"
-            + " , (SELECT string_agg(casewhen b.organizationid is not null and b.reviewdatenote is null then ''"
+            + " , (SELECT string_agg(case when b.organizationid is not null and b.reviewdatenote is null then ''"
             + " when b.organizationid is not null and b.reviewdatenote is not null then to_char(b.reviewdatenote, ' DD/MM/YYYY HH24:MI:SS') end, ';' ORDER BY b.id)"
             + " FROM \"dms_ubnd_baclieu_release\".\"public\".\"documentincomingdetail\" b"
             + " where a.id = b.documentid and b.assignuserid is null"
@@ -364,7 +364,7 @@ namespace WindowsFormsApp1
             + " , string_agg(case when b.organizationid is not null and b.viewdocument=0 then '0'"
             + " when b.organizationid is not null and b.viewdocument=1 and b.reviewdatenote is null then '1'"
             + " when b.organizationid is not null and b.viewdocument=1 and b.reviewdatenote is not null then '2' end, ';' ORDER BY b.id) trang_thai_xuly_donvi"
-            + " , string_agg(casewhen b.organizationid is not null and b.reviewdatenote is null then ''"
+            + " , string_agg(case when b.organizationid is not null and b.reviewdatenote is null then ''"
             + " when b.organizationid is not null and b.reviewdatenote is not null then to_char(b.reviewdatenote, ' DD/MM/YYYY HH24:MI:SS') end, ';' ORDER BY b.id) thoigian_xuly_donvi"
             + " , string_agg(case when b.organizationid is not null then '0' end, ';' ORDER BY b.id) loai_dv"
             + " from \"dms_ubnd_baclieu_release\".\"public\".\"documentincoming\" a"
@@ -399,6 +399,44 @@ namespace WindowsFormsApp1
             + " and a.id = b.documentid and b.reviewdatenote is not null"
             + " order by id_vanban, stt";
         #endregion get luong_xuly_vb_den from postgres
+
+        #region sql_log_xuly_vb_di
+        public static string sql_log_xuly_vb_di = "SELECT a.id stt, b.id id_vanban, c.emailaddress nguoi_xu_ly"
+            + " , (case when a.type=4 then CAST(b.organizationid as text)"
+            + "  when a.type in (0,3) then CAST(d.\"UNIT_ID\" as text) end) donvi_xuly"
+            + " , case when a.viewdocument=0 then 0 "
+            + "    when a.viewdocument=1 and a.reviewdatenote is null then 1"
+            + "  else 2 end trang_thai"
+            + " , case when a.createdatenote is not null then to_char(a.createdatenote, ' DD/MM/YYYY HH24:MI:SS') "
+            + "  else '' end thoi_gian"
+            + " FROM \"public\".\"documentoutgoingdetail\" a"
+            + " left join (select * from dblink('dbname=lportal_ubnd_baclieu_release_ga3 user=postgres password=root','select userid, emailaddress from user_') as t(userid int, emailaddress text)) c"
+            + " on a.userid = c.userid"
+            + " left join \"public\".\"organization_hrm_unit\" d"
+            + " on a.organizationid = d.\"ORGANIZATIONID\" "
+            + " , \"public\".\"documentoutgoing\" b"
+            + " where a.documentid = b.id and a.type != 1"
+            + " and b.organizationid = 3528 and b.yeardocument = '2015'"
+            + " order by id_vanban";
+        #endregion sql_log_xuly_vb_di
+
+        #region sql_log_xuly_vb_den
+        public static string sql_log_xuly_vb_den = "SELECT a.id stt, b.id id_vanban, c.emailaddress nguoi_xu_ly, CAST(d.\"UNIT_ID\" as text) donvi_xuly "
+            + " , case when a.viewdocument=0 then 0  "
+            + "    when a.viewdocument=1 and a.reviewdatenote is null then 1 "
+            + "  else 2 end trang_thai "
+            + " , case when a.createdatenote is not null then to_char(a.createdatenote, ' DD/MM/YYYY HH24:MI:SS')  "
+            + "  else '' end thoi_gian "
+            + " FROM \"public\".\"documentincomingdetail\" a "
+            + " left join (select * from dblink('dbname=lportal_ubnd_baclieu_release_ga3 user=postgres password=root','select userid, emailaddress from user_') as t(userid int, emailaddress text)) c "
+            + " on a.userid = c.userid "
+            + " left join \"public\".\"organization_hrm_unit\" d "
+            + " on a.organizationid = d.\"ORGANIZATIONID\"  "
+            + " , \"public\".\"documentincoming\" b "
+            + " where a.documentid = b.id  "
+            + " and b.organizationid = 3528 and b.yeardocument = '2015' "
+            + " order by id_vanban";
+        #endregion sql_log_xuly_vb_den
         #endregion postgres 
 
 
@@ -430,7 +468,7 @@ namespace WindowsFormsApp1
         #endregion sql_insert_dcm_attach_file
 
         #region sql_insert_dcm_track
-        public static string sql_insert_dcm_track = @"INSERT INTO CLOUD_ADMIN.DCM_TRACK (ID,DOC_ID,SCHEMA_ID, DOC_ID_SOURCE, SCHEMA_ID_SOURCE, DATE_INS, PARENT, CHILD) "
+        public static string sql_insert_dcm_track = @"INSERT INTO CLOUD_ADMIN_DEV_BLU_2.DCM_TRACK (ID,DOC_ID,SCHEMA_ID, DOC_ID_SOURCE, SCHEMA_ID_SOURCE, DATE_INS, PARENT, CHILD) "
             + " VALUES (:ID,:DOC_ID,:SCHEMA_ID,:DOC_ID_SOURCE,:SCHEMA_ID_SOURCE,:DATE_INS,:PARENT,:CHILD)";
         #endregion sql_insert_dcm_track
 
@@ -451,6 +489,29 @@ namespace WindowsFormsApp1
             +",:ACTIVITI_LOG_ID,:ASSIGNED_DATE,:XU_LY,:TRUOC_BANHANH,:TRANGTHAI_GUI)";
         #endregion sql_insert_dcm_donvi_nhan
 
+        #region sql_insert_dcm_log
+        public static string sql_insert_dcm_log = @"INSERT INTO {0}.DCM_LOG(ID,USERNAME,DATE_LOG,DCM_ID,IS_READ) VALUES (:ID,:USERNAME,:DATE_LOG,:DCM_ID,:IS_READ)";
+        #endregion sql_insert_dcm_log
+
+        #region sql_insert_dcm_log_read
+        public static string sql_insert_dcm_log_read = @"INSERT INTO {0}.DCM_LOG_READ(ID,USERNAME,DATE_LOG,DCM_ID,IS_READ) VALUES (:ID,:USERNAME,:DATE_LOG,:DCM_ID,:IS_READ)";
+        #endregion sql_insert_dcm_log_read
+
+        #region
+        public static string sql_delete_dcm_doc = "BEGIN "
+            + " DELETE FROM {0}.DCM_DOC; "
+            + " DELETE FROM {0}.DCM_DOC_RELATION; "
+            + " DELETE FROM {0}.FEM_FILE; "
+            + " DELETE FROM {0}.DCM_ATTACH_FILE; "
+            + " DELETE FROM CLOUD_ADMIN_DEV_BLU_2.DCM_TRACK; "
+            + " DELETE FROM {0}.DCM_ACTIVITI_LOG; "
+            + " DELETE FROM {0}.DCM_ASSIGN; "
+            + " DELETE FROM {0}.DCM_DONVI_NHAN; "
+            + " DELETE FROM {0}.DCM_LOG; "
+            + " DELETE FROM {0}.DCM_LOG_READ; "
+            + " END;";
+        #endregion
+
         #endregion oracle query
 
         #endregion query data
@@ -465,8 +526,11 @@ namespace WindowsFormsApp1
         public static string SEQ_DCM_ATTACH_FILE = "DCM_ATTACH_FILE_SEQ";
         public static string SEQ_DCM_TRACK = "DCM_TRACK_SEQ";
 
-        public static string SEQ_DCM_ACTIVITI_LOG = "ACTIVITI_LOG_SEQ";
+        public static string SEQ_DCM_ACTIVITI_LOG = "DCM_ACTIVITI_LOG_SEQ";
         public static string SEQ_DCM_ASSIGN = "DCM_ASSIGN_SEQ";
-        public static string SEQ_DCM_DONVI_NHAN = "DCM_ASSIGN_SEQ";
+        public static string SEQ_DCM_DONVI_NHAN = "DCM_DONVI_NHAN_SEQ";
+
+        public static string SEQ_DCM_LOG = "DCM_LOG_SEQ";
+        public static string SEQ_DCM_LOG_READ = "DCM_LOG_READ_SEQ";
     }
 }
