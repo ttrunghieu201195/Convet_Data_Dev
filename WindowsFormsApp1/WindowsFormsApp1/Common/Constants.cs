@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WindowsFormsApp1
+namespace Convert_Data
 {
     class Constants
     {
@@ -497,20 +497,20 @@ namespace WindowsFormsApp1
         public static string sql_insert_dcm_log_read = @"INSERT INTO {0}.DCM_LOG_READ(ID,USERNAME,DATE_LOG,DCM_ID,IS_READ) VALUES (:ID,:USERNAME,:DATE_LOG,:DCM_ID,:IS_READ)";
         #endregion sql_insert_dcm_log_read
 
-        #region
-        public static string sql_delete_dcm_doc = "BEGIN "
-            + " DELETE FROM {0}.DCM_DOC; "
-            + " DELETE FROM {0}.DCM_DOC_RELATION; "
-            + " DELETE FROM {0}.FEM_FILE; "
-            + " DELETE FROM {0}.DCM_ATTACH_FILE; "
-            + " DELETE FROM CLOUD_ADMIN_DEV_BLU_2.DCM_TRACK; "
-            + " DELETE FROM {0}.DCM_ACTIVITI_LOG; "
-            + " DELETE FROM {0}.DCM_ASSIGN; "
-            + " DELETE FROM {0}.DCM_DONVI_NHAN; "
-            + " DELETE FROM {0}.DCM_LOG; "
-            + " DELETE FROM {0}.DCM_LOG_READ; "
-            + " END;";
-        #endregion
+
+        #region delete table
+        public static string sql_delete_table = "DELETE FROM {0}.{1}";
+        public static string sql_delete_doc_doc = "DELETE FROM {0}.DCM_DOC";
+        public static string sql_delete_doc_relation = "DELETE FROM {0}.DCM_DOC_RELATION";
+        public static string sql_delete_FEM_FILE = "DELETE FROM {0}.FEM_FILE";
+        public static string sql_delete_DCM_ATTACH_FILE = "DELETE FROM {0}.DCM_ATTACH_FILE";
+        public static string sql_delete_DCM_TRACK = "DELETE FROM CLOUD_ADMIN_DEV_BLU_2.DCM_TRACK";
+        public static string sql_delete_DCM_ACTIVITI_LOG = "DELETE FROM {0}.DCM_ACTIVITI_LOG";
+        public static string sql_delete_DCM_ASSIGN = "DELETE FROM {0}.DCM_ASSIGN";
+        public static string sql_delete_DCM_DONVI_NHAN = "DELETE FROM {0}.DCM_DONVI_NHAN";
+        public static string sql_delete_DCM_LOG = "DELETE FROM {0}.DCM_LOG";
+        public static string sql_delete_DCM_LOG_READ = "DELETE FROM {0}.DCM_LOG_READ";
+        #endregion delete table
 
         #endregion oracle query
 

@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using WindowsFormsApp1.Controller;
-using WindowsFormsApp1.Models;
+using Convert_Data.Controller;
+using Convert_Data.Models;
 
-namespace WindowsFormsApp1
+namespace Convert_Data
 {
     class Common
     {
@@ -18,6 +18,8 @@ namespace WindowsFormsApp1
             VB_DEN = 1,
             VB_DI = 2
         }
+
+        private static string[] table_arr = { "DCM_DOC_RELATION", "FEM_FILE", "DCM_ATTACH_FILE", "DCM_ACTIVITI_LOG", "DCM_ASSIGN", "DCM_DONVI_NHAN", "DCM_LOG", "DCM_LOG_READ" };
 
         public static Int64 getCurrentSeq(OracleConnection connection, string schema, string seqName)
         {
@@ -172,11 +174,20 @@ namespace WindowsFormsApp1
             return list_obj;
         }
 
-        public static void Delete(OracleConnection oracleConnection, string schema, string query)
+        private static void Delete(OracleConnection oracleConnection, string schema, string query)
         {
             
             OracleCommand cmd = new OracleCommand(string.Format(query,schema), oracleConnection);
             cmd.ExecuteNonQuery();
+        }
+
+        public static void DeleteAllTableRelatedToDcmDoc(OracleConnection oracleConnection, string schema)
+        {
+            foreach (string table in table_arr)
+            {
+                Delete(oracleConnection, schema, string.Format(Constants.sql_delete_table, schema, table));
+            }
+            Delete(oracleConnection, "CLOUD_ADMIN_DEV_BLU_2", Constants.sql_delete_DCM_TRACK);
         }
     }
 }

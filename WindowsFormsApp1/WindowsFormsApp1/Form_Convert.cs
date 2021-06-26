@@ -11,9 +11,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using WindowsFormsApp1.Controller;
+using Convert_Data.Controller;
 
-namespace WindowsFormsApp1
+namespace Convert_Data
 {
     public partial class form_Convert : Form
     {
@@ -25,7 +25,6 @@ namespace WindowsFormsApp1
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            
             
         }
 
@@ -76,7 +75,7 @@ namespace WindowsFormsApp1
                     timer.Reset();
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Deleting Docs ..."));
-                    Common.Delete(oracleConnection, configs.schema, Constants.sql_delete_dcm_doc);
+                    Common.DeleteAllTableRelatedToDcmDoc(oracleConnection, configs.schema);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Deleted Docs!"));
                     timer.Stop();
                     //Console.WriteLine("Total exported data: " + Import_VanBan.getDcm_Docs().Count);
@@ -408,6 +407,11 @@ namespace WindowsFormsApp1
         {
             configs.schema = txt_Schema.Text.Trim();
             configs.year = Common.getExportedDataYears(txt_Year.Text.Trim());
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

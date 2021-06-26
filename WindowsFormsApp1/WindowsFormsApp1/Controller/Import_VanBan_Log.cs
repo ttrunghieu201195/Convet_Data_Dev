@@ -7,9 +7,9 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WindowsFormsApp1.Models;
+using Convert_Data.Models;
 
-namespace WindowsFormsApp1.Controller
+namespace Convert_Data.Controller
 {
     class Import_VanBan_Log : Import_Abstract
     {

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WindowsFormsApp1.Controller
+namespace Convert_Data.Controller
 {
     abstract class Import_Abstract
     {
