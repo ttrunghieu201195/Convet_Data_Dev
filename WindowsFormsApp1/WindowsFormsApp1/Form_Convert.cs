@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Convert_Data.Controller;
+using WindowsFormsApp1.Controller;
 
 namespace Convert_Data
 {
@@ -85,7 +86,45 @@ namespace Convert_Data
                 // So van ban
                 if (this.chkBox_Book.Checked)
                 {
+                    timer.Reset();
+                    timer.Start();
+                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exporting book data from Postgres..."));
+                    Import_SoVanBan import_SoVanBan = new Import_SoVanBan();
+                    DataTable dcm_type = import_SoVanBan.GetDcm_Type(oracleConnection, configs.schema, Constants.sql_get_dcm_type);
+                    import_SoVanBan.exportdataFromPostgres(postgresConnection, Constants.sql_danhmuc_sovanban, Common.VB_TYPE.NONE, dcm_type);
+                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported book data from Postgres..."));
+                    timer.Stop();
+                    Console.WriteLine("Consumption of exported book data: " + timer.ElapsedMilliseconds / 1000 + "(s)");
 
+                    // Import to Dcm_SoVanBan
+                    timer.Reset();
+                    timer.Start();
+                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting outgoing doc to Dcm_SoVanBan ..."));
+                    import_SoVanBan.insert_Dcm_SoVanBan(oracleConnection, configs, Constants.sql_insert_sovanban, import_SoVanBan.GetDcm_SoVanBans());
+                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted outgoing doc to Dcm_SoVanBan!"));
+                    timer.Stop();
+                    Console.WriteLine("Total imported data to Dcm_SoVanBan: " + import_SoVanBan.GetDcm_SoVanBans().Count);
+                    Console.WriteLine("Consumption of imported data to Dcm_SoVanBan: " + timer.ElapsedMilliseconds / 1000 + "(s)");
+
+                    // Import to Dcm_SoVB_TemplateSinhSo
+                    timer.Reset();
+                    timer.Start();
+                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting outgoing doc to Dcm_SoVB_TemplateSinhSo ..."));
+                    import_SoVanBan.insert_Dcm_SoVB_TemplateSinhSo(oracleConnection, configs, Constants.sql_insert_Dcm_SoVB_TemplateSinhSo, import_SoVanBan.GetDCM_SOVB_TEMPLATESINHSOs());
+                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted outgoing doc to Dcm_SoVB_TemplateSinhSo!"));
+                    timer.Stop();
+                    Console.WriteLine("Total imported data to Dcm_SoVB_TemplateSinhSo: " + import_SoVanBan.GetDCM_SOVB_TEMPLATESINHSOs().Count);
+                    Console.WriteLine("Consumption of imported data to Dcm_SoVB_TemplateSinhSo: " + timer.ElapsedMilliseconds / 1000 + "(s)");
+
+                    // Import to dcm_activiti_log
+                    timer.Reset();
+                    timer.Start();
+                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting outgoing doc to DCM_QUYTAC_NHAYSO ..."));
+                    import_SoVanBan.insert_DCM_QUYTAC_NHAYSO(oracleConnection, configs, Constants.sql_insert_DCM_QUYTAC_NHAYSO, import_SoVanBan.GetDCM_QUYTAC_NHAYSOs());
+                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted outgoing doc to DCM_QUYTAC_NHAYSO!"));
+                    timer.Stop();
+                    Console.WriteLine("Total imported data to DCM_QUYTAC_NHAYSO: " + import_SoVanBan.GetDCM_QUYTAC_NHAYSOs().Count);
+                    Console.WriteLine("Consumption of imported data to DCM_QUYTAC_NHAYSO: " + timer.ElapsedMilliseconds / 1000 + "(s)");
                 }
 
                 // Do mat
