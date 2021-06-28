@@ -374,6 +374,7 @@ namespace Convert_Data
                         cmd.Parameters.Add("XU_LY", OracleDbType.Int64);
                         cmd.Parameters.Add("NGAY_XULY", OracleDbType.Date);
                         cmd.Parameters.Add("ACTIVITI_LOG_ID", OracleDbType.Int64);
+                        cmd.Parameters.Add("TRUOC_BANHANH", OracleDbType.Int64);
 
                         cmd.Parameters["ID"].Value = data.Select(dcm_assign => dcm_assign.id).ToArray();
                         cmd.Parameters["DOCUMENT_ID"].Value = data.Select(dcm_assign => dcm_assign.document_id).ToArray();
@@ -384,6 +385,7 @@ namespace Convert_Data
                         cmd.Parameters["XU_LY"].Value = data.Select(dcm_assign => dcm_assign.xu_ly).ToArray();
                         cmd.Parameters["NGAY_XULY"].Value = data.Select(dcm_assign => dcm_assign.ngay_xuly).ToArray();
                         cmd.Parameters["ACTIVITI_LOG_ID"].Value = data.Select(dcm_assign => dcm_assign.activiti_log_id).ToArray();
+                        cmd.Parameters["TRUOC_BANHANH"].Value = data.Select(dcm_assign => dcm_assign.truoc_banhanh).ToArray();
 
                         cmd.ExecuteNonQuery();
                         cmd.Dispose();

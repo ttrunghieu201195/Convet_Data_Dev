@@ -15,7 +15,7 @@ namespace Convert_Data
         private static string postgres_user = "postgres";
         private static string postgres_pass = "root";
         public static string postgres_connstring = String.Format("Server={0};Port={1};" +
-                "User Id={2};Password={3};Database={4};Timeout=300;CommandTimeout=300",
+                "User Id={2};Password={3};Database={4};Timeout=300;CommandTimeout=900",
                 postgres_host, postgres_port, postgres_user,
                 postgres_pass, postgres_db);
         #endregion
@@ -57,13 +57,13 @@ namespace Convert_Data
             +"   FROM \"public\".\"documentoutgoing\" a"
             +"   left join \"public\".\"documentoutgoingattach\" f"
             +"   on a.id = f.documentoutgoingid"
-            +"   where a.organizationid = 3528 and a.yeardocument = '2015'"
+            +"   where a.organizationid = {0} and a.yeardocument in ({1})"
             +"   group by a.id, f.documentoutgoingid) a"
             +"   left join \"dms_ubnd_baclieu_release\".\"public\".\"documentoutgoingbase\" c on  a.id = c.documentoutgoingid"
             +"   left join (select a.id, string_agg(d.organizationname, ',' ORDER BY d.documentid) donvi_ngoai"
             +"        FROM \"public\".\"documentoutgoing\" a"
             +"       , \"public\".\"documentoutgoingdetail\" d"
-            + "        where a.organizationid = 3528 and a.yeardocument = '2015' and"
+            + "        where a.organizationid = {2} and a.yeardocument in ({3}) and"
             + "        a.id = d.documentid and d.type=1"
             +"        group by a.id, d.documentid) d"
             +"   on a.id = d.id"
@@ -102,7 +102,7 @@ namespace Convert_Data
             + "   FROM \"dms_ubnd_baclieu_release\".\"public\".\"documentincoming\" a"
             + "   left join \"dms_ubnd_baclieu_release\".\"public\".\"documentincomingattach\" f"
             + "   on a.id = f.documentincomingid"
-            + " 	where a.organizationid = 3528 and a.yeardocument = '2015'"
+            + " 	where a.organizationid = {0} and a.yeardocument in ({1})"
             + "   group by a.id, f.documentincomingid) a"
             + "   left join \"dms_ubnd_baclieu_release\".\"public\".\"documentoutgoingbase\" c on  a.id = c.documentincomingid"
             + "   left join \"dms_ubnd_baclieu_release\".\"public\".\"organization_schema\" s on cast(a.issueorganizationid as varchar) = s.organizationid"
@@ -138,7 +138,7 @@ namespace Convert_Data
             + " from \"public\".\"documentoutgoing\" a"
             + " left join (select * from dblink('dbname=lportal_ubnd_baclieu_release_ga3 user=postgres password=root','select userid, emailaddress from user_') as t(userid int, emailaddress text)) da"
             + " on da.userid = a.userid "
-            + " where a.organizationid = 3528 and a.yeardocument = '2015' and a.userid > 0 "
+            + " where a.organizationid = {0} and a.yeardocument in ({1}) and a.userid > 0 "
             + " union all"
             + " select 1 STT, a.id id_vanban, da.emailaddress nguoi_gui"
             + " , (case when a.createdate is not null then to_char(a.createdate,' DD/MM/YYYY HH24:MI:SS') "
@@ -174,7 +174,7 @@ namespace Convert_Data
             + " on b.userid = c.userid"
             + " left join \"public\".\"organization_hrm_unit\" dd"
             + " on b.organizationid = dd.\"ORGANIZATIONID\" "
-            + " where a.organizationid = 3528 and a.yeardocument = '2015'"
+            + " where a.organizationid = {2} and a.yeardocument in ({3})"
             + " and a.id = b.documentid"
             + " and b.type != 1"
             + " group by a.id, da.emailaddress"
@@ -199,7 +199,7 @@ namespace Convert_Data
             + " from \"public\".\"documentoutgoing\" a"
             + " ,(select * from dblink('dbname=lportal_ubnd_baclieu_release_ga3 user=postgres password=root','select userid, emailaddress from user_') as t(userid int, emailaddress text)) da"
             + " where length(\"a\".note1)>0 and a.userid = da.userid"
-            + " and a.organizationid = 3528 and a.yeardocument = '2015'"
+            + " and a.organizationid = {4} and a.yeardocument in ({5})"
             + " and not exists(select 1 from \"public\".\"documentoutgoingdetail\" b where a.id = b.documentid)"
             + " order by id_vanban, stt, thoigian_gui";
         #endregion
@@ -227,7 +227,7 @@ namespace Convert_Data
             + "  ELSE a.createdate END + (5 * interval '1 minute'), ' DD/MM/YYYY HH24:MI:SS') thoigian_xuly"
             + " , '' trang_thai_xuly_donvi, '' thoigian_xuly_donvi, '' loai_dv"
             + " from \"dms_ubnd_baclieu_release\".\"public\".\"documentincoming\" a"
-            + " where a.yeardocument='2015'and a.organizationid = 3528 and processleaderid > 0"
+            + " where a.yeardocument in ({0}) and a.organizationid = {1} and processleaderid > 0"
             + " union  ALL"
             + " select 2 stt, a.id id_vanban, CAST(processleaderid as text) nguoi_gui"
             + " , to_char(CASE WHEN a.assigndate IS NOT NULL THEN a.assigndate"
@@ -244,7 +244,7 @@ namespace Convert_Data
             + "  ELSE a.createdate END + (10 * interval '1 minute'), ' DD/MM/YYYY HH24:MI:SS') thoigian_xuly"
             + " , '' trang_thai_xuly_donvi, '' thoigian_xuly_donvi, '' loai_dv"
             + " from \"dms_ubnd_baclieu_release\".\"public\".\"documentincoming\" a"
-            + " where a.yeardocument='2015' and a.organizationid = 3528 and processleaderid > 0"
+            + " where a.yeardocument in ({2}) and a.organizationid = {3} and processleaderid > 0"
             + " union ALL"
             + " select 3 stt, a.id id_vanban, CAST(userid as text) nguoi_gui"
             + " , to_char(CASE WHEN a.assigndate IS NOT NULL THEN a.assigndate"
@@ -261,7 +261,7 @@ namespace Convert_Data
             + "  ELSE a.createdate END + (15 * interval '1 minute'), ' DD/MM/YYYY HH24:MI:SS') thoigian_xuly"
             + " , '' trang_thai_xuly_donvi, '' thoigian_xuly_donvi, '' loai_dv"
             + " from \"dms_ubnd_baclieu_release\".\"public\".\"documentincoming\" a"
-            + " where a.yeardocument='2015' and a.organizationid = 3528 and leaderid > 0"
+            + " where a.yeardocument in ({4}) and a.organizationid = {5} and leaderid > 0"
             + " union  ALL"
             + " select 4 stt, a.id id_vanban,CAST(leaderid as text) nguoi_gui"
             + " , to_char(CASE WHEN a.leaderapprovedate IS NOT NULL THEN a.leaderapprovedate"
@@ -281,7 +281,7 @@ namespace Convert_Data
             + "  ELSE a.createdate END + (20 * interval '1 minute'), ' DD/MM/YYYY HH24:MI:SS') thoigian_xuly"
             + " , '' trang_thai_xuly_donvi, '' thoigian_xuly_donvi, '' loai_dv"
             + " from \"dms_ubnd_baclieu_release\".\"public\".\"documentincoming\" a"
-            + " where a.yeardocument='2015' and a.organizationid = 3528 and leaderid > 0) a"
+            + " where a.yeardocument in ({6}) and a.organizationid = {7} and leaderid > 0) a"
             + " ,(select * from dblink('dbname=lportal_ubnd_baclieu_release_ga3 user=postgres password=root','select userid, emailaddress from user_') as t(userid int, emailaddress text)) d"
             + " where  a.nguoi_nhan = CAST(d.userid as text)"
             + " union all "
@@ -341,7 +341,7 @@ namespace Convert_Data
             + " where a.id = b.documentid and b.assignuserid is null"
             + " group by b.documentid) loai_dv"
             + " from \"dms_ubnd_baclieu_release\".\"public\".\"documentincoming\" a"
-            + " where a.yeardocument='2015' and a.organizationid = 3528"
+            + " where a.yeardocument in ({8}) and a.organizationid = {9}"
             + " and exists(select 1 from \"dms_ubnd_baclieu_release\".\"public\".\"documentincomingdetail\" b where a.id = b.documentid and b.assignuserid is null)"
             + " union all"
             + " select 6 stt, a.id id_vanban, CAST(b.assignuserid as text) nguoi_gui"
@@ -373,7 +373,7 @@ namespace Convert_Data
             + "   on c.userid = b.userid"
             + " left join \"public\".\"organization_hrm_unit\" d"
             + " on b.organizationid = d.\"ORGANIZATIONID\" "
-            + " where a.yeardocument='2015' and a.organizationid = 3528 "
+            + " where a.yeardocument in ({10}) and a.organizationid = {11} "
             + " and a.id = b.documentid and b.assignuserid is not null"
             + " group by a.id,b.documentid, b.assignuserid) a"
             + " ,(select * from dblink('dbname=lportal_ubnd_baclieu_release_ga3 user=postgres password=root','select userid, emailaddress from user_') as t(userid int, emailaddress text)) c"
@@ -395,7 +395,7 @@ namespace Convert_Data
             + "      ,\"dms_ubnd_baclieu_release\".\"public\".\"documentincomingdetail\" b"
             + " left join (select * from dblink('dbname=lportal_ubnd_baclieu_release_ga3 user=postgres password=root','select userid, emailaddress from user_') as t(userid int, emailaddress text)) d"
             + " on b.userid = d.userid"
-            + " where a.yeardocument='2015' and a.organizationid = 3528"
+            + " where a.yeardocument in ({12}) and a.organizationid = {13}"
             + " and a.id = b.documentid and b.reviewdatenote is not null"
             + " order by id_vanban, stt";
         #endregion get luong_xuly_vb_den from postgres
@@ -416,7 +416,7 @@ namespace Convert_Data
             + " on a.organizationid = d.\"ORGANIZATIONID\" "
             + " , \"public\".\"documentoutgoing\" b"
             + " where a.documentid = b.id and a.type != 1"
-            + " and b.organizationid = 3528 and b.yeardocument = '2015'"
+            + " and b.organizationid = {0} and b.yeardocument in ({1})"
             + " order by id_vanban";
         #endregion sql_log_xuly_vb_di
 
@@ -434,7 +434,7 @@ namespace Convert_Data
             + " on a.organizationid = d.\"ORGANIZATIONID\"  "
             + " , \"public\".\"documentincoming\" b "
             + " where a.documentid = b.id  "
-            + " and b.organizationid = 3528 and b.yeardocument = '2015' "
+            + " and b.organizationid = {0} and b.yeardocument in ({1}) "
             + " order by id_vanban";
         #endregion sql_log_xuly_vb_den
 
@@ -452,6 +452,10 @@ namespace Convert_Data
             + " where a.organizationid = 3528 and b.\"ORGANIZATIONID\" = a.organizationid "
             + " order by \"loai_so\", \"stt\"";
         #endregion sql_danhmuc_sovanban
+
+        #region
+        public static string sql_danhmuc_donvi_schema = "SELECT * from \"public\".\"organization_schema\"";
+        #endregion
 
         #endregion postgres 
 
@@ -491,12 +495,12 @@ namespace Convert_Data
         #region sql_insert_dcm_activiti_log
         public static string sql_insert_dcm_activiti_log = @"INSERT INTO {0}.DCM_ACTIVITI_LOG(ID,TASK_KEY,UPDATED_DATE,UPDATED_BY,ACTION"
             + ",DOC_ID, APPROVED,COMMENT_,COMMENT_FULL,FORMID,ACTION_CODE) VALUES(:ID,:TASK_KEY,:UPDATED_DATE,:UPDATED_BY,:ACTION,:DOC_ID"
-            +",: APPROVED,:COMMENT_,:COMMENT_FULL,:FORMID,:ACTION_CODE)";
+            +",:APPROVED,:COMMENT_,:COMMENT_FULL,:FORMID,:ACTION_CODE)";
         #endregion sql_insert_dcm_activiti_log
 
         #region sql_insert_dcm_assign
         public static string sql_insert_dcm_assign = @"INSERT INTO {0}.DCM_ASSIGN(ID,DOCUMENT_ID,ASSIGNEE,ASSIGNER,ASSIGNED_DATE,ROLE_TYPE_CODE"
-            +",XU_LY,NGAY_XULY,ACTIVITI_LOG_ID) VALUES(:ID,:DOCUMENT_ID,:ASSIGNEE,:ASSIGNER,:ASSIGNED_DATE,:ROLE_TYPE_CODE,:XU_LY,:NGAY_XULY,:ACTIVITI_LOG_ID)";
+            + ",XU_LY,NGAY_XULY,ACTIVITI_LOG_ID,TRUOC_BANHANH) VALUES(:ID,:DOCUMENT_ID,:ASSIGNEE,:ASSIGNER,:ASSIGNED_DATE,:ROLE_TYPE_CODE,:XU_LY,:NGAY_XULY,:ACTIVITI_LOG_ID,:TRUOC_BANHANH)";
         #endregion sql_insert_dcm_assign
 
         #region sql_insert_dcm_donvi_nhan

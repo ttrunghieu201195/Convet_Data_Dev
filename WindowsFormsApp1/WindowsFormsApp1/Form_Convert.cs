@@ -19,6 +19,7 @@ namespace Convert_Data
     public partial class form_Convert : Form
     {
         Configs configs = new Configs();
+        NpgsqlConnection postgresConnection;
         public form_Convert()
         {
             InitializeComponent();
@@ -26,12 +27,18 @@ namespace Convert_Data
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            
+            postgresConnection = new NpgsqlConnection(Constants.postgres_connstring);
+            postgresConnection.Open();
+            cbBox_Donvi.DataSource = Common.GetDanhMucDonvi(postgresConnection, Constants.sql_danhmuc_donvi_schema);
+            cbBox_Donvi.DisplayMember = "name";
+            cbBox_Donvi.ValueMember = "organizationid";
+            cbBox_Donvi.SelectedIndex = cbBox_Donvi.FindString("UBND tỉnh Bạc Liêu");
         }
 
         private void run_Action(object sender, EventArgs e)
         {
             collectConfigs();
+            Console.WriteLine(configs.donvi_lay_du_lieu);
             if (configs.schema != String.Empty && configs.year != String.Empty)
             {
                 Thread thread = new Thread(() => Convert_Data());
@@ -46,15 +53,18 @@ namespace Convert_Data
         private void Convert_Data()
         {
             // Create connection
-            NpgsqlConnection postgresConnection = new NpgsqlConnection(Constants.postgres_connstring);
+            //NpgsqlConnection postgresConnection = new NpgsqlConnection(Constants.postgres_connstring);
             OracleConnection oracleConnection = new OracleConnection(Constants.oracle_connstring);
             // Initial timer
             Stopwatch timer = new Stopwatch();
             try
             {
                 // Open connection
-                postgresConnection.Open();
-                oracleConnection.Open();
+                if (oracleConnection.State != ConnectionState.Open)
+                {
+                    oracleConnection.Open();
+                }
+                
 
                 // Initial seq from db
                 Common.InitialSeqFromDB(oracleConnection, configs);
@@ -64,7 +74,7 @@ namespace Convert_Data
                     timer.Reset();
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Deleting Categories ..."));
-                    Import_VanBan.exportdataFromPostgres(postgresConnection, configs, Constants.sql_thongtin_vb_di, Common.VB_TYPE.VB_DI);
+                    Import_VanBan.exportdataFromPostgres(postgresConnection, configs, Constants.sql_delete_table, Common.VB_TYPE.VB_DI);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Deleted Categories!"));
                     timer.Stop();
                     //Console.WriteLine("Total exported data: " + Import_VanBan.getDcm_Docs().Count);
@@ -158,7 +168,8 @@ namespace Convert_Data
                     timer.Reset();
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exporting data from Postgres ..."));
-                    Import_VanBan.exportdataFromPostgres(postgresConnection, configs, Constants.sql_thongtin_vb_di, Common.VB_TYPE.VB_DI);
+                    string query = string.Format(Constants.sql_thongtin_vb_di, configs.donvi_lay_du_lieu, configs.year, configs.donvi_lay_du_lieu, configs.year);
+                    Import_VanBan.exportdataFromPostgres(postgresConnection, configs, query, Common.VB_TYPE.VB_DI);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported data from Postgres!"));
                     timer.Stop();
                     //Console.WriteLine("Total exported data: " + Import_VanBan.getDcm_Docs().Count);
@@ -213,12 +224,13 @@ namespace Convert_Data
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exporting outgoing doc flow data from Postgres ..."));
                     Import_VanBan_Flow import_Outgoing_Doc_Flow = new Import_VanBan_Flow();
-                    import_Outgoing_Doc_Flow.exportdataFromPostgres(postgresConnection, Constants.sql_luong_xuly_vb_di, Common.VB_TYPE.VB_DI);
+                    string query = string.Format(Constants.sql_luong_xuly_vb_di, configs.donvi_lay_du_lieu, configs.year, configs.donvi_lay_du_lieu, configs.year, configs.donvi_lay_du_lieu, configs.year);
+                    import_Outgoing_Doc_Flow.exportdataFromPostgres(postgresConnection, query, Common.VB_TYPE.VB_DI);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported outgoing doc flow data from Postgres!"));
                     timer.Stop();
                     Console.WriteLine("Consumption of exported outgoing doc flow data: " + timer.ElapsedMilliseconds / 1000 + "(s)");
 
-                    // Import to dcm_activiti_log
+                   /* // Import to dcm_activiti_log
                     timer.Reset();
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting outgoing doc to dcm_activiti_log ..."));
@@ -226,7 +238,7 @@ namespace Convert_Data
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted outgoing doc to dcm_activiti_log!"));
                     timer.Stop();
                     Console.WriteLine("Total imported data to dcm_activiti_log: " + import_Outgoing_Doc_Flow.GetDcm_Activiti_Logs().Count);
-                    Console.WriteLine("Consumption of imported data to dcm_activiti_log: " + timer.ElapsedMilliseconds / 1000 + "(s)");
+                    Console.WriteLine("Consumption of imported data to dcm_activiti_log: " + timer.ElapsedMilliseconds / 1000 + "(s)");*/
 
                     // Import to dcm_assign
                     timer.Reset();
@@ -257,7 +269,8 @@ namespace Convert_Data
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exporting outgoing doc log data from Postgres ..."));
                     Import_VanBan_Log import_VanBan_Log = new Import_VanBan_Log();
-                    import_VanBan_Log.exportdataFromPostgres(postgresConnection, Constants.sql_log_xuly_vb_di, Common.VB_TYPE.VB_DI);
+                    string query = string.Format(Constants.sql_log_xuly_vb_di, configs.donvi_lay_du_lieu, configs.year);
+                    import_VanBan_Log.exportdataFromPostgres(postgresConnection, query, Common.VB_TYPE.VB_DI);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported outgoing doc data from Postgres!"));
                     timer.Stop();
                     //Console.WriteLine("Total incoming doc exported data: " + Import_VanBan.getDcm_Docs().Count);
@@ -291,7 +304,8 @@ namespace Convert_Data
                     timer.Reset();
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exporting incoming doc data from Postgres ..."));
-                    Import_VanBan.exportdataFromPostgres(postgresConnection, configs, Constants.sql_thongtin_vb_den, Common.VB_TYPE.VB_DEN);
+                    string query = string.Format(Constants.sql_thongtin_vb_den, configs.donvi_lay_du_lieu, configs.year);
+                    Import_VanBan.exportdataFromPostgres(postgresConnection, configs, query, Common.VB_TYPE.VB_DEN);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported incoming doc data from Postgres!"));
                     timer.Stop();
                     //Console.WriteLine("Total incoming doc exported data: " + Import_VanBan.getDcm_Docs().Count);
@@ -356,7 +370,8 @@ namespace Convert_Data
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exporting incoming doc flow data from Postgres ..."));
                     Import_VanBan_Flow import_Incoming_Doc_Flow = new Import_VanBan_Flow();
-                    import_Incoming_Doc_Flow.exportdataFromPostgres(postgresConnection, Constants.sql_luong_xuly_vb_den, Common.VB_TYPE.VB_DEN);
+                    string query = string.Format(Constants.sql_luong_xuly_vb_den, configs.year, configs.donvi_lay_du_lieu, configs.year, configs.donvi_lay_du_lieu, configs.year, configs.donvi_lay_du_lieu, configs.year, configs.donvi_lay_du_lieu, configs.year, configs.donvi_lay_du_lieu, configs.year, configs.donvi_lay_du_lieu, configs.year, configs.donvi_lay_du_lieu);
+                    import_Incoming_Doc_Flow.exportdataFromPostgres(postgresConnection, query, Common.VB_TYPE.VB_DEN);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported outgoing doc flow data from Postgres!"));
                     timer.Stop();
                     Console.WriteLine("Consumption of exported incoming doc flow data: " + timer.ElapsedMilliseconds / 1000 + "(s)");
@@ -400,7 +415,8 @@ namespace Convert_Data
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exporting incoming doc log data from Postgres ..."));
                     Import_VanBan_Log import_VanBan_Log = new Import_VanBan_Log();
-                    import_VanBan_Log.exportdataFromPostgres(postgresConnection, Constants.sql_log_xuly_vb_den, Common.VB_TYPE.VB_DEN);
+                    string query = string.Format(Constants.sql_log_xuly_vb_den, configs.donvi_lay_du_lieu, configs.year);
+                    import_VanBan_Log.exportdataFromPostgres(postgresConnection, query, Common.VB_TYPE.VB_DEN);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported incoming doc data from Postgres!"));
                     timer.Stop();
                     //Console.WriteLine("Total incoming doc exported data: " + Import_VanBan.getDcm_Docs().Count);
@@ -446,9 +462,15 @@ namespace Convert_Data
         {
             configs.schema = txt_Schema.Text.Trim();
             configs.year = Common.getExportedDataYears(txt_Year.Text.Trim());
+            configs.donvi_lay_du_lieu = int.Parse(cbBox_Donvi.SelectedValue.ToString());
         }
 
         private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txt_Schema_TextChanged(object sender, EventArgs e)
         {
 
         }

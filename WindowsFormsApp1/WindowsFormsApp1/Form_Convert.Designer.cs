@@ -54,7 +54,7 @@ namespace Convert_Data
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label4 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.txt_Donvi = new System.Windows.Forms.TextBox();
+            this.cbBox_Donvi = new System.Windows.Forms.ComboBox();
             this.grpBox_DocInfo.SuspendLayout();
             this.grpBox_Category.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -242,12 +242,15 @@ namespace Convert_Data
             // 
             // txt_Schema
             // 
+            this.txt_Schema.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txt_Schema.Location = new System.Drawing.Point(256, 188);
             this.txt_Schema.Margin = new System.Windows.Forms.Padding(4);
             this.txt_Schema.Multiline = true;
             this.txt_Schema.Name = "txt_Schema";
-            this.txt_Schema.Size = new System.Drawing.Size(269, 40);
+            this.txt_Schema.Size = new System.Drawing.Size(338, 33);
             this.txt_Schema.TabIndex = 9;
+            this.txt_Schema.Text = "QLVB_BLU_TINHBACLIEU";
+            this.txt_Schema.TextChanged += new System.EventHandler(this.txt_Schema_TextChanged);
             // 
             // label1
             // 
@@ -264,7 +267,7 @@ namespace Convert_Data
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(491, 58);
+            this.label2.Location = new System.Drawing.Point(404, 55);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(47, 22);
@@ -274,11 +277,12 @@ namespace Convert_Data
             // 
             // txt_Year
             // 
-            this.txt_Year.Location = new System.Drawing.Point(558, 46);
+            this.txt_Year.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_Year.Location = new System.Drawing.Point(459, 52);
             this.txt_Year.Margin = new System.Windows.Forms.Padding(4);
             this.txt_Year.Multiline = true;
             this.txt_Year.Name = "txt_Year";
-            this.txt_Year.Size = new System.Drawing.Size(206, 40);
+            this.txt_Year.Size = new System.Drawing.Size(361, 35);
             this.txt_Year.TabIndex = 12;
             // 
             // label3
@@ -347,31 +351,33 @@ namespace Convert_Data
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.txt_Donvi);
+            this.groupBox2.Controls.Add(this.cbBox_Donvi);
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Controls.Add(this.txt_Year);
             this.groupBox2.Font = new System.Drawing.Font("Times New Roman", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox2.Location = new System.Drawing.Point(135, 31);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(857, 138);
+            this.groupBox2.Size = new System.Drawing.Size(857, 114);
             this.groupBox2.TabIndex = 19;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Dữ liệu đầu vào";
             // 
-            // txt_Donvi
+            // cbBox_Donvi
             // 
-            this.txt_Donvi.Location = new System.Drawing.Point(121, 49);
-            this.txt_Donvi.Multiline = true;
-            this.txt_Donvi.Name = "txt_Donvi";
-            this.txt_Donvi.Size = new System.Drawing.Size(269, 40);
-            this.txt_Donvi.TabIndex = 19;
+            this.cbBox_Donvi.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbBox_Donvi.FormattingEnabled = true;
+            this.cbBox_Donvi.ItemHeight = 22;
+            this.cbBox_Donvi.Location = new System.Drawing.Point(121, 52);
+            this.cbBox_Donvi.Name = "cbBox_Donvi";
+            this.cbBox_Donvi.Size = new System.Drawing.Size(237, 30);
+            this.cbBox_Donvi.TabIndex = 20;
             // 
             // form_Convert
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1065, 804);
+            this.ClientSize = new System.Drawing.Size(1040, 797);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.txt_Progress);
@@ -425,7 +431,7 @@ namespace Convert_Data
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.TextBox txt_Donvi;
+        private System.Windows.Forms.ComboBox cbBox_Donvi;
     }
 }
 

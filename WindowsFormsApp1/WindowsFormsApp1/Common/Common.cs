@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Convert_Data.Controller;
 using Convert_Data.Models;
 using WindowsFormsApp1.Controller;
+using Npgsql;
+using System.Data;
 
 namespace Convert_Data
 {
@@ -91,11 +93,12 @@ namespace Convert_Data
             {
                 if (arr[i].Trim() != String.Empty)
                 {
-                    years += "'" + arr[i].Trim() + "'";
-                    if (i > 0 && i < arr.Length - 1)
+                    if (i > 0)
                     {
                         years += ",";
                     }
+                    years += "'" + arr[i].Trim() + "'";
+                    
                 }
             }
             return years;
@@ -133,7 +136,7 @@ namespace Convert_Data
             UpdateSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_DONVI_NHAN, ++Import_VanBan_Flow.SEQ_DCM_DONVI_NHAN - Constants.INCREASEID_OTHERS);
 
             UpdateSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_LOG, ++Import_VanBan_Log.SEQ_DCM_LOG - Constants.INCREASEID_OTHERS);
-            UpdateSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_LOG_READ, ++Import_VanBan_Log.SEQ_DCM_LOG_READ - Constants.INCREASEID_OTHERS);
+            //UpdateSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_LOG_READ, ++Import_VanBan_Log.SEQ_DCM_LOG_READ - Constants.INCREASEID_OTHERS);
 
             UpdateSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_SOVB_TEMPLATESINHSO, ++Import_SoVanBan.SEQ_DCM_SOVB_TEMPLATESINHSO - Constants.INCREASEID_OTHERS);
             UpdateSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_QUYTAC_NHAYSO, ++Import_SoVanBan.SEQ_DCM_QUYTAC_NHAYSO - Constants.INCREASEID_OTHERS);
@@ -151,18 +154,10 @@ namespace Convert_Data
             Import_VanBan_Flow.SEQ_DCM_DONVI_NHAN = getCurrentSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_DONVI_NHAN) + Constants.INCREASEID_OTHERS;
             
             Import_VanBan_Log.SEQ_DCM_LOG = getCurrentSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_LOG) + Constants.INCREASEID_OTHERS;
-            Import_VanBan_Log.SEQ_DCM_LOG_READ = getCurrentSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_LOG_READ) + Constants.INCREASEID_OTHERS;
+            //Import_VanBan_Log.SEQ_DCM_LOG_READ = getCurrentSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_LOG_READ) + Constants.INCREASEID_OTHERS;
 
             Import_SoVanBan.SEQ_DCM_SOVB_TEMPLATESINHSO = getCurrentSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_SOVB_TEMPLATESINHSO) + Constants.INCREASEID_OTHERS;
             Import_SoVanBan.SEQ_DCM_QUYTAC_NHAYSO = getCurrentSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_QUYTAC_NHAYSO) + Constants.INCREASEID_OTHERS;
-        }
-
-        private static void createSeq(OracleConnection oracleConnection, Configs configs, string seqName, long new_value)
-        {
-            string sql = "CREATE SEQUENCE " + configs.schema + "." + seqName + " START WITH " + new_value;
-            OracleCommand cmd = new OracleCommand(sql, oracleConnection);
-            cmd = new OracleCommand(sql, oracleConnection);
-            cmd.ExecuteNonQuery();
         }
 
         public static List<List<T>> SplitList<T>(List<T> data) where T:class
@@ -197,5 +192,24 @@ namespace Convert_Data
             Delete(oracleConnection, "CLOUD_ADMIN_DEV_BLU_2", Constants.sql_delete_DCM_TRACK);
         }
 
+        public static void grantPrivileges()
+        {
+
+        }
+
+        public static DataTable GetDanhMucDonvi(NpgsqlConnection connection, string query)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand(query, connection);
+
+            NpgsqlDataAdapter dataAdapter = new NpgsqlDataAdapter(cmd);
+            DataSet dataSet = new DataSet();
+            DataTable dataTable = new DataTable();
+
+            dataAdapter.Fill(dataSet);
+
+            dataTable = dataSet.Tables[0];
+
+            return dataTable;
+        }
     }
 }
