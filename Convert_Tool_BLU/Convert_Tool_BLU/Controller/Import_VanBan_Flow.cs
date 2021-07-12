@@ -1,15 +1,11 @@
-﻿using Npgsql;
-using Oracle.ManagedDataAccess.Client;
+﻿using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Convert_Data.Controller;
 using Convert_Data.Models;
 
 namespace Convert_Data
@@ -202,14 +198,15 @@ namespace Convert_Data
                 }
 
                 appendToListDcmAssign(dcm_Activiti_Log.id, dcm_Activiti_Log.doc_id, dcm_Activiti_Log.updated_by, dcm_Activiti_Log.updated_date, ds_nguoinhan, ds_vaitro_nguoinhan, ds_trangthai_xuly, ds_thoigian_xuly, truoc_banhanh);
-                appendToListDcmDonviNhan(dcm_Activiti_Log.id, dcm_Activiti_Log.doc_id, ds_donvi_nhan, ds_vaitro_donvi, ds_agent_id, dcm_Activiti_Log.updated_date, ds_trangthai_xuly_donvi, ds_thoigian_xuly_donvi, truoc_banhanh);
+                appendToListDcmDonviNhan(dcm_Activiti_Log.id, dcm_Activiti_Log.doc_id, ds_donvi_nhan, ds_vaitro_donvi, ds_agent_id, dcm_Activiti_Log.updated_date, ds_trangthai_xuly_donvi, ds_thoigian_xuly_donvi, truoc_banhanh, vb_type);
             } catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
         }
 
-        private void appendToListDcmAssign(long id_acti_log, long idVB, string nguoi_gui, DateTime thoigian_gui, string ds_nguoinhan, string ds_vaitro_nguoinhan, string ds_trangthai_xuly, string ds_thoigian_xuly, int? truoc_banhanh)
+        private void appendToListDcmAssign(long id_acti_log, long idVB, string nguoi_gui, DateTime thoigian_gui, string ds_nguoinhan, string ds_vaitro_nguoinhan
+                                            , string ds_trangthai_xuly, string ds_thoigian_xuly, int? truoc_banhanh)
         {
             string[] nguoi_nhan_arr = ds_nguoinhan.Split(';');
             string[] dsvaitro_nguoinhan_arr = ds_vaitro_nguoinhan.Split(';');
@@ -233,7 +230,7 @@ namespace Convert_Data
                     dcm_Assign.assigner = nguoi_gui;
                     dcm_Assign.assigned_date = thoigian_gui;
 
-                    string role_code = Common.getValue_VaiTro(dsvaitro_nguoinhan_arr.Length > 0 ? dsvaitro_nguoinhan_arr[i].Trim() : "1");
+                    string role_code = Common.getRoleCode_NguoiNhan(dsvaitro_nguoinhan_arr.Length > 0 ? dsvaitro_nguoinhan_arr[i].Trim() : "1");
                     dcm_Assign.role_type_code = role_code;
 
                     dcm_Assign.xu_ly = int.Parse(ds_trangthai_xuly_arr[i].Trim());
@@ -252,7 +249,8 @@ namespace Convert_Data
             }
         }
 
-        private void appendToListDcmDonviNhan(long id_acti_log, long id_vb, string ds_donvi, string ds_vaitro_donvi, string agent_id, DateTime thoigian_gui, string ds_trangthai_xuly_donvi, string ds_thoigian_xuly_donvi, int? truoc_banhanh)
+        private void appendToListDcmDonviNhan(long id_acti_log, long id_vb, string ds_donvi, string ds_vaitro_donvi, string agent_id, DateTime thoigian_gui
+                                                , string ds_trangthai_xuly_donvi, string ds_thoigian_xuly_donvi, int? truoc_banhanh, Common.VB_TYPE vb_type)
         {
             string[] ds_donvi_arr = ds_donvi.Split(';');
             string[] ds_vaitro_donvi_arr = ds_vaitro_donvi.Split(';');
@@ -274,10 +272,10 @@ namespace Convert_Data
                     dcm_Donvi_Nhan.ID = ++SEQ_DCM_DONVI_NHAN;
                     dcm_Donvi_Nhan.DOC_ID = id_vb;
                     dcm_Donvi_Nhan.XULY_CHINH = ds_vaitro_donvi_arr[i].Trim();
-                    dcm_Donvi_Nhan.AGENT_ID = long.Parse(ds_agent_id[i].Trim());
+                    dcm_Donvi_Nhan.AGENT_ID = vb_type == Common.VB_TYPE.VB_DEN ? 0 : long.Parse(ds_agent_id[i].Trim());
                     dcm_Donvi_Nhan.UNIT_ID = long.Parse(ds_donvi_arr[i].Trim());
 
-                    dcm_Donvi_Nhan.ROLE_TYPE_CODE = Common.getValue_VaiTro(ds_vaitro_donvi_arr.Length > 0 ? ds_vaitro_donvi_arr[i].Trim() : "1"); 
+                    dcm_Donvi_Nhan.ROLE_TYPE_CODE = Common.getRoleCode_DonVi(ds_vaitro_donvi_arr.Length > 0 ? ds_vaitro_donvi_arr[i].Trim() : "1"); 
 
                     dcm_Donvi_Nhan.ACTIVITI_LOG_ID = id_acti_log;
                     dcm_Donvi_Nhan.ASSIGNED_DATE = thoigian_gui;
@@ -315,7 +313,7 @@ namespace Convert_Data
 
                         cmd.ArrayBindCount = data.Count;
 
-                        cmd.CommandText = string.Format(query, configs.schema);
+                        cmd.CommandText = string.Format(query, configs.Schema);
 
                         cmd.Parameters.Add("ID", OracleDbType.Int64);
                         cmd.Parameters.Add("TASK_KEY", OracleDbType.Varchar2);
@@ -373,7 +371,7 @@ namespace Convert_Data
 
                         cmd.ArrayBindCount = data.Count;
 
-                        cmd.CommandText = string.Format(query, configs.schema);
+                        cmd.CommandText = string.Format(query, configs.Schema);
 
                         cmd.Parameters.Add("ID", OracleDbType.Int64);
                         cmd.Parameters.Add("DOCUMENT_ID", OracleDbType.Int64);
@@ -431,7 +429,7 @@ namespace Convert_Data
 
                         cmd.ArrayBindCount = data.Count;
 
-                        cmd.CommandText = string.Format(query, configs.schema);
+                        cmd.CommandText = string.Format(query, configs.Schema);
 
                         cmd.Parameters.Add("ID", OracleDbType.Int64);
                         cmd.Parameters.Add("DOC_ID", OracleDbType.Int64);

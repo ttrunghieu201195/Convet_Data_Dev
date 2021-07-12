@@ -83,8 +83,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CheckingDataForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CheckingDataForm.Designer.cs">
+      <DependentUpon>CheckingDataForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Common\Common.cs" />
     <Compile Include="Common\Configs.cs" />
+    <Compile Include="Common\Connection.cs" />
     <Compile Include="Common\Constants.cs" />
     <Compile Include="Controller\Import_DCM_TYPE.cs" />
     <Compile Include="Controller\Import_LinhVuc.cs" />
@@ -92,6 +99,7 @@
     <Compile Include="Controller\Import_SoVanBan.cs" />
     <Compile Include="Controller\Import_VanBan_Flow.cs" />
     <Compile Include="Controller\Import_VanBan_Log.cs" />
+    <Compile Include="Controller\Verify\CheckingConvertedData.cs" />
     <Compile Include="Models\Dcm_Activiti_Log.cs" />
     <Compile Include="Models\Dcm_Assign.cs" />
     <Compile Include="Models\Dcm_Attach_File.cs" />
@@ -115,6 +123,9 @@
     <Compile Include="Models\Fem_File.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="CheckingDataForm.resx">
+      <DependentUpon>CheckingDataForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form_Convert.resx">
       <DependentUpon>Form_Convert.cs</DependentUpon>
       <SubType>Designer</SubType>

@@ -155,7 +155,7 @@ namespace Convert_Data.Controller
 
                         cmd.ArrayBindCount = data.Count;
 
-                        cmd.CommandText = string.Format(query, configs.schema);
+                        cmd.CommandText = string.Format(query, configs.Schema);
 
                         cmd.Parameters.Add("ID", OracleDbType.Int64);
                         cmd.Parameters.Add("NAME", OracleDbType.Varchar2);
@@ -216,7 +216,7 @@ namespace Convert_Data.Controller
 
                         cmd.ArrayBindCount = data.Count;
 
-                        cmd.CommandText = string.Format(query, configs.schema);
+                        cmd.CommandText = string.Format(query, configs.Schema);
 
                         cmd.Parameters.Add("ID", OracleDbType.Int64);
                         cmd.Parameters.Add("SOVANBAN_CODE", OracleDbType.Varchar2);
@@ -263,7 +263,7 @@ namespace Convert_Data.Controller
 
                         cmd.ArrayBindCount = data.Count;
 
-                        cmd.CommandText = string.Format(query, configs.schema);
+                        cmd.CommandText = string.Format(query, configs.Schema);
 
                         cmd.Parameters.Add("ID", OracleDbType.Int64);
                         cmd.Parameters.Add("MA_QUYTAC", OracleDbType.Varchar2);

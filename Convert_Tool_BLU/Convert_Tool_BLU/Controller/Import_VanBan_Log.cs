@@ -29,46 +29,52 @@ namespace Convert_Data
 
 		protected override void ParseData(DataRow row, Common.VB_TYPE vb_type)
 		{
-			Dcm_Log dcm_Log = new Dcm_Log();
-
-			string cell_value = row["id_vanban"].ToString();
-
-			dcm_Log.id = ++SEQ_DCM_LOG;
-
-			if (cell_value != null && cell_value != string.Empty)
+			try
 			{
-				dcm_Log.dcm_id = vb_type == Common.VB_TYPE.VB_DI ? long.Parse(cell_value) + Constants.INCREASEID_VBDI : long.Parse(cell_value);
-			}
+				Dcm_Log dcm_Log = new Dcm_Log();
 
-			cell_value = row["nguoi_xu_ly"].ToString();
-			if (cell_value != null && cell_value != string.Empty)
-			{
-				dcm_Log.username = cell_value;
-			}
+				string cell_value = row["id_vanban"].ToString();
 
-			if (dcm_Log.username == string.Empty)
+				dcm_Log.id = ++SEQ_DCM_LOG;
+
+				if (cell_value != null && cell_value != string.Empty)
+				{
+					dcm_Log.dcm_id = vb_type == Common.VB_TYPE.VB_DI ? long.Parse(cell_value) + Constants.INCREASEID_VBDI : long.Parse(cell_value);
+				}
+
+				cell_value = row["nguoi_xu_ly"].ToString();
+				if (cell_value != null && cell_value != string.Empty)
+				{
+					dcm_Log.username = cell_value;
+				}
+
+				if (dcm_Log.username == string.Empty)
+				{
+					return;
+				}
+
+				cell_value = row["trang_thai"].ToString();
+				if (cell_value != null && cell_value != string.Empty)
+				{
+					int tmp = int.Parse(cell_value);
+					dcm_Log.is_read = tmp != 0 ? 1 : 0;
+				}
+
+				cell_value = row["thoi_gian"].ToString();
+				if (cell_value != null && cell_value != string.Empty)
+				{
+					DateTime thoigian_xem = DateTime.ParseExact(cell_value.Trim(), "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+					dcm_Log.date_log = thoigian_xem;
+				}
+
+				dcm_Logs.Add(dcm_Log);
+				if (dcm_Log.is_read == 1)
+				{
+					dcm_Log_Reads.Add(dcm_Log);
+				}
+			} catch (Exception ex)
             {
-				return;
-            }
-
-			cell_value = row["trang_thai"].ToString();
-			if (cell_value != null && cell_value != string.Empty)
-			{
-				int tmp = int.Parse(cell_value);
-				dcm_Log.is_read = tmp != 0 ? 1 : 0;
-			}
-
-			cell_value = row["thoi_gian"].ToString();
-			if (cell_value != null && cell_value != string.Empty)
-			{
-				DateTime thoigian_xem = DateTime.ParseExact(cell_value.Trim(), "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
-				dcm_Log.date_log = thoigian_xem;
-			}
-
-			dcm_Logs.Add(dcm_Log);
-			if (dcm_Log.is_read == 1)
-            {
-				dcm_Log_Reads.Add(dcm_Log);
+				Console.WriteLine(ex.Message);
             }
 		}
 
@@ -92,7 +98,7 @@ namespace Convert_Data
 
 						cmd.ArrayBindCount = data.Count;
 
-						cmd.CommandText = string.Format(query, configs.schema);
+						cmd.CommandText = string.Format(query, configs.Schema);
 
 						cmd.Parameters.Add("ID", OracleDbType.Int64);
 						cmd.Parameters.Add("USERNAME", OracleDbType.Varchar2);

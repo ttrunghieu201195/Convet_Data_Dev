@@ -7,12 +7,14 @@ using System.Threading;
 using System.Windows.Forms;
 using Convert_Data.Controller;
 
+
 namespace Convert_Data
 {
     public partial class form_Convert : Form
     {
         Configs configs = new Configs();
         NpgsqlConnection postgresConnection;
+        //OracleConnection oracleConnection;
         public form_Convert()
         {
             InitializeComponent();
@@ -20,19 +22,21 @@ namespace Convert_Data
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            postgresConnection = new NpgsqlConnection(Constants.postgres_connstring);
-            postgresConnection.Open();
+            postgresConnection = Connection.getInstance().GetPostgresConnection();
+            //oracleConnection = new OracleConnection(Constants.oracle_connstring);
+            //postgresConnection.Open();
             cbBox_Donvi.DataSource = Common.GetDanhMucDonvi(postgresConnection, Constants.sql_danhmuc_donvi_schema);
             cbBox_Donvi.DisplayMember = "name";
             cbBox_Donvi.ValueMember = "organizationid";
             cbBox_Donvi.SelectedIndex = cbBox_Donvi.FindString("UBND tỉnh Bạc Liêu");
+            //Common.TestCallProcFromPostgres(postgresConnection);
         }
 
         private void run_Action(object sender, EventArgs e)
         {
             CollectConfigs();
-            Console.WriteLine(configs.donvi_lay_du_lieu);
-            if (configs.schema != String.Empty && configs.year != String.Empty)
+            Console.WriteLine(configs.Donvi_lay_du_lieu);
+            if (configs.Schema != String.Empty && configs.Year != String.Empty)
             {
                 Thread thread = new Thread(() => Convert_Data());
                 thread.Start();
@@ -47,17 +51,16 @@ namespace Convert_Data
         {
             // Create connection
             //NpgsqlConnection postgresConnection = new NpgsqlConnection(Constants.postgres_connstring);
-            OracleConnection oracleConnection = new OracleConnection(Constants.oracle_connstring);
+            OracleConnection oracleConnection = Connection.getInstance().GetOracleConnection();
             // Initial timer
             Stopwatch timer = new Stopwatch();
             try
             {
                 // Open connection
-                if (oracleConnection.State != ConnectionState.Open)
-                {
-                    oracleConnection.Open();
-                }
-                
+                /* if (oracleConnection.State != ConnectionState.Open)
+                 {
+                     oracleConnection.Open();
+                 }*/
 
                 // Initial seq from db
                 Common.InitialSeqFromDB(oracleConnection, configs);
@@ -79,7 +82,8 @@ namespace Convert_Data
                     timer.Reset();
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Deleting Docs ..."));
-                    Common.DeleteAllTableRelatedToDcmDoc(oracleConnection, configs.schema);
+                    //Common.DeleteAllTableRelatedToDcmDoc(oracleConnection, configs.Schema);
+                    Common.DeleteDCM_DOC(oracleConnection, configs.Schema);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Deleted Docs!"));
                     timer.Stop();
                     //Console.WriteLine("Total exported data: " + Import_VanBan.getDcm_Docs().Count);
@@ -93,8 +97,8 @@ namespace Convert_Data
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exporting book data from Postgres..."));
                     Import_SoVanBan import_SoVanBan = new Import_SoVanBan();
-                    DataTable dcm_type = import_SoVanBan.GetDcm_Type(oracleConnection, configs.schema, Constants.sql_get_dcm_type);
-                    string query = string.Format(Constants.sql_danhmuc_sovanban, configs.donvi_lay_du_lieu);
+                    DataTable dcm_type = import_SoVanBan.GetDcm_Type(oracleConnection, configs.Schema, Constants.sql_get_dcm_type);
+                    string query = string.Format(Constants.sql_danhmuc_sovanban, configs.Donvi_lay_du_lieu);
                     import_SoVanBan.exportdataFromPostgres(postgresConnection, query, Common.VB_TYPE.NONE, dcm_type);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported book data from Postgres..."));
                     timer.Stop();
@@ -150,7 +154,7 @@ namespace Convert_Data
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exporting hinh thuc data from Postgres ..."));
                     Import_DCM_TYPE import_DCM_TYPE = new Import_DCM_TYPE();
-                    string query = string.Format(Constants.sql_danhmuc_dcm_type, configs.donvi_lay_du_lieu);
+                    string query = string.Format(Constants.sql_danhmuc_dcm_type, configs.Donvi_lay_du_lieu);
                     import_DCM_TYPE.exportdataFromPostgres(postgresConnection, query, Common.VB_TYPE.NONE);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported hinh thuc data from Postgres !"));
                     timer.Stop();
@@ -173,7 +177,7 @@ namespace Convert_Data
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exporting linh vuc data from Postgres ..."));
                     Import_LinhVuc import_LinhVuc = new Import_LinhVuc();
-                    string query = string.Format(Constants.sql_danhmuc_linhvuc, configs.donvi_lay_du_lieu);
+                    string query = string.Format(Constants.sql_danhmuc_linhvuc, configs.Donvi_lay_du_lieu);
                     import_LinhVuc.exportdataFromPostgres(postgresConnection, query, Common.VB_TYPE.NONE);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported linh vuc data from Postgres !"));
                     timer.Stop();
@@ -197,52 +201,54 @@ namespace Convert_Data
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exporting data from Postgres ..."));
                     Import_VanBan import_VanBan = new Import_VanBan();
-                    string query = string.Format(configs.isUBND ? Constants.sql_thongtin_vb_di : Constants.sql_so_thongtin_vbdi, configs.donvi_lay_du_lieu, configs.year, configs.donvi_lay_du_lieu, configs.year);
+                    string query = string.Format(configs.IsUBND ? Constants.sql_thongtin_vb_di : Constants.sql_so_thongtin_vbdi, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu, configs.Year);
                     import_VanBan.exportdataFromPostgres(postgresConnection, configs, query, Common.VB_TYPE.VB_DI);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported data from Postgres!"));
                     timer.Stop();
                     //Console.WriteLine("Total exported data: " + Import_VanBan.getDcm_Docs().Count);
                     Console.WriteLine("Consumption of exported data: " + timer.ElapsedMilliseconds / 1000 + "(s)");
+                    if (!import_VanBan.isExportError())
+                    {
+                        // Import to dcm_doc
+                        timer.Reset();
+                        timer.Start();
+                        txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting outgoing doc to Dcm_Doc ..."));
+                        import_VanBan.insert_Dcm_Doc(oracleConnection, configs, Constants.sql_insert_dcm_doc, import_VanBan.GetDcm_Docs());
+                        txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted outgoing doc to Dcm_Doc!"));
+                        timer.Stop();
+                        Console.WriteLine("Total imported data to dcm_doc: " + import_VanBan.GetDcm_Docs().Count);
+                        Console.WriteLine("Consumption of imported data to dcm_doc: " + timer.ElapsedMilliseconds / 1000 + "(s)");
 
-                    // Import to dcm_doc
-                    timer.Reset();
-                    timer.Start();
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting outgoing doc to Dcm_Doc ..."));
-                    import_VanBan.insert_Dcm_Doc(oracleConnection, configs, Constants.sql_insert_dcm_doc, import_VanBan.GetDcm_Docs());
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted outgoing doc to Dcm_Doc!"));
-                    timer.Stop();
-                    Console.WriteLine("Total imported data to dcm_doc: " + import_VanBan.GetDcm_Docs().Count);
-                    Console.WriteLine("Consumption of imported data to dcm_doc: " + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        // Import to dcm_doc_relation
+                        timer.Reset();
+                        timer.Start();
+                        txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting outgoing doc to Dcm_Doc_Relation ..."));
+                        import_VanBan.insert_Dcm_Doc_Relation(oracleConnection, configs, Constants.sql_insert_dcm_doc_relation, import_VanBan.GetDcm_Doc_Relations());
+                        txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted outgoing doc to Dcm_Doc_Relation!"));
+                        timer.Stop();
+                        Console.WriteLine("Total imported data to Dcm_Doc_Relation: " + import_VanBan.GetDcm_Doc_Relations().Count);
+                        Console.WriteLine("Consumption of imported data to dcm_doc_relation: " + timer.ElapsedMilliseconds / 1000 + "(s)");
 
-                    // Import to dcm_doc_relation
-                    timer.Reset();
-                    timer.Start();
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting outgoing doc to Dcm_Doc_Relation ..."));
-                    import_VanBan.insert_Dcm_Doc_Relation(oracleConnection, configs, Constants.sql_insert_dcm_doc_relation, import_VanBan.GetDcm_Doc_Relations());
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted outgoing doc to Dcm_Doc_Relation!"));
-                    timer.Stop();
-                    Console.WriteLine("Total imported data to Dcm_Doc_Relation: " + import_VanBan.GetDcm_Doc_Relations().Count);
-                    Console.WriteLine("Consumption of imported data to dcm_doc_relation: " + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        // Import to fem_file
+                        timer.Reset();
+                        timer.Start();
+                        txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting outgoing doc to fem_file ..."));
+                        import_VanBan.insert_fem_file(oracleConnection, configs, Constants.sql_insert_fem_file, import_VanBan.GetFem_Files());
+                        txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted outgoing doc to fem_file!"));
+                        timer.Stop();
+                        Console.WriteLine("Total imported data to fem_file: " + import_VanBan.GetFem_Files().Count);
+                        Console.WriteLine("Consumption of imported data to fem_file: " + timer.ElapsedMilliseconds / 1000 + "(s)");
 
-                    // Import to fem_file
-                    timer.Reset();
-                    timer.Start();
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting outgoing doc to fem_file ..."));
-                    import_VanBan.insert_fem_file(oracleConnection, configs, Constants.sql_insert_fem_file, import_VanBan.GetFem_Files());
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted outgoing doc to fem_file!"));
-                    timer.Stop();
-                    Console.WriteLine("Total imported data to fem_file: " + import_VanBan.GetFem_Files().Count);
-                    Console.WriteLine("Consumption of imported data to fem_file: " + timer.ElapsedMilliseconds / 1000 + "(s)");
-
-                    // Import to dcm_attach_file
-                    timer.Reset();
-                    timer.Start();
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting outgoing doc to dcm_attach_file ..."));
-                    import_VanBan.insert_Dcm_Attach_File(oracleConnection, configs, Constants.sql_insert_dcm_attach_file, import_VanBan.GetDcm_Attach_Files());
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted outgoing doc to dcm_attach_file!"));
-                    timer.Stop();
-                    Console.WriteLine("Total imported data to dcm_attach_file: " + import_VanBan.GetDcm_Attach_Files().Count);
-                    Console.WriteLine("Consumption of imported data to dcm_attach_file: " + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        // Import to dcm_attach_file
+                        timer.Reset();
+                        timer.Start();
+                        txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting outgoing doc to dcm_attach_file ..."));
+                        import_VanBan.insert_Dcm_Attach_File(oracleConnection, configs, Constants.sql_insert_dcm_attach_file, import_VanBan.GetDcm_Attach_Files());
+                        txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted outgoing doc to dcm_attach_file!"));
+                        timer.Stop();
+                        Console.WriteLine("Total imported data to dcm_attach_file: " + import_VanBan.GetDcm_Attach_Files().Count);
+                        Console.WriteLine("Consumption of imported data to dcm_attach_file: " + timer.ElapsedMilliseconds / 1000 + "(s)");
+                    }
                 }
 
                 // Luong xu ly van ban di
@@ -253,7 +259,7 @@ namespace Convert_Data
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exporting outgoing doc flow data from Postgres ..."));
                     Import_VanBan_Flow import_Outgoing_Doc_Flow = new Import_VanBan_Flow();
-                    string query = string.Format(configs.isUBND ? Constants.sql_luong_xuly_vb_di : Constants.sql_so_luong_xuly_vbdi, configs.donvi_lay_du_lieu, configs.year, configs.donvi_lay_du_lieu, configs.year, configs.donvi_lay_du_lieu, configs.year);
+                    string query = string.Format(configs.IsUBND ? Constants.sql_luong_xuly_vb_di : Constants.sql_so_luong_xuly_vbdi, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu, configs.Year);
                     import_Outgoing_Doc_Flow.exportdataFromPostgres(postgresConnection, query, Common.VB_TYPE.VB_DI);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported outgoing doc flow data from Postgres!"));
                     timer.Stop();
@@ -304,7 +310,7 @@ namespace Convert_Data
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exporting outgoing doc log data from Postgres ..."));
                     Import_VanBan_Log import_VanBan_Log = new Import_VanBan_Log();
-                    string query = string.Format(configs.isUBND ? Constants.sql_log_xuly_vb_di : Constants.sql_so_log_xuly_vbdi, configs.donvi_lay_du_lieu, configs.year);
+                    string query = string.Format(configs.IsUBND ? Constants.sql_log_xuly_vb_di : Constants.sql_so_log_xuly_vbdi, configs.Donvi_lay_du_lieu, configs.Year);
                     import_VanBan_Log.exportdataFromPostgres(postgresConnection, query, Common.VB_TYPE.VB_DI);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported outgoing doc log data from Postgres!"));
                     timer.Stop();
@@ -346,7 +352,7 @@ namespace Convert_Data
                     timer.Reset();
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exporting incoming doc data from Postgres ..."));
-                    string query = string.Format(configs.isUBND ? Constants.sql_thongtin_vb_den : Constants.sql_so_thongtin_vbden, configs.donvi_lay_du_lieu, configs.year);
+                    string query = string.Format(configs.IsUBND ? Constants.sql_thongtin_vb_den : Constants.sql_so_thongtin_vbden, configs.Donvi_lay_du_lieu, configs.Year);
                     Import_VanBan import_VanBan = new Import_VanBan();
                     import_VanBan.exportdataFromPostgres(postgresConnection, configs, query, Common.VB_TYPE.VB_DEN);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported incoming doc data from Postgres!"));
@@ -354,55 +360,58 @@ namespace Convert_Data
                     //Console.WriteLine("Total incoming doc exported data: " + Import_VanBan.getDcm_Docs().Count);
                     Console.WriteLine("Consumption of exported incoming doc data: " + timer.ElapsedMilliseconds / 1000 + "(s)");
 
-                    // Import to dcm_doc
-                    timer.Reset();
-                    timer.Start();
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting incoming doc to Dcm_Doc ..."));
-                    import_VanBan.insert_Dcm_Doc(oracleConnection, configs, Constants.sql_insert_dcm_doc, import_VanBan.GetDcm_Docs());
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted incoming doc to Dcm_Doc!"));
-                    timer.Stop();
-                    Console.WriteLine("Total imported data to dcm_doc: " + import_VanBan.GetDcm_Docs().Count);
-                    Console.WriteLine("Consumption of imported data to dcm_doc: " + timer.ElapsedMilliseconds / 1000 + "(s)");
+                    if (!import_VanBan.isExportError())
+                    {
+                        // Import to dcm_doc
+                        timer.Reset();
+                        timer.Start();
+                        txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting incoming doc to Dcm_Doc ..."));
+                        import_VanBan.insert_Dcm_Doc(oracleConnection, configs, Constants.sql_insert_dcm_doc, import_VanBan.GetDcm_Docs());
+                        txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted incoming doc to Dcm_Doc!"));
+                        timer.Stop();
+                        Console.WriteLine("Total imported data to dcm_doc: " + import_VanBan.GetDcm_Docs().Count);
+                        Console.WriteLine("Consumption of imported data to dcm_doc: " + timer.ElapsedMilliseconds / 1000 + "(s)");
 
-                    // Import to dcm_doc_relation
-                    timer.Reset();
-                    timer.Start();
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting incoming doc to Dcm_Doc_Relation ..."));
-                    import_VanBan.insert_Dcm_Doc_Relation(oracleConnection, configs, Constants.sql_insert_dcm_doc_relation, import_VanBan.GetDcm_Doc_Relations());
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted incoming doc to Dcm_Doc_Relation!"));
-                    timer.Stop();
-                    Console.WriteLine("Total imported data to Dcm_Doc_Relation: " + import_VanBan.GetDcm_Doc_Relations().Count);
-                    Console.WriteLine("Consumption of imported data to dcm_doc_relation: " + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        // Import to dcm_doc_relation
+                        timer.Reset();
+                        timer.Start();
+                        txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting incoming doc to Dcm_Doc_Relation ..."));
+                        import_VanBan.insert_Dcm_Doc_Relation(oracleConnection, configs, Constants.sql_insert_dcm_doc_relation, import_VanBan.GetDcm_Doc_Relations());
+                        txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted incoming doc to Dcm_Doc_Relation!"));
+                        timer.Stop();
+                        Console.WriteLine("Total imported data to Dcm_Doc_Relation: " + import_VanBan.GetDcm_Doc_Relations().Count);
+                        Console.WriteLine("Consumption of imported data to dcm_doc_relation: " + timer.ElapsedMilliseconds / 1000 + "(s)");
 
-                    // Import to fem_file
-                    timer.Reset();
-                    timer.Start();
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting incoming doc to fem_file ..."));
-                    import_VanBan.insert_fem_file(oracleConnection, configs, Constants.sql_insert_fem_file, import_VanBan.GetFem_Files());
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted incoming doc to fem_file!"));
-                    timer.Stop();
-                    Console.WriteLine("Total imported data to fem_file: " + import_VanBan.GetFem_Files().Count);
-                    Console.WriteLine("Consumption of imported data to fem_file: " + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        // Import to fem_file
+                        timer.Reset();
+                        timer.Start();
+                        txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting incoming doc to fem_file ..."));
+                        import_VanBan.insert_fem_file(oracleConnection, configs, Constants.sql_insert_fem_file, import_VanBan.GetFem_Files());
+                        txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted incoming doc to fem_file!"));
+                        timer.Stop();
+                        Console.WriteLine("Total imported data to fem_file: " + import_VanBan.GetFem_Files().Count);
+                        Console.WriteLine("Consumption of imported data to fem_file: " + timer.ElapsedMilliseconds / 1000 + "(s)");
 
-                    // Import to dcm_attach_file
-                    timer.Reset();
-                    timer.Start();
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting incoming doc to dcm_attach_file ..."));
-                    import_VanBan.insert_Dcm_Attach_File(oracleConnection, configs, Constants.sql_insert_dcm_attach_file, import_VanBan.GetDcm_Attach_Files());
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted incoming doc to dcm_attach_file!"));
-                    timer.Stop();
-                    Console.WriteLine("Total imported data to dcm_attach_file: " + import_VanBan.GetDcm_Attach_Files().Count);
-                    Console.WriteLine("Consumption of imported data to dcm_attach_file: " + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        // Import to dcm_attach_file
+                        timer.Reset();
+                        timer.Start();
+                        txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting incoming doc to dcm_attach_file ..."));
+                        import_VanBan.insert_Dcm_Attach_File(oracleConnection, configs, Constants.sql_insert_dcm_attach_file, import_VanBan.GetDcm_Attach_Files());
+                        txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted incoming doc to dcm_attach_file!"));
+                        timer.Stop();
+                        Console.WriteLine("Total imported data to dcm_attach_file: " + import_VanBan.GetDcm_Attach_Files().Count);
+                        Console.WriteLine("Consumption of imported data to dcm_attach_file: " + timer.ElapsedMilliseconds / 1000 + "(s)");
 
-                    // Import to dcm_track
-                    timer.Reset();
-                    timer.Start();
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting incoming doc to dcm_track ..."));
-                    import_VanBan.insert_Dcm_Track(oracleConnection, configs, Constants.sql_insert_dcm_track, import_VanBan.GetDcm_Tracks());
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted incoming doc to dcm_track!"));
-                    timer.Stop();
-                    Console.WriteLine("Total imported data to dcm_track: " + import_VanBan.GetDcm_Tracks().Count);
-                    Console.WriteLine("Consumption of imported data to dcm_track: " + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        // Import to dcm_track
+                        timer.Reset();
+                        timer.Start();
+                        txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting incoming doc to dcm_track ..."));
+                        import_VanBan.insert_Dcm_Track(oracleConnection, configs, Constants.sql_insert_dcm_track, import_VanBan.GetDcm_Tracks());
+                        txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted incoming doc to dcm_track!"));
+                        timer.Stop();
+                        Console.WriteLine("Total imported data to dcm_track: " + import_VanBan.GetDcm_Tracks().Count);
+                        Console.WriteLine("Consumption of imported data to dcm_track: " + timer.ElapsedMilliseconds / 1000 + "(s)");
+                    }
                 }
 
                 // Luong xu ly van ban den
@@ -414,22 +423,21 @@ namespace Convert_Data
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exporting incoming doc flow data from Postgres ..."));
                     Import_VanBan_Flow import_Incoming_Doc_Flow = new Import_VanBan_Flow();
                     string query = "";
-                    if (configs.isUBND)
+                    if (configs.IsUBND)
                     {
-                        query = string.Format(Constants.sql_luong_xuly_vb_den, configs.year, configs.donvi_lay_du_lieu, configs.year, configs.donvi_lay_du_lieu
-                        , configs.year, configs.donvi_lay_du_lieu, configs.year, configs.donvi_lay_du_lieu, configs.year, configs.donvi_lay_du_lieu
-                        , configs.year, configs.donvi_lay_du_lieu, configs.year, configs.donvi_lay_du_lieu, configs.year, configs.donvi_lay_du_lieu);
+                        query = string.Format(Constants.sql_luong_xuly_vb_den, configs.Year, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu
+                        , configs.Year, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu
+                        , configs.Year, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu);
                     } else
                     {
-                        query = string.Format(Constants.sql_so_luong_xuly_vbden, configs.year, configs.donvi_lay_du_lieu, configs.year, configs.donvi_lay_du_lieu
-                        , configs.year, configs.donvi_lay_du_lieu, configs.year, configs.donvi_lay_du_lieu, configs.year, configs.donvi_lay_du_lieu
-                        , configs.year, configs.donvi_lay_du_lieu, configs.year, configs.donvi_lay_du_lieu);
+                        query = string.Format(Constants.sql_so_luong_xuly_vbden, configs.Year, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu
+                        , configs.Year, configs.Donvi_lay_du_lieu);
                     }
                     import_Incoming_Doc_Flow.exportdataFromPostgres(postgresConnection, query, Common.VB_TYPE.VB_DEN);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported outgoing doc flow data from Postgres!"));
                     timer.Stop();
                     Console.WriteLine("Consumption of exported incoming doc flow data: " + timer.ElapsedMilliseconds / 1000 + "(s)");
-
+                    
                     if (!import_Incoming_Doc_Flow.isExportError())
                     {
                         // Import to dcm_activiti_log
@@ -476,7 +484,7 @@ namespace Convert_Data
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exporting incoming doc log data from Postgres ..."));
                     Import_VanBan_Log import_VanBan_Log = new Import_VanBan_Log();
-                    string query = string.Format(configs.isUBND ? Constants.sql_log_xuly_vb_den : Constants.sql_so_log_xuly_vbden, configs.donvi_lay_du_lieu, configs.year);
+                    string query = string.Format(configs.IsUBND ? Constants.sql_log_xuly_vb_den : Constants.sql_so_log_xuly_vbden, configs.Donvi_lay_du_lieu, configs.Year);
                     import_VanBan_Log.exportdataFromPostgres(postgresConnection, query, Common.VB_TYPE.VB_DEN);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported incoming doc data from Postgres!"));
                     timer.Stop();
@@ -520,18 +528,19 @@ namespace Convert_Data
                 // Update seq to db
                 Common.updateSeqFromProcedure(oracleConnection, configs);
                 // Close connection
-                postgresConnection.Close();
-                oracleConnection.Close();
+                /*postgresConnection.Close();
+                oracleConnection.Close();*/
+                Connection.getInstance().CloseConnection();
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Done"));
             }
         }
 
         private void CollectConfigs()
         {
-            configs.schema = txt_Schema.Text.Trim();
-            configs.year = Common.getExportedDataYears(txt_Year.Text.Trim());
-            configs.donvi_lay_du_lieu = int.Parse(cbBox_Donvi.SelectedValue.ToString());
-            configs.isUBND = configs.donvi_lay_du_lieu == 3528;
+            configs.Schema = txt_Schema.Text.Trim();
+            configs.Year = Common.getExportedDataYears(txt_Year.Text.Trim());
+            configs.Donvi_lay_du_lieu = int.Parse(cbBox_Donvi.SelectedValue.ToString());
+            configs.IsUBND = configs.Donvi_lay_du_lieu == 3528;
         }
 
         private void label2_Click(object sender, EventArgs e)
@@ -542,6 +551,20 @@ namespace Convert_Data
         private void txt_Schema_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void btn_OpenVerifyForm(object sender, EventArgs e)
+        {
+            // Open connection
+            CheckingDataForm checkingDataForm = new CheckingDataForm();
+            checkingDataForm.Show();
+        }
+
+        private void cbBox_Donvi_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DataRowView row = (DataRowView)cbBox_Donvi.SelectedItem;
+            configs.Old_schema = row["schema"].ToString();
+            Console.WriteLine(configs.Old_schema);
         }
     }
 }

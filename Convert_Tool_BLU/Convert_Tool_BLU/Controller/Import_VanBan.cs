@@ -15,6 +15,7 @@ namespace Convert_Data
 {
     class Import_VanBan
     {
+        private bool exported_error = false;
         // list dcm_doc
         private List<Dcm_Doc> dcm_Docs = new List<Dcm_Doc>();
         // list dcm_doc_relation
@@ -57,10 +58,16 @@ namespace Convert_Data
             return dcm_Tracks;
         }
 
+        public bool isExportError()
+        {
+            return exported_error;
+        }
+
         public void exportdataFromPostgres(NpgsqlConnection postgresConnection, Configs configs, string query, Common.VB_TYPE type_vb)
         {
             try
             {
+                exported_error = false;
                 var cmd = new NpgsqlCommand(query, postgresConnection);
 
                 NpgsqlDataAdapter dataAdapter = new NpgsqlDataAdapter(cmd);
@@ -87,528 +94,540 @@ namespace Convert_Data
             } catch (Exception e)
             {
                 Console.WriteLine(e.Message);
+                exported_error = true;
             }
         }
 
         private void ParseDataToOutgoingDocInfo(DataRow row, Common.VB_TYPE type_vb)
         {
-            Dcm_Doc dcm_Doc = new Dcm_Doc();
-            // 1 - id van ban
-            dcm_Doc.id_VanBan = int.Parse(row["id"].ToString()) + Constants.INCREASEID_VBDI;
-
-            // 2 - thoi gian tao
-            string ngay_tao = row["thoigian_tao"].ToString();
-            if (ngay_tao != null && ngay_tao != String.Empty)
+            try
             {
-                DateTime ngaytao = DateTime.ParseExact(ngay_tao.Trim(), "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
-                dcm_Doc.ngay_tao = ngaytao;
-            }
+                Dcm_Doc dcm_Doc = new Dcm_Doc();
+                // 1 - id van ban
+                dcm_Doc.id_VanBan = int.Parse(row["id"].ToString()) + Constants.INCREASEID_VBDI;
 
-            // 3 - nguoi tao ban hanh
-            string nguoi_vaoso = row["nguoi_tao_banhanh"].ToString();
-            if (nguoi_vaoso != null && nguoi_vaoso != String.Empty)
-            {
-                dcm_Doc.nguoi_vaoso = nguoi_vaoso.Trim();
-            }
-
-            // Set ngay den di = ngay tao voi vb di
-            dcm_Doc.ngay_den_di = dcm_Doc.ngay_tao;
-
-            // 4 - trich yeu
-            string trich_yeu = row["trich_yeu"].ToString();
-            if (trich_yeu != null && trich_yeu != String.Empty)
-            {
-                dcm_Doc.trich_yeu = Common.escape_Trichyeu(trich_yeu.Trim());
-            }
-
-            // 5 - so ky hieu
-            string so_kyhieu = row["so_kyhieu"].ToString();
-            if (so_kyhieu != null && so_kyhieu != String.Empty)
-            {
-                dcm_Doc.so_kyhieu = so_kyhieu.Replace("'", "").Trim();
-            }
-
-            // 6 - co quan ban hanh
-            string coquan_banhanh = row["coquan_banhanh"].ToString();
-            if (coquan_banhanh != null && coquan_banhanh != String.Empty)
-            {
-                dcm_Doc.coquan_banhanh = coquan_banhanh.Trim();
-            }
-
-            // 7 - hinh thuc code
-            string dcmtype_code = row["id_hinhthuc"].ToString();
-            if (dcmtype_code != null && dcmtype_code != String.Empty)
-            {
-                dcm_Doc.dcmtype_code = dcmtype_code.Trim();
-            }
-
-            // 8 - do khan code
-            string priority_code = row["id_dokhan"].ToString();
-            if (priority_code != null && priority_code != String.Empty)
-            {
-                switch (priority_code.Trim())
+                // 2 - thoi gian tao
+                string ngay_tao = row["thoigian_tao"].ToString();
+                if (ngay_tao != null && ngay_tao != String.Empty)
                 {
-                    case "1":
-                        dcm_Doc.priority_code = "THUONG";
-                        break;
-                    case "2":
-                        dcm_Doc.priority_code = "KHAN";
-                        break;
-                    case "3":
-                        dcm_Doc.priority_code = "THUONGKHAN";
-                        break;
-                    default:
-                        dcm_Doc.priority_code = "THUONG";
-                        break;
+                    DateTime ngaytao = DateTime.ParseExact(ngay_tao.Trim(), "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                    dcm_Doc.ngay_tao = ngaytao;
                 }
-            }
 
-            // 9 - linh vuc code
-            string linhvuc_code = row["id_linhvuc"].ToString();
-            if (linhvuc_code != null && linhvuc_code != String.Empty)
-            {
-                dcm_Doc.linhvuc_code = linhvuc_code.Trim();
-            }
-
-            // 10 - so van ban code
-            string so_vanban_code = row["id_sovanban"].ToString();
-            if (so_vanban_code != null && so_vanban_code != String.Empty)
-            {
-                // + 20.000.000
-                dcm_Doc.so_vanban_code = (int.Parse(so_vanban_code.Trim()) + Constants.INCREASEID_OTHERS).ToString();
-            }
-
-            // 11 - ngay ban hanh/ ngay cong van
-            string ngay_cong_van = row["ngay_banhanh"].ToString();
-            if (ngay_cong_van != null && ngay_cong_van != String.Empty)
-            {
-                DateTime ngaybanhanh = DateTime.ParseExact(ngay_cong_van.Trim(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                dcm_Doc.ngay_ban_hanh = ngaybanhanh;
-            }
-
-            // Set ngay van ban = ngay ban hanh voi vb di
-            dcm_Doc.ngay_van_ban = dcm_Doc.ngay_ban_hanh;
-
-            // 12 - nguoi ky
-            string nguoi_ky = row["nguoi_ky"].ToString();
-            if (nguoi_ky != null && nguoi_ky != String.Empty)
-            {
-                dcm_Doc.nguoi_ky_chinh = nguoi_ky.Trim();
-            }
-
-            // 13 - so trang
-            string so_trang = row["so_trang"].ToString();
-            if (so_trang != null && so_trang != String.Empty)
-            {
-                dcm_Doc.so_trang = int.Parse(so_trang.Trim());
-            }
-
-            // 14 - so ban
-            string so_ban = row["so_ban"].ToString();
-            if (so_ban != null && so_ban != String.Empty)
-            {
-                dcm_Doc.so_ban = int.Parse(so_ban.Trim());
-            }
-
-            // 15 - file dinh kem
-            string file_dinhkems = row["file_dinhkem"].ToString();
-            if (file_dinhkems != null && file_dinhkems != String.Empty)
-            {
-                appendToListFileDinhKem(dcm_Doc.id_VanBan, file_dinhkems.Trim());
-                //dcm_Doc.filesDinhKem = file_dinhkems.Trim();
-            }
-
-            // 16 - van ban lien quan
-            string id_vblqs = row["id_vblqs"].ToString();
-            if (id_vblqs != null && id_vblqs != String.Empty)
-            {
-                appendToListDcmDocRelation(dcm_Doc.id_VanBan, id_vblqs.Trim(), type_vb);
-                //dcm_Doc.id_vblqs = id_vblqs.Trim();
-            }
-
-            // 17 - don vi nhan ngoai
-            string donvi_nhanngoai = row["donvi_nhanngoai"].ToString();
-            if (donvi_nhanngoai != null && donvi_nhanngoai != String.Empty)
-            {
-                dcm_Doc.dv_nhanngoai = donvi_nhanngoai.Trim();
-            }
-
-            // 18 - nguoi soan
-            string nguoi_soan = row["nguoi_soan"].ToString();
-            if (nguoi_soan != null && nguoi_soan != String.Empty)
-            {
-                dcm_Doc.nguoi_soan = nguoi_soan.Trim();
-            }
-
-            // 6 - do mat
-            string id_domat = row["id_domat"].ToString();
-            if (id_domat != null && id_domat != String.Empty)
-            {
-                switch (id_domat.Trim())
+                // 3 - nguoi tao ban hanh
+                string nguoi_vaoso = row["nguoi_tao_banhanh"].ToString();
+                if (nguoi_vaoso != null && nguoi_vaoso != String.Empty)
                 {
-                    case "1":
-                        dcm_Doc.confidential_code = "THUONG";
-                        break;
-                    case "2":
-                        dcm_Doc.confidential_code = "MAT";
-                        break;
-                    case "3":
-                        dcm_Doc.confidential_code = "TOIMAT";
-                        break;
-                    case "4":
-                        dcm_Doc.confidential_code = "TUYETMAT";
-                        break;
-                    default:
-                        dcm_Doc.confidential_code = "THUONG";
-                        break;
+                    dcm_Doc.nguoi_vaoso = nguoi_vaoso.Trim();
                 }
-            }
 
-            // 20 - don vi soan thao
-            string donvi_soanthao = row["donvi_soanthao"].ToString();
-            if (donvi_soanthao != null && donvi_soanthao != String.Empty)
-            {
-                dcm_Doc.donvi_soanthao = donvi_soanthao.Trim();
-            }
+                // Set ngay den di = ngay tao voi vb di
+                dcm_Doc.ngay_den_di = dcm_Doc.ngay_tao;
 
-            // 21 - chuc vu nguoi ky
-            string chucvu_nguoiky = row["chucvu_nguoiky"].ToString();
-            if (chucvu_nguoiky != null && chucvu_nguoiky != String.Empty)
-            {
-                dcm_Doc.chucvu_nguoiky = chucvu_nguoiky.Trim();
-            }
-
-            // 22 - nam van ban
-
-            // 23 - ghi chu trinh ky
-            string ghichu_trinhky = row["ghichu_trinhky"].ToString();
-            if (ghichu_trinhky != null && ghichu_trinhky != String.Empty)
-            {
-                dcm_Doc.ghi_chu = ghichu_trinhky.Trim();
-            }
-
-            // 24 - ghi chu ban hanh
-            string ghichu_banhanh = row["ghichu_banhanh"].ToString();
-            if (ghichu_banhanh != null && ghichu_banhanh != String.Empty)
-            {
-                dcm_Doc.doc_note = ghichu_banhanh.Trim();
-            }
-
-            // 25 - y kien ban hanh
-
-            // 26 - stateid
-
-            // 27 - vb trinh ky
-            string vb_trinh_ky = row["vb_trinh_ky"].ToString();
-            if (vb_trinh_ky != null && vb_trinh_ky != String.Empty)
-            {
-                dcm_Doc.vb_trinhky = int.Parse(vb_trinh_ky.Trim());
-            }
-
-
-            // 28 - so trinh ky
-            string so_trinh_ky = row["so_trinh_ky"].ToString();
-            if (so_trinh_ky != null && so_trinh_ky != String.Empty)
-            {
-                dcm_Doc.so_trinhky = int.Parse(so_trinh_ky.Trim());
-            }
-
-            // 29 - ngay trinh ky
-            string ngay_trinh_ky = row["ngay_trinh_ky"].ToString();
-            if (ngay_trinh_ky != null && ngay_trinh_ky != String.Empty)
-            {
-                DateTime ngay_trinhky = DateTime.ParseExact(ngay_trinh_ky.Trim(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                dcm_Doc.ngay_trinhky = ngay_trinhky;
-                //dcm_doc.ngay_trinhky = "TO_DATE('" + ngay_trinhky.ToString("MM/dd/yyyy") + "','mm/dd/yyyy')";
-            }
-
-            // 30 - ngay ky
-            string ngay_ky = row["ngay_ky"].ToString();
-            if (ngay_ky != null && ngay_ky != String.Empty)
-            {
-                DateTime ngayky = DateTime.ParseExact(ngay_ky.Trim(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                dcm_Doc.ngay_ky = ngayky;
-                //dcm_doc.ngay_ky = "TO_DATE('" + ngayky.ToString("MM/dd/yyyy") + "','mm/dd/yyyy')";
-            }
-
-            // 31 - lanh dao ky
-            string lanhdao_ky = row["lanhdao_ky"].ToString();
-            if (lanhdao_ky != null && lanhdao_ky != String.Empty)
-            {
-                switch (lanhdao_ky)
+                // 4 - trich yeu
+                string trich_yeu = row["trich_yeu"].ToString();
+                if (trich_yeu != null && trich_yeu != String.Empty)
                 {
-                    case "0":
-                        dcm_Doc.trang_thai = 21;
-                        break;
-                    case "2":
-                        dcm_Doc.trang_thai = 2;
-                        break;
-                    case "1":
-                        dcm_Doc.trang_thai = 1;
-                        break;
-                    default:
-                        dcm_Doc.trang_thai = 1;
-                        break;
+                    dcm_Doc.trich_yeu = Common.Escape_String(trich_yeu.Trim());
                 }
-            }
 
-            // 32 - unit id
-            string unit_id = row["unit_id"].ToString();
-            if (unit_id != null && unit_id != String.Empty)
+                // 5 - so ky hieu
+                string so_kyhieu = row["so_kyhieu"].ToString();
+                if (so_kyhieu != null && so_kyhieu != String.Empty)
+                {
+                    dcm_Doc.so_kyhieu = Common.Escape_String(so_kyhieu.Replace("'", "").Trim());
+                }
+
+                // 6 - co quan ban hanh
+                string coquan_banhanh = row["coquan_banhanh"].ToString();
+                if (coquan_banhanh != null && coquan_banhanh != String.Empty)
+                {
+                    dcm_Doc.coquan_banhanh = coquan_banhanh.Trim();
+                }
+
+                // 7 - hinh thuc code
+                string dcmtype_code = row["id_hinhthuc"].ToString();
+                if (dcmtype_code != null && dcmtype_code != String.Empty)
+                {
+                    dcm_Doc.dcmtype_code = dcmtype_code.Trim();
+                }
+
+                // 8 - do khan code
+                string priority_code = row["id_dokhan"].ToString();
+                if (priority_code != null && priority_code != String.Empty)
+                {
+                    switch (priority_code.Trim())
+                    {
+                        case "1":
+                            dcm_Doc.priority_code = "THUONG";
+                            break;
+                        case "2":
+                            dcm_Doc.priority_code = "KHAN";
+                            break;
+                        case "3":
+                            dcm_Doc.priority_code = "THUONGKHAN";
+                            break;
+                        default:
+                            dcm_Doc.priority_code = "THUONG";
+                            break;
+                    }
+                }
+
+                // 9 - linh vuc code
+                string linhvuc_code = row["id_linhvuc"].ToString();
+                if (linhvuc_code != null && linhvuc_code != String.Empty)
+                {
+                    dcm_Doc.linhvuc_code = linhvuc_code.Trim();
+                }
+
+                // 10 - so van ban code
+                string so_vanban_code = row["id_sovanban"].ToString();
+                if (so_vanban_code != null && so_vanban_code != String.Empty)
+                {
+                    // + 20.000.000
+                    dcm_Doc.so_vanban_code = (int.Parse(so_vanban_code.Trim()) + Constants.INCREASEID_OTHERS).ToString();
+                }
+
+                // 11 - ngay ban hanh/ ngay cong van
+                string ngay_cong_van = row["ngay_banhanh"].ToString();
+                if (ngay_cong_van != null && ngay_cong_van != String.Empty)
+                {
+                    DateTime ngaybanhanh = DateTime.ParseExact(ngay_cong_van.Trim(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    dcm_Doc.ngay_ban_hanh = ngaybanhanh;
+                }
+
+                // Set ngay van ban = ngay ban hanh voi vb di
+                dcm_Doc.ngay_van_ban = dcm_Doc.ngay_ban_hanh;
+
+                // 12 - nguoi ky
+                string nguoi_ky = row["nguoi_ky"].ToString();
+                if (nguoi_ky != null && nguoi_ky != String.Empty)
+                {
+                    dcm_Doc.nguoi_ky_chinh = nguoi_ky.Trim();
+                }
+
+                // 13 - so trang
+                string so_trang = row["so_trang"].ToString();
+                if (so_trang != null && so_trang != String.Empty)
+                {
+                    dcm_Doc.so_trang = int.Parse(so_trang.Trim());
+                }
+
+                // 14 - so ban
+                string so_ban = row["so_ban"].ToString();
+                if (so_ban != null && so_ban != String.Empty)
+                {
+                    dcm_Doc.so_ban = int.Parse(so_ban.Trim());
+                }
+
+                // 15 - file dinh kem
+                string file_dinhkems = row["file_dinhkem"].ToString();
+                if (file_dinhkems != null && file_dinhkems != String.Empty)
+                {
+                    appendToListFileDinhKem(dcm_Doc.id_VanBan, file_dinhkems.Trim());
+                    //dcm_Doc.filesDinhKem = file_dinhkems.Trim();
+                }
+
+                // 16 - van ban lien quan
+                string id_vblqs = row["id_vblqs"].ToString();
+                if (id_vblqs != null && id_vblqs != String.Empty)
+                {
+                    appendToListDcmDocRelation(dcm_Doc.id_VanBan, id_vblqs.Trim(), type_vb);
+                    //dcm_Doc.id_vblqs = id_vblqs.Trim();
+                }
+
+                // 17 - don vi nhan ngoai
+                string donvi_nhanngoai = row["donvi_nhanngoai"].ToString();
+                if (donvi_nhanngoai != null && donvi_nhanngoai != String.Empty)
+                {
+                    dcm_Doc.dv_nhanngoai = donvi_nhanngoai.Trim();
+                }
+
+                // 18 - nguoi soan
+                string nguoi_soan = row["nguoi_soan"].ToString();
+                if (nguoi_soan != null && nguoi_soan != String.Empty)
+                {
+                    dcm_Doc.nguoi_soan = nguoi_soan.Trim();
+                }
+
+                // 6 - do mat
+                string id_domat = row["id_domat"].ToString();
+                if (id_domat != null && id_domat != String.Empty)
+                {
+                    switch (id_domat.Trim())
+                    {
+                        case "1":
+                            dcm_Doc.confidential_code = "THUONG";
+                            break;
+                        case "2":
+                            dcm_Doc.confidential_code = "MAT";
+                            break;
+                        case "3":
+                            dcm_Doc.confidential_code = "TOIMAT";
+                            break;
+                        case "4":
+                            dcm_Doc.confidential_code = "TUYETMAT";
+                            break;
+                        default:
+                            dcm_Doc.confidential_code = "THUONG";
+                            break;
+                    }
+                }
+
+                // 20 - don vi soan thao
+                string donvi_soanthao = row["donvi_soanthao"].ToString();
+                if (donvi_soanthao != null && donvi_soanthao != String.Empty)
+                {
+                    dcm_Doc.donvi_soanthao = donvi_soanthao.Trim();
+                }
+
+                // 21 - chuc vu nguoi ky
+                string chucvu_nguoiky = row["chucvu_nguoiky"].ToString();
+                if (chucvu_nguoiky != null && chucvu_nguoiky != String.Empty)
+                {
+                    dcm_Doc.chucvu_nguoiky = chucvu_nguoiky.Trim();
+                }
+
+                // 22 - nam van ban
+
+                // 23 - ghi chu trinh ky
+                string ghichu_trinhky = row["ghichu_trinhky"].ToString();
+                if (ghichu_trinhky != null && ghichu_trinhky != String.Empty)
+                {
+                    dcm_Doc.ghi_chu = ghichu_trinhky.Trim();
+                }
+
+                // 24 - ghi chu ban hanh
+                string ghichu_banhanh = row["ghichu_banhanh"].ToString();
+                if (ghichu_banhanh != null && ghichu_banhanh != String.Empty)
+                {
+                    dcm_Doc.doc_note = ghichu_banhanh.Trim();
+                }
+
+                // 25 - y kien ban hanh
+
+                // 26 - stateid
+
+                // 27 - vb trinh ky
+                string vb_trinh_ky = row["vb_trinh_ky"].ToString();
+                if (vb_trinh_ky != null && vb_trinh_ky != String.Empty)
+                {
+                    dcm_Doc.vb_trinhky = int.Parse(vb_trinh_ky.Trim());
+                }
+
+
+                // 28 - so trinh ky
+                string so_trinh_ky = row["so_trinh_ky"].ToString();
+                if (so_trinh_ky != null && so_trinh_ky != String.Empty)
+                {
+                    dcm_Doc.so_trinhky = int.Parse(so_trinh_ky.Trim());
+                }
+
+                // 29 - ngay trinh ky
+                string ngay_trinh_ky = row["ngay_trinh_ky"].ToString();
+                if (ngay_trinh_ky != null && ngay_trinh_ky != String.Empty)
+                {
+                    DateTime ngay_trinhky = DateTime.ParseExact(ngay_trinh_ky.Trim(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    dcm_Doc.ngay_trinhky = ngay_trinhky;
+                    //dcm_doc.ngay_trinhky = "TO_DATE('" + ngay_trinhky.ToString("MM/dd/yyyy") + "','mm/dd/yyyy')";
+                }
+
+                // 30 - ngay ky
+                string ngay_ky = row["ngay_ky"].ToString();
+                if (ngay_ky != null && ngay_ky != String.Empty)
+                {
+                    DateTime ngayky = DateTime.ParseExact(ngay_ky.Trim(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    dcm_Doc.ngay_ky = ngayky;
+                    //dcm_doc.ngay_ky = "TO_DATE('" + ngayky.ToString("MM/dd/yyyy") + "','mm/dd/yyyy')";
+                }
+
+                // 31 - lanh dao ky
+                string lanhdao_ky = row["lanhdao_ky"].ToString();
+                if (lanhdao_ky != null && lanhdao_ky != String.Empty)
+                {
+                    switch (lanhdao_ky)
+                    {
+                        case "0":
+                            dcm_Doc.trang_thai = 21;
+                            break;
+                        case "2":
+                            dcm_Doc.trang_thai = 2;
+                            break;
+                        case "1":
+                            dcm_Doc.trang_thai = 1;
+                            break;
+                        default:
+                            dcm_Doc.trang_thai = 1;
+                            break;
+                    }
+                }
+
+                // 32 - unit id
+                string unit_id = row["unit_id"].ToString();
+                if (unit_id != null && unit_id != String.Empty)
+                {
+                    dcm_Doc.unit_id = int.Parse(unit_id);
+                }
+
+                // so den di
+                if (dcm_Doc.so_kyhieu.Length > 0)
+                {
+                    string[] regex = Regex.Split(dcm_Doc.so_kyhieu, @"\D+");
+                    dcm_Doc.so_den_di = Int64.Parse(regex[0] != String.Empty ? regex[0] : "0");
+                }
+
+                // hinh thuc gui code
+                dcm_Doc.hinhthuc_gui_code = "BUUDIEN";
+
+                // cong van den di (2: van ban di, 1: van ban den)
+                dcm_Doc.congvan_dendi = 2;
+
+                if (dcm_Doc.vb_trinhky == 1)
+                {
+                    dcm_Doc.process_key = "BLU_VB_DI_TRINH_KY_01_6563:1:188167505";
+                }
+                else
+                {
+                    dcm_Doc.process_key = "VB_DI_VT2_UBBL_6563: 1:188102558";
+                }
+
+                // add to list_dcm_doc
+                dcm_Docs.Add(dcm_Doc);
+            } catch (Exception ex)
             {
-                dcm_Doc.unit_id = int.Parse(unit_id);
+                Console.WriteLine(ex.Message);
             }
-
-            // so den di
-            if (dcm_Doc.so_kyhieu.Length > 0)
-            {
-                string[] regex = Regex.Split(dcm_Doc.so_kyhieu, @"\D+");
-                dcm_Doc.so_den_di = Int64.Parse(regex[0] != String.Empty ? regex[0] : "0");
-            }
-
-            // hinh thuc gui code
-            dcm_Doc.hinhthuc_gui_code = "BUUDIEN";
-
-            // cong van den di (2: van ban di, 1: van ban den)
-            dcm_Doc.congvan_dendi = 2;
-
-            if (dcm_Doc.vb_trinhky == 1)
-            {
-                dcm_Doc.process_key = "BLU_VB_DI_TRINH_KY_01_6563:1:188167505";
-            }
-            else
-            {
-                dcm_Doc.process_key = "VB_DI_VT2_UBBL_6563: 1:188102558";
-            }
-
-            // add to list_dcm_doc
-            dcm_Docs.Add(dcm_Doc);
         }
 
         private void ParseDataToIncomingDocInfo(DataRow row, Configs configs, Common.VB_TYPE type_vb)
         {
-
-            Dcm_Doc dcm_Doc = new Dcm_Doc();
-            // 1 - id van ban
-            dcm_Doc.id_VanBan = int.Parse(row["id"].ToString());
-
-            // 2 - thoi gian tao
-            string ngay_tao = row["thoigian_tao"].ToString();
-            if (ngay_tao != null && ngay_tao != String.Empty)
+            try
             {
-                DateTime ngaytao = DateTime.ParseExact(ngay_tao.Trim(), "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
-                dcm_Doc.ngay_tao = ngaytao;
-                //dcm_doc.ngay_tao = "TO_DATE('" + ngaytao.ToString("MM/dd/yyyy HH:mm:ss") + "','mm/dd/yyyy HH24:MI:SS')";
-            }
+                Dcm_Doc dcm_Doc = new Dcm_Doc();
+                // 1 - id van ban
+                dcm_Doc.id_VanBan = int.Parse(row["id"].ToString());
 
-            // 3 - nguoi vao so
-            string nguoi_vaoso = row["nguoi_tao"].ToString();
-            if (nguoi_vaoso != null && nguoi_vaoso != String.Empty)
-            {
-                dcm_Doc.nguoi_vaoso = nguoi_vaoso.Trim();
-            }
-
-            // 4 - trich yeu
-            string trich_yeu = row["trich_yeu"].ToString();
-            if (trich_yeu != null && trich_yeu != String.Empty)
-            {
-                dcm_Doc.trich_yeu = Common.escape_Trichyeu(trich_yeu.Trim());
-            }
-
-            // 7 - so ky hieu
-            string so_kyhieu = row["so_kyhieu"].ToString();
-            if (so_kyhieu != null && so_kyhieu != String.Empty)
-            {
-                dcm_Doc.so_kyhieu = so_kyhieu.Replace("'", "").Trim();
-            }
-
-            // 8 - co quan ban hanh
-            string coquan_banhanh = row["coquan_banhanh"].ToString();
-            if (coquan_banhanh != null && coquan_banhanh != String.Empty)
-            {
-                dcm_Doc.coquan_banhanh = coquan_banhanh.Trim();
-            }
-
-            // 9 - hinh thuc code
-            string dcmtype_code = row["id_hinhthuc"].ToString();
-            if (dcmtype_code != null && dcmtype_code != string.Empty)
-            {
-                dcm_Doc.dcmtype_code = dcmtype_code.Trim();
-            }
-
-            // 10 - do khan code
-            string priority_code = row["id_dokhan"].ToString();
-            if (priority_code != null && priority_code != String.Empty)
-            {
-                switch (priority_code.Trim())
+                // 2 - thoi gian tao
+                string ngay_tao = row["thoigian_tao"].ToString();
+                if (ngay_tao != null && ngay_tao != String.Empty)
                 {
-                    case "1":
-                        dcm_Doc.priority_code = "THUONG";
-                        break;
-                    case "2":
-                        dcm_Doc.priority_code = "KHAN";
-                        break;
-                    case "3":
-                        dcm_Doc.priority_code = "HOATOC";
-                        break;
-                    default:
-                        dcm_Doc.priority_code = "THUONG";
-                        break;
+                    DateTime ngaytao = DateTime.ParseExact(ngay_tao.Trim(), "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                    dcm_Doc.ngay_tao = ngaytao;
+                    //dcm_doc.ngay_tao = "TO_DATE('" + ngaytao.ToString("MM/dd/yyyy HH:mm:ss") + "','mm/dd/yyyy HH24:MI:SS')";
                 }
-            }
 
-            // 11 - linh vuc code
-            string linhvuc_code = row["id_linhvuc"].ToString();
-            if (linhvuc_code != null && linhvuc_code != String.Empty)
-            {
-                dcm_Doc.linhvuc_code = linhvuc_code.Trim();
-            }
-
-            // 12 - so van ban code
-            string so_vanban_code = row["id_sovanban"].ToString();
-            if (so_vanban_code != null && so_vanban_code != String.Empty)
-            {
-                // + 20.000.000
-                dcm_Doc.so_vanban_code = (int.Parse(so_vanban_code.Trim()) + Constants.INCREASEID_OTHERS).ToString();
-            }
-
-            // 13 - ngay den
-            string ngay_den = row["ngay_den"].ToString();
-            if (ngay_den != null && ngay_den != String.Empty)
-            {
-                DateTime ngay_dendi = DateTime.ParseExact(ngay_den.Trim(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                dcm_Doc.ngay_den_di = ngay_dendi;
-            }
-
-            // 14 - ngay ban hanh/ ngay cong van
-            string ngay_van_ban = row["ngay_van_ban"].ToString();
-            if (ngay_van_ban != null && ngay_van_ban != String.Empty)
-            {
-                DateTime ngay_vanban = DateTime.ParseExact(ngay_van_ban.Trim(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                dcm_Doc.ngay_van_ban = ngay_vanban;
-            }
-
-            // 15 - nguoi ky
-            string nguoi_ky = row["nguoi_ky"].ToString();
-            if (nguoi_ky != null && nguoi_ky != String.Empty)
-            {
-                dcm_Doc.nguoi_ky_chinh = nguoi_ky.Trim();
-            }
-
-
-            // 17 - so trang
-            string so_trang = row["so_trang"].ToString();
-            if (so_trang != null && so_trang != String.Empty)
-            {
-                dcm_Doc.so_trang = int.Parse(so_trang.Trim());
-            }
-
-            // 18 - so ban
-            string so_ban = row["so_ban"].ToString();
-            if (so_ban != null && so_ban != String.Empty)
-            {
-                dcm_Doc.so_ban = int.Parse(so_ban.Trim());
-            }
-
-            // 19 - han xu ly
-            string han_xuly = row["han_xu_ly"].ToString();
-            if (han_xuly != null && han_xuly != String.Empty)
-            {
-                DateTime han_xu_ly = DateTime.ParseExact(han_xuly.Trim(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                dcm_Doc.han_giaiquyet = han_xu_ly;
-            }
-
-            // 20 - file dinh kem
-            string file_dinhkems = row["ds_file"].ToString();
-            if (file_dinhkems != null && file_dinhkems != String.Empty)
-            {
-                appendToListFileDinhKem(dcm_Doc.id_VanBan, file_dinhkems.Trim());
-            }
-
-            // 21 - van ban lien quan
-            string id_vblqs = row["id_vblqs"].ToString();
-            if (id_vblqs != null && id_vblqs != String.Empty)
-            {
-                appendToListDcmDocRelation(dcm_Doc.id_VanBan, id_vblqs.Trim(), type_vb);
-            }
-
-            // 6 - do mat
-            string id_domat = row["do_mat"].ToString();
-            if (id_domat != null && id_domat != String.Empty)
-            {
-                switch (id_domat.Trim())
+                // 3 - nguoi vao so
+                string nguoi_vaoso = row["nguoi_tao"].ToString();
+                if (nguoi_vaoso != null && nguoi_vaoso != String.Empty)
                 {
-                    case "1":
-                        dcm_Doc.confidential_code = "THUONG";
-                        break;
-                    case "2":
-                        dcm_Doc.confidential_code = "MAT";
-                        break;
-                    case "3":
-                        dcm_Doc.confidential_code = "TOIMAT";
-                        break;
-                    default:
-                        dcm_Doc.confidential_code = "THUONG";
-                        break;
+                    dcm_Doc.nguoi_vaoso = nguoi_vaoso.Trim();
                 }
-            }
 
-            // 16 - chuc vu nguoi ky
-            string chucvu_nguoiky = row["chuc_vu"].ToString();
-            if (chucvu_nguoiky != null && chucvu_nguoiky != String.Empty)
-            {
-                dcm_Doc.chucvu_nguoiky = chucvu_nguoiky.Trim();
-            }
-
-            // 5 - so den
-            string so_den = row["so_den"].ToString();
-            if (so_den != null && so_den != String.Empty)
-            {
-                dcm_Doc.so_den_di = int.Parse(so_den);
-            }
-
-            // 22 - receive document id/Van ban ban hanh den don vi
-            string receivedocumentid = row["receivedocumentid"].ToString();
-            if (receivedocumentid != null && receivedocumentid != String.Empty)
-            {
-                long vb_banhanh_den_donvi = long.Parse(receivedocumentid);
-                if (vb_banhanh_den_donvi > 0)
+                // 4 - trich yeu
+                string trich_yeu = row["trich_yeu"].ToString();
+                if (trich_yeu != null && trich_yeu != String.Empty)
                 {
-                    // 23 - id don vi ban hanh/ issueorganizationid
+                    dcm_Doc.trich_yeu = Common.Escape_String(trich_yeu.Trim());
+                }
 
-                    // 24 - schema don vi ban hanh / schema
-                    string schema = row["schema"].ToString();
-                    if (schema != null && schema != String.Empty)
+                // 7 - so ky hieu
+                string so_kyhieu = row["so_kyhieu"].ToString();
+                if (so_kyhieu != null && so_kyhieu != String.Empty)
+                {
+                    dcm_Doc.so_kyhieu = Common.Escape_String(so_kyhieu.Replace("'", "").Trim());
+                }
+
+                // 8 - co quan ban hanh
+                string coquan_banhanh = row["coquan_banhanh"].ToString();
+                if (coquan_banhanh != null && coquan_banhanh != String.Empty)
+                {
+                    dcm_Doc.coquan_banhanh = coquan_banhanh.Trim();
+                }
+
+                // 9 - hinh thuc code
+                string dcmtype_code = row["id_hinhthuc"].ToString();
+                if (dcmtype_code != null && dcmtype_code != string.Empty)
+                {
+                    dcm_Doc.dcmtype_code = dcmtype_code.Trim();
+                }
+
+                // 10 - do khan code
+                string priority_code = row["id_dokhan"].ToString();
+                if (priority_code != null && priority_code != String.Empty)
+                {
+                    switch (priority_code.Trim())
                     {
-                        appendToListDcmTrack(dcm_Doc.id_VanBan, configs.schema, vb_banhanh_den_donvi + Constants.INCREASEID_VBDI, schema, dcm_Doc.ngay_van_ban);
+                        case "1":
+                            dcm_Doc.priority_code = "THUONG";
+                            break;
+                        case "2":
+                            dcm_Doc.priority_code = "KHAN";
+                            break;
+                        case "3":
+                            dcm_Doc.priority_code = "HOATOC";
+                            break;
+                        default:
+                            dcm_Doc.priority_code = "THUONG";
+                            break;
                     }
                 }
-            }
 
-            //25 - ghi chu vb den/ ghi_chu
-            string ghi_chu = row["ghi_chu"].ToString();
-            if (ghi_chu != null && ghi_chu != String.Empty)
+                // 11 - linh vuc code
+                string linhvuc_code = row["id_linhvuc"].ToString();
+                if (linhvuc_code != null && linhvuc_code != String.Empty)
+                {
+                    dcm_Doc.linhvuc_code = linhvuc_code.Trim();
+                }
+
+                // 12 - so van ban code
+                string so_vanban_code = row["id_sovanban"].ToString();
+                if (so_vanban_code != null && so_vanban_code != String.Empty)
+                {
+                    // + 20.000.000
+                    dcm_Doc.so_vanban_code = (int.Parse(so_vanban_code.Trim()) + Constants.INCREASEID_OTHERS).ToString();
+                }
+
+                // 13 - ngay den
+                string ngay_den = row["ngay_den"].ToString();
+                if (ngay_den != null && ngay_den != String.Empty)
+                {
+                    DateTime ngay_dendi = DateTime.ParseExact(ngay_den.Trim(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    dcm_Doc.ngay_den_di = ngay_dendi;
+                }
+
+                // 14 - ngay ban hanh/ ngay cong van
+                string ngay_van_ban = row["ngay_van_ban"].ToString();
+                if (ngay_van_ban != null && ngay_van_ban != String.Empty)
+                {
+                    DateTime ngay_vanban = DateTime.ParseExact(ngay_van_ban.Trim(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    dcm_Doc.ngay_van_ban = ngay_vanban;
+                }
+
+                // 15 - nguoi ky
+                string nguoi_ky = row["nguoi_ky"].ToString();
+                if (nguoi_ky != null && nguoi_ky != String.Empty)
+                {
+                    dcm_Doc.nguoi_ky_chinh = nguoi_ky.Trim();
+                }
+
+
+                // 17 - so trang
+                string so_trang = row["so_trang"].ToString();
+                if (so_trang != null && so_trang != String.Empty)
+                {
+                    dcm_Doc.so_trang = int.Parse(so_trang.Trim());
+                }
+
+                // 18 - so ban
+                string so_ban = row["so_ban"].ToString();
+                if (so_ban != null && so_ban != String.Empty)
+                {
+                    dcm_Doc.so_ban = int.Parse(so_ban.Trim());
+                }
+
+                // 19 - han xu ly
+                string han_xuly = row["han_xu_ly"].ToString();
+                if (han_xuly != null && han_xuly != String.Empty)
+                {
+                    DateTime han_xu_ly = DateTime.ParseExact(han_xuly.Trim(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    dcm_Doc.han_giaiquyet = han_xu_ly;
+                }
+
+                // 20 - file dinh kem
+                string file_dinhkems = row["ds_file"].ToString();
+                if (file_dinhkems != null && file_dinhkems != String.Empty)
+                {
+                    appendToListFileDinhKem(dcm_Doc.id_VanBan, file_dinhkems.Trim());
+                }
+
+                // 21 - van ban lien quan
+                string id_vblqs = row["id_vblqs"].ToString();
+                if (id_vblqs != null && id_vblqs != String.Empty)
+                {
+                    appendToListDcmDocRelation(dcm_Doc.id_VanBan, id_vblqs.Trim(), type_vb);
+                }
+
+                // 6 - do mat
+                string id_domat = row["do_mat"].ToString();
+                if (id_domat != null && id_domat != String.Empty)
+                {
+                    switch (id_domat.Trim())
+                    {
+                        case "1":
+                            dcm_Doc.confidential_code = "THUONG";
+                            break;
+                        case "2":
+                            dcm_Doc.confidential_code = "MAT";
+                            break;
+                        case "3":
+                            dcm_Doc.confidential_code = "TOIMAT";
+                            break;
+                        default:
+                            dcm_Doc.confidential_code = "THUONG";
+                            break;
+                    }
+                }
+
+                // 16 - chuc vu nguoi ky
+                string chucvu_nguoiky = row["chuc_vu"].ToString();
+                if (chucvu_nguoiky != null && chucvu_nguoiky != String.Empty)
+                {
+                    dcm_Doc.chucvu_nguoiky = chucvu_nguoiky.Trim();
+                }
+
+                // 5 - so den
+                string so_den = row["so_den"].ToString();
+                if (so_den != null && so_den != String.Empty)
+                {
+                    dcm_Doc.so_den_di = int.Parse(so_den);
+                }
+
+                // 22 - receive document id/Van ban ban hanh den don vi
+                string receivedocumentid = row["receivedocumentid"].ToString();
+                if (receivedocumentid != null && receivedocumentid != String.Empty)
+                {
+                    long vb_banhanh_den_donvi = long.Parse(receivedocumentid);
+                    if (vb_banhanh_den_donvi > 0)
+                    {
+                        // 23 - id don vi ban hanh/ issueorganizationid
+
+                        // 24 - schema don vi ban hanh / schema
+                        string schema = row["schema"].ToString();
+                        if (schema != null && schema != String.Empty)
+                        {
+                            appendToListDcmTrack(dcm_Doc.id_VanBan, configs.Old_schema, vb_banhanh_den_donvi + Constants.INCREASEID_VBDI, schema, dcm_Doc.ngay_van_ban);
+                        }
+                    }
+                }
+
+                //25 - ghi chu vb den/ ghi_chu
+                string ghi_chu = row["ghi_chu"].ToString();
+                if (ghi_chu != null && ghi_chu != String.Empty)
+                {
+                    dcm_Doc.doc_note = ghi_chu;
+                }
+
+                // 26 - unit id
+                string unit_id = row["unit_id"].ToString();
+                if (unit_id != null && unit_id != String.Empty)
+                {
+                    dcm_Doc.unit_id = int.Parse(unit_id);
+                }
+
+                // cong van den di (2: van ban di, 1: van ban den)
+                dcm_Doc.congvan_dendi = 1;
+
+                dcm_Doc.trang_thai = 13;
+
+                // Process key
+                dcm_Doc.process_key = "VAN_BAN_DEN_CAP1_UBBL_6563: 1:175549970";
+
+                // add to list_dcm_doc
+                dcm_Docs.Add(dcm_Doc);
+            } catch (Exception ex)
             {
-                dcm_Doc.doc_note = ghi_chu;
+                Console.WriteLine(ex.Message);
             }
-
-            // 26 - unit id
-            string unit_id = row["unit_id"].ToString();
-            if (unit_id != null && unit_id != String.Empty)
-            {
-                dcm_Doc.unit_id = int.Parse(unit_id);
-            }
-
-            // cong van den di (2: van ban di, 1: van ban den)
-            dcm_Doc.congvan_dendi = 1;
-
-            dcm_Doc.trang_thai = 13;
-
-            // Process key
-            dcm_Doc.process_key = "VAN_BAN_DEN_CAP1_UBBL_6563: 1:175549970";
-
-            // add to list_dcm_doc
-            dcm_Docs.Add(dcm_Doc);
         }
 
         private void appendToListDcmDocRelation(int id_vb, string id_vblqs, Common.VB_TYPE type_vb)
@@ -681,7 +700,7 @@ namespace Convert_Data
 
                         cmd.ArrayBindCount = data.Count;
 
-                        cmd.CommandText = string.Format(query, configs.schema);
+                        cmd.CommandText = string.Format(query, configs.Schema);
 
                         cmd.Parameters.Add("ID", OracleDbType.Int64);
                         cmd.Parameters.Add("DCMTYPE_CODE", OracleDbType.Varchar2);
@@ -788,7 +807,7 @@ namespace Convert_Data
 
                         cmd.ArrayBindCount = data.Count;
 
-                        cmd.CommandText = string.Format(query, configs.schema);
+                        cmd.CommandText = string.Format(query, configs.Schema);
 
                         cmd.Parameters.Add("ID", OracleDbType.Int64);
                         cmd.Parameters.Add("DCM_ID", OracleDbType.Int64);
@@ -832,7 +851,7 @@ namespace Convert_Data
 
                         cmd.ArrayBindCount = data.Count;
 
-                        cmd.CommandText = string.Format(query, configs.schema);
+                        cmd.CommandText = string.Format(query, configs.Schema);
 
                         cmd.Parameters.Add("ID", OracleDbType.Int64);
                         cmd.Parameters.Add("FILE_TYPE_ID", OracleDbType.Int64);
@@ -889,7 +908,7 @@ namespace Convert_Data
 
                         cmd.ArrayBindCount = data.Count;
 
-                        cmd.CommandText = string.Format(query, configs.schema);
+                        cmd.CommandText = string.Format(query, configs.Schema);
 
                         cmd.Parameters.Add("ATTACHMENT_ID", OracleDbType.Int64);
                         cmd.Parameters.Add("DOC_ID", OracleDbType.Int64);

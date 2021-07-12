@@ -32,8 +32,16 @@ namespace Convert_Data
             "User Id = {3}; Password = {4};", oracle_host, oracle_port, oracle_service_name, oracle_user, oracle_pass);
         #endregion oracle connection
 
+        #region
+        public static string BLU_CONNSTRING = String.Format("Data Source=( DESCRIPTION = " +
+            "( ADDRESS_LIST = ( ADDRESS = ( PROTOCOL = TCP )( HOST = {0} )(PORT = {1} ) ) )" +
+            "(CONNECT_DATA = (SERVER = DEDICATED )(SERVICE_NAME = {2}) ) ); " +
+            "User Id = {3}; Password = {4};", "10.163.8.36", oracle_port, "eoffice", "EOFFICE_RO", "roeof2021");
+        #endregion
+
         #region query data
         #region postgres query
+        #region UBNDTINH
         #region get thongtin_vb_di from postgres
         public static string sql_thongtin_vb_di = "SELECT a.id, to_char(a.createdate,' DD/MM/YYYY HH24:MI:SS')  thoigian_tao, u_banhanh.emailaddress nguoi_tao_banhanh "
             + " , a.summarycontent trich_yeu, case when length(a.booknumber)>0 then a.booknumber else a.code end so_kyhieu "
@@ -463,6 +471,7 @@ namespace Convert_Data
             + " and b.organizationid = {0} and b.yeardocument in ({1}) and b.id in (69510)"
             + " order by id_vanban";
         #endregion sql_log_xuly_vb_di
+        #endregion UBNDTINH
 
         #region DONVI_SO
         #region sql_so_thongtin_vbdi_from_postgres
@@ -484,10 +493,11 @@ namespace Convert_Data
             + "        when a.stateid = 4 then 2  "
             + "     when a.stateid = 9 then 2 else 1 end lanhdao_ky  "
             + "   , unit_id.\"UNIT_ID\" unit_id "
-            + " FROM (select a.*, string_agg(f.filename, ';' ORDER BY f.documentoutgoingid) ds_file "
+            + " FROM (select a.*, string_agg(replace(sb.schema,'.','@')||f.filename, ';' ORDER BY f.documentoutgoingid) ds_file "
             + "   FROM \"public\".\"documentoutgoing\" a "
             + "   left join \"public\".\"documentoutgoingattach\" f "
             + "   on a.id = f.documentoutgoingid "
+            + " 	left join \"dms_ubnd_baclieu_release\".\"public\".\"organization_schema\" sb on CAST(a.organizationid as text)= sb.organizationid "
             + "   where a.organizationid in ({0}) and a.yeardocument in ({1}) "
             + "   group by a.id, f.documentoutgoingid) a "
             + "   left join \"dms_ubnd_baclieu_release\".\"public\".\"documentoutgoingbase\" c on  a.id = c.documentoutgoingid "
@@ -513,7 +523,7 @@ namespace Convert_Data
             + " group by a.id, a.createdate, a.writerid, a.summarycontent, a.booknumber, dv_bh.name, lvb.\"CODE\"  "
             + "     ,a.emergencyid, lv.\"CODE\", a.bookid, a.issuedate, a.signerid, a.ds_file, a.secretid, dv_st.\"UNIT_ID\", unit_id.\"UNIT_ID\" "
             + "     ,a.office, a.yeardocument, a.submitnote, a.note, a.note1, a.stateid, a.submit, a.numbersubmit, a.submitdate, a.signdate,d.donvi_ngoai "
-            + "     ,u_banhanh.emailaddress, u_tao.emailaddress, u_ky.emailaddress, a.code, a.fullname";
+            + "     ,u_banhanh.emailaddress, u_tao.emailaddress, u_ky.emailaddress, a.code,a.fullname";
         #endregion sql_so_thongtin_vbdi_from_postgres
 
         #region sql_so_thongtin_vbden_from_postgres
@@ -539,13 +549,17 @@ namespace Convert_Data
             + "         where a.receivedocumentid = aa.id "
             + "                    ) end) as schema "
             + "     , a.note1 ghi_chu, unit_id.\"UNIT_ID\" unit_id "
-            + " from (select a.*, string_agg(f.filename, ';' ORDER BY f.documentincomingid) ds_file1 "
-            + "         , string_agg(o.filename, ';' ORDER BY o.documentoutgoingid) ds_file2 "
+            + " from (select a.*, string_agg(replace(sb.schema,'.','@')||f.filename, ';' ORDER BY f.documentincomingid) ds_file1 "
+            + "         , (case when a.organizationid in (19329,63) then ''  "
+            + "          else string_agg(replace(sa.schema,'.','@')||o.filename, ';' ORDER BY o.documentoutgoingid) end) ds_file2 "
             + "   FROM \"dms_ubnd_baclieu_release\".\"public\".\"documentincoming\" a "
             + "   left join \"dms_ubnd_baclieu_release\".\"public\".\"documentincomingattach\" f "
             + "   on a.id = f.documentincomingid "
             + "   left join \"dms_ubnd_baclieu_release\".\"public\".\"documentoutgoingattach\" o "
             + "   on a.receivedocumentid = o.documentoutgoingid "
+            + "   left join \"dms_ubnd_baclieu_release\".\"public\".\"documentoutgoing\" oa on a.receivedocumentid = oa.id "
+            + "   left join \"dms_ubnd_baclieu_release\".\"public\".\"organization_schema\" sa on CAST(oa.organizationid as text)= sa.organizationid "
+            + "  left join \"dms_ubnd_baclieu_release\".\"public\".\"organization_schema\" sb on CAST(a.organizationid as text)= sb.organizationid "
             + "   where a.organizationid in ({0}) and a.yeardocument in ({1}) "
             + "   group by a.id, f.documentincomingid) a "
             + "   left join \"dms_ubnd_baclieu_release\".\"public\".\"documentoutgoingbase\" c on  a.id = c.documentincomingid "
@@ -620,7 +634,6 @@ namespace Convert_Data
             + "    on b.organizationid = dd.\"ORGANIZATIONID\"  "
             + " where a.organizationid in ({2}) and a.yeardocument in ({3}) "
             + "    and a.id = b.documentid "
-            + "    and b.type != 1 "
             + " group by a.id, da.emailaddress "
             + " union ALL "
             + " select 2 STT, a.id id_vanban, da.emailaddress nguoi_gui "
@@ -650,22 +663,27 @@ namespace Convert_Data
 
         #region sql_so_luong_xuly_vbden_from_postgres
         public static string sql_so_luong_xuly_vbden = "select a.stt, a.id_vanban, c.emailaddress nguoi_gui, a.thoigian_gui, a.nguoi_nhan, a.vai_tro vai_tro_nguoinhan "
-            + "   , a.donvi_nhan, a.vai_tro_donvi, a.ykien_xuly, 0 agent_id, a.task_key, a.action_tv, a.approved "
+            + "   , a.donvi_nhan, a.vaitro_donvi, a.ykien_xuly, 0 agent_id, a.task_key, a.action_tv, a.approved "
             + "   , a.trang_thai_xuly, a.thoigian_xuly, a.trang_thai_xuly_donvi, a.thoigian_xuly_donvi, a.loai_dv "
             + " from ( "
-            + " select a.stt, a.id_vanban, a.nguoi_gui, a.thoigian_gui, d.emailaddress nguoi_nhan, a.donvi_nhan, a.vai_tro "
-            + "    , a.ykien_xuly, a.vai_tro_donvi, a.task_key, a.action_tv, a.approved "
-            + "    , a.trang_thai_xuly, a.thoigian_xuly, a.trang_thai_xuly_donvi, a.thoigian_xuly_donvi, a.loai_dv "
-            + " from ( "
-            + " select 0 stt, a.id id_vanban, CAST(userid as text)  nguoi_gui "
+            + " select 0 stt, a.id id_vanban,  CAST(a.userid as text)  nguoi_gui "
             + "    , to_char(CASE WHEN a.ideadate IS NOT NULL THEN a.ideadate "
             + "            WHEN a.assigndate IS NOT NULL THEN a.assigndate "
             + "            WHEN a.leaderapprovedate IS NOT NULL THEN a.leaderapprovedate "
             + "            ELSE a.createdate END, ' DD/MM/YYYY HH24:MI:SS') thoigian_gui "
-            + "   , '' nguoi_nhan, '' donvi_nhan "
+            + "    , '' nguoi_nhan, '' donvi_nhan "
             + "    , '3' vai_tro "
-            + "  , ('Ý kiến đề xuất: '|| COALESCE(idea,'') || E'\r\nÝ kiến CVP: '||COALESCE(idea1,'')||E'\r\nÝ kiến Thường trực: '||COALESCE(leadernote,'')) as  ykien_xuly "
-            + "    , '' vai_tro_donvi,'' task_key, 'Xin ý kiến'  action_tv, 'GUI_YKIEN' approved "
+            + "   , ('Ý kiến đề xuất: '|| COALESCE(idea,'')  "
+            + "   ||E'\r\nNgày xin ý kiến: '||COALESCE(to_char(a.ideadate,' DD/MM/YYYY'),'') "
+            + "   ||E'\r\n---Ý KIẾN XỬ LÝ VĂN BẢN---'  "
+            + "   ||E'\r\nNgày cho Ý kiến: '||COALESCE(to_char(a.assigndate,' DD/MM/YYYY'),'') "
+            + "   ||E'\r\nÝ kiến: '||COALESCE(idea1,'') "
+            + "   ||E'\r\nLãnh đạo: '||COALESCE(cvp.lastname,'')||' '||COALESCE(cvp.middlename,'')||' '||COALESCE(cvp.firstname,'') "
+            + "   ||E'\r\n---Ý KIẾN LÃNH ĐẠO---'  "
+            + "   ||E'\r\nNgày cho Ý kiến: '||COALESCE(to_char(a.leaderapprovedate,' DD/MM/YYYY'),'') "
+            + "   ||E'\r\nÝ kiến: '||COALESCE(leadernote,'') "
+            + "   ||E'\r\nLãnh đạo: '||COALESCE(tt.lastname,'')||' '||COALESCE(tt.middlename,'')||' '||COALESCE(tt.firstname,'')) as  ykien_xuly "
+            + "    , '' vaitro_donvi,'' task_key, 'Xin ý kiến'  action_tv, 'GUI_YKIEN' approved "
             + "    , '2' trang_thai_xuly "
             + "    , to_char(CASE WHEN a.ideadate IS NOT NULL THEN a.ideadate "
             + "            WHEN a.assigndate IS NOT NULL THEN a.assigndate "
@@ -673,95 +691,26 @@ namespace Convert_Data
             + "            ELSE a.createdate END + (5 * interval '1 minute'), ' DD/MM/YYYY HH24:MI:SS') thoigian_xuly "
             + "    , '' trang_thai_xuly_donvi, '' thoigian_xuly_donvi, '' loai_dv "
             + " from \"dms_ubnd_baclieu_release\".\"public\".\"documentincoming\" a "
-            + " where a.yeardocument in ({0}) and a.organizationid in ({1}) and (processleaderid=0 or processleaderid is null) and (leaderid=0 or leaderid is null) "
-            + " and (length(idea)>0 or length(idea1)>0 or length(leadernote)>0) "
-            + " union all "
-            + " select 1 stt, a.id id_vanban, CAST(userid as text)  nguoi_gui "
-            + "    , to_char(CASE WHEN a.ideadate IS NOT NULL THEN a.ideadate "
-            + "            WHEN a.assigndate IS NOT NULL THEN a.assigndate "
-            + "            WHEN a.leaderapprovedate IS NOT NULL THEN a.leaderapprovedate "
-            + "            ELSE a.createdate END, ' DD/MM/YYYY HH24:MI:SS') thoigian_gui "
-            + "    , CAST(processleaderid as text) nguoi_nhan, '' donvi_nhan "
-            + "    , '2' vai_tro, idea ykien_xuly, '' vai_tro_donvi "
-            + "    , 'USE_2' task_key, 'Trình Chánh văn phòng'  action_tv, 'VT_TRINH_LDDV' approved "
-            + "    , '2' trang_thai_xuly "
-            + "    , to_char(CASE WHEN a.ideadate IS NOT NULL THEN a.ideadate "
-            + "            WHEN a.assigndate IS NOT NULL THEN a.assigndate "
-            + "            WHEN a.leaderapprovedate IS NOT NULL THEN a.leaderapprovedate "
-            + "            ELSE a.createdate END + (5 * interval '1 minute'), ' DD/MM/YYYY HH24:MI:SS') thoigian_xuly "
-            + "    , '' trang_thai_xuly_donvi, '' thoigian_xuly_donvi, '' loai_dv "
-            + " from \"dms_ubnd_baclieu_release\".\"public\".\"documentincoming\" a "
-            + " where a.yeardocument in ({2}) and a.organizationid in ({3}) and processleaderid > 0 "
-            + " union  ALL "
-            + " select 2 stt, a.id id_vanban, CAST(processleaderid as text) nguoi_gui "
-            + "    , to_char(CASE WHEN a.assigndate IS NOT NULL THEN a.assigndate "
-            + "            WHEN a.ideadate IS NOT NULL THEN a.ideadate "
-            + "            WHEN a.leaderapprovedate IS NOT NULL THEN a.leaderapprovedate "
-            + "            ELSE a.createdate END + (5 * interval '1 minute'), ' DD/MM/YYYY HH24:MI:SS') thoigian_gui "
-            + "    , CAST(userid as text) nguoi_nhan, '' donvi_nhan "
-            + "    , '2' vai_tro "
-            + "   , idea1 ykien_xuly "
-            + "   , '' vai_tro_donvi "
-            + "    , 'USE_1' task_key, 'Chuyển Văn thư'  action_tv, 'LDDV_CHUYEN_VT' approved "
-            + "    , '2' trang_thai_xuly "
-            + "    , to_char(CASE WHEN a.assigndate IS NOT NULL THEN a.assigndate "
-            + "            WHEN a.ideadate IS NOT NULL THEN a.ideadate "
-            + "            WHEN a.leaderapprovedate IS NOT NULL THEN a.leaderapprovedate "
-            + "            ELSE a.createdate END + (10 * interval '1 minute'), ' DD/MM/YYYY HH24:MI:SS') thoigian_xuly "
-            + "    , '' trang_thai_xuly_donvi, '' thoigian_xuly_donvi, '' loai_dv "
-            + " from \"dms_ubnd_baclieu_release\".\"public\".\"documentincoming\" a "
-            + " where a.yeardocument in ({4})  and a.organizationid in ({5}) and processleaderid > 0 "
-            + " union ALL "
-            + " select 3 stt, a.id id_vanban, CAST(userid as text) nguoi_gui "
-            + "    , to_char(CASE WHEN a.leaderapprovedate IS NOT NULL THEN a.leaderapprovedate "
-            + "            WHEN a.assigndate IS NOT NULL THEN a.assigndate "
-            + "            WHEN a.ideadate IS NOT NULL THEN a.ideadate "
-            + "            ELSE a.createdate END + (10 * interval '1 minute'), ' DD/MM/YYYY HH24:MI:SS') thoigian_gui "
-            + "    , CAST(leaderid as text) nguoi_nhan, '' donvi_nhan "
-            + "    , '2' vai_tro, idea ykien_xuly, '' vai_tro_donvi "
-            + "    , 'USE_2' task_key, 'Trình Lãnh đạo'  action_tv, 'VT_TRINH_LDDV' approved "
-            + "    , '2' trang_thai_xuly "
-            + "    , to_char(CASE WHEN a.leaderapprovedate IS NOT NULL THEN a.leaderapprovedate "
-            + "            WHEN a.assigndate IS NOT NULL THEN a.assigndate "
-            + "            WHEN a.ideadate IS NOT NULL THEN a.ideadate "
-            + "            ELSE a.createdate END  + (15 * interval '1 minute'), ' DD/MM/YYYY HH24:MI:SS') thoigian_xuly "
-            + "    , '' trang_thai_xuly_donvi, '' thoigian_xuly_donvi, '' loai_dv "
-            + " from \"dms_ubnd_baclieu_release\".\"public\".\"documentincoming\" a "
-            + " where a.yeardocument in ({6})  and a.organizationid in ({7}) and leaderid > 0 "
-            + " union  ALL "
-            + " select 4 stt, a.id id_vanban,CAST(leaderid as text) nguoi_gui "
-            + "    , to_char(CASE WHEN a.leaderapprovedate IS NOT NULL THEN a.leaderapprovedate "
-            + "            WHEN a.assigndate IS NOT NULL THEN a.assigndate "
-            + "            WHEN a.ideadate IS NOT NULL THEN a.ideadate "
-            + "            ELSE a.createdate END + (15 * interval '1 minute'), ' DD/MM/YYYY HH24:MI:SS') thoigian_gui "
-            + "    , CAST(userid as text) nguoi_nhan, '' donvi_nhan "
-            + "    , '2' vai_tro "
-            + "    , case when length(leadernote)>0 then leadernote   "
-            + "       when processleaderid=0 or processleaderid is null then idea1 end ykien_xuly  "
-            + "    , '' vai_tro_donvi "
-            + "    , 'USE_1' task_key, 'Chuyển Văn thư'  action_tv, 'LDDV_CHUYEN_VT' approved "
-            + "    , '2' trang_thai_xuly "
-            + "    , to_char(CASE WHEN a.leaderapprovedate IS NOT NULL THEN a.leaderapprovedate "
-            + "            WHEN a.assigndate IS NOT NULL THEN a.assigndate "
-            + "            WHEN a.ideadate IS NOT NULL THEN a.ideadate "
-            + "            ELSE a.createdate END + (20 * interval '1 minute'), ' DD/MM/YYYY HH24:MI:SS') thoigian_xuly "
-            + "    , '' trang_thai_xuly_donvi, '' thoigian_xuly_donvi, '' loai_dv "
-            + " from \"dms_ubnd_baclieu_release\".\"public\".\"documentincoming\" a "
-            + " where a.yeardocument in ({8})  and a.organizationid in ({9}) and leaderid > 0) a "
-            + " left join (select * from dblink('dbname=lportal_ubnd_baclieu_release_ga3 user=postgres password=root','select userid, emailaddress from user_') as t(userid int, emailaddress text)) d "
-            + " on a.nguoi_nhan = CAST(d.userid as text) "
+            + " left join (select * from dblink('dbname=lportal_ubnd_baclieu_release_ga3 user=postgres password=root','select userid, emailaddress,lastname,middlename,firstname from user_') "
+            + "      as t(userid int, emailaddress text,lastname text,middlename text,firstname text)) cvp "
+            + " on cvp.userid = a.processleaderid "
+            + " left join (select * from dblink('dbname=lportal_ubnd_baclieu_release_ga3 user=postgres password=root','select userid, emailaddress,lastname,middlename,firstname from user_')  "
+            + "      as t(userid int, emailaddress text,lastname text,middlename text,firstname text)) tt "
+            + " on tt.userid = a.leaderid "
+            + " where a.yeardocument in ({0}) and a.organizationid in ({1}) "
             + " union all  "
-            + " select 5 stt, a.id id_vanban, CAST(b.assignuserid as text) nguoi_gui "
-            + "    , to_char(min(b.assigndate), ' DD/MM/YYYY HH24:MI:SS') thoigian_gui "
+            + " select 5 stt, a.id id_vanban, CAST((case when b.assignuserid>0 then b.assignuserid else a.userid end) as text) nguoi_gui "
+            + "    , case when to_char(min(b.assigndate), ' DD/MM/YYYY HH24:MI:SS') is null then to_char(min(a.assigndate), ' DD/MM/YYYY HH24:MI:SS') "
+			+ "		else to_char(min(b.assigndate), ' DD/MM/YYYY HH24:MI:SS') end thoigian_gui "
             + "    , string_agg(case when b.organizationid is null or b.organizationid=0 then c.emailaddress end, ';' ORDER BY b.id) nguoi_nhan "
             + "    , string_agg(CAST(d.\"UNIT_ID\" as text) , ';' ORDER BY b.id) donvi_nhan "
             + "    , string_agg(case when (b.mainprocess=0 or b.mainprocess is null) and b.userid>0 and (b.organizationid is null or b.organizationid=0) then '0'  "
             + "             when b.mainprocess=1 and b.userid>0 and (b.organizationid is null or b.organizationid=0) then '2' "
             + "             when b.mainprocess=2 and b.userid>0 and (b.organizationid is null or b.organizationid=0) then '1' end, ';' ORDER BY b.id) vai_tro "
             + "    , '' ykien_xuly "
-            + "    , string_agg(case when (b.mainprocess=0 or b.mainprocess is null) and b.organizationid>0 then '0'  "
-            + "             when b.mainprocess=1 and b.organizationid>0 then '2' "
-            + "             when b.mainprocess=2 and b.organizationid>0 then '1' end, ';' ORDER BY b.id) vai_tro_donvi "
+            + "    , string_agg(case when (b.mainprocess=0 or b.mainprocess is null) and b.organizationid>0 then '2'  "
+            + "             when b.mainprocess=1 and b.organizationid>0 then '1' "
+            + "             when b.mainprocess=2 and b.organizationid>0 then '0' end, ';' ORDER BY b.id) vaitro_donvi "
             + "    , (case when row_number() OVER (PARTITION BY b.documentid) = 1 then 'end' else '' end) task_key "
             + "    , 'Chuyển xử lý' action_tv "
             + "    , (case when row_number() OVER (PARTITION BY b.documentid) = 1 then 'VT_BANHANH' else '' end)  approved "
@@ -782,7 +731,7 @@ namespace Convert_Data
             + "     on c.userid = b.userid "
             + "    left join \"public\".\"organization_hrm_unit\" d "
             + "    on b.organizationid = d.\"ORGANIZATIONID\"  "
-            + " where a.yeardocument in ({10})  and a.organizationid in ({11})  "
+            + " where a.yeardocument in ({2})  and a.organizationid in ({3}) "
             + "   and a.id = b.documentid "
             + " group by a.id,b.documentid, b.assignuserid) a "
             + "    ,(select * from dblink('dbname=lportal_ubnd_baclieu_release_ga3 user=postgres password=root','select userid, emailaddress from user_') as t(userid int, emailaddress text)) c "
@@ -794,7 +743,7 @@ namespace Convert_Data
             + "    , '' nguoi_nhan "
             + "    , case when b.userid>0 and (b.organizationid is null or b.organizationid=0) then '3' else '' end vai_tro_nguoinhan "
             + "    , '' donvi_nhan "
-            + "    , case when b.organizationid>0 then '3' else '' end vai_tro_donvi "
+            + "    , case when b.organizationid>0 then '3' else '' end vaitro_donvi "
             + "    , b.note ykien_xuly "
             + "    , 0 agent_id, '' task_key, 'Gửi ý kiến'  action_tv, 'GUI_YKIEN' approved "
             + "    , '2' trang_thai_xuly "
@@ -806,8 +755,8 @@ namespace Convert_Data
             + "      ,\"dms_ubnd_baclieu_release\".\"public\".\"documentincomingdetail\" b "
             + "    left join (select * from dblink('dbname=lportal_ubnd_baclieu_release_ga3 user=postgres password=root','select userid, emailaddress from user_') as t(userid int, emailaddress text)) d "
             + "    on b.userid = d.userid "
-            + " where a.yeardocument in ({12})  and a.organizationid in ({13})  "
-            + "   and a.id = b.documentid and b.note is not null "
+            + " where a.yeardocument in ({4})  and a.organizationid in ({5}) "
+            + "   and a.id = b.documentid and length(b.note)>0 and b.reviewdatenote is not null "
             + " order by id_vanban, stt";
         #endregion sql_so_luong_xuly_vbden_from_postgres
 
@@ -828,6 +777,7 @@ namespace Convert_Data
             + "   , \"public\".\"documentoutgoing\" b "
             + " where a.documentid = b.id and a.type != 1 "
             + " and b.organizationid in ({0}) and b.yeardocument in ({1}) "
+            + " and not exists(select 1 from \"public\".\"documentoutgoingdetail\" b where a.documentid = b.documentid and a.userid = b.userid and b.id<a.id) "
             + " order by id_vanban";
         #endregion sql_so_log_xuly_vbdi_from_postgres
 
@@ -846,6 +796,7 @@ namespace Convert_Data
             + "   , \"public\".\"documentincoming\" b "
             + " where a.documentid = b.id  "
             + " and b.organizationid in ({0}) and b.yeardocument in ({1}) "
+            + " and not exists(select 1 from \"public\".\"documentincomingdetail\" b where a.documentid = b.documentid and a.userid = b.userid and b.id<a.id) "
             + " order by id_vanban";
         #endregion sql_so_log_xuly_vbden_from_postgres
 
@@ -959,7 +910,7 @@ namespace Convert_Data
 
 
         #region delete table
-        public static string sql_delete_table = "DELETE FROM {0}.{1}";
+        public static string sql_delete_table = "DELETE FROM {0}.{1} WHERE ROWNUM < {2}";
         public static string sql_delete_doc_doc = "DELETE FROM {0}.DCM_DOC";
         public static string sql_delete_doc_relation = "DELETE FROM {0}.DCM_DOC_RELATION";
         public static string sql_delete_FEM_FILE = "DELETE FROM {0}.FEM_FILE";
@@ -1027,5 +978,13 @@ namespace Convert_Data
 
         public static string SEQ_DCM_SOVB_TEMPLATESINHSO = "DCM_SOVB_TEMPLATESINHSO_SEQ";
         public static string SEQ_DCM_QUYTAC_NHAYSO = "DCM_QUYTAC_NHAYSO_SEQ";
+
+        #region CHECKING_COVERTED_DATA
+        public static string SQL_GET_CONVERTED_DATA_COUNT = "SELECT COUNT(1) FROM QLVB_BLU_TINHBACLIEU.{0}";
+        public static string SQL_GET_CONVERTED_DATA = "SELECT ID FROM QLVB_BLU_TINHBACLIEU.{0}";
+        public static string SQL_INSERT_CONVERTED_DATA = "INSERT INTO CLOUD_ADMIN_DEV_BLU_4.{0}_TEST(ID) VALUES(:ID)";
+
+        public static string SQL_INSERT_CONVERTED_DATA_DCM_ACTIVITI_LOG = "INSERT INTO CLOUD_ADMIN_DEV_BLU_4.DCM_ACTIVITI_LOG_TEST(ID) VALUES(:ID)";
+        #endregion
     }
 }

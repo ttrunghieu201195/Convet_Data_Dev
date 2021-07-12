@@ -55,6 +55,7 @@ namespace Convert_Data
             this.label4 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.cbBox_Donvi = new System.Windows.Forms.ComboBox();
+            this.btn_OpenVerify = new System.Windows.Forms.Button();
             this.grpBox_DocInfo.SuspendLayout();
             this.grpBox_Category.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -372,12 +373,25 @@ namespace Convert_Data
             this.cbBox_Donvi.Name = "cbBox_Donvi";
             this.cbBox_Donvi.Size = new System.Drawing.Size(237, 30);
             this.cbBox_Donvi.TabIndex = 20;
+            this.cbBox_Donvi.SelectedIndexChanged += new System.EventHandler(this.cbBox_Donvi_SelectedIndexChanged);
+            // 
+            // btn_OpenVerify
+            // 
+            this.btn_OpenVerify.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_OpenVerify.Location = new System.Drawing.Point(567, 747);
+            this.btn_OpenVerify.Name = "btn_OpenVerify";
+            this.btn_OpenVerify.Size = new System.Drawing.Size(110, 39);
+            this.btn_OpenVerify.TabIndex = 20;
+            this.btn_OpenVerify.Text = "Checking";
+            this.btn_OpenVerify.UseVisualStyleBackColor = true;
+            this.btn_OpenVerify.Click += new System.EventHandler(this.btn_OpenVerifyForm);
             // 
             // form_Convert
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1040, 797);
+            this.Controls.Add(this.btn_OpenVerify);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.txt_Progress);
@@ -432,6 +446,7 @@ namespace Convert_Data
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.ComboBox cbBox_Donvi;
+        private System.Windows.Forms.Button btn_OpenVerify;
     }
 }
 

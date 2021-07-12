@@ -84,7 +84,7 @@ namespace Convert_Data.Controller
 
                         cmd.ArrayBindCount = data.Count;
 
-                        cmd.CommandText = string.Format(query, configs.schema);
+                        cmd.CommandText = string.Format(query, configs.Schema);
 
                         cmd.Parameters.Add("ID", OracleDbType.Int64);
                         cmd.Parameters.Add("NAME", OracleDbType.Varchar2);
