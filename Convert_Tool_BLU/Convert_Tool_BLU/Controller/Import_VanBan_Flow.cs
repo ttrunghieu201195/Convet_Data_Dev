@@ -285,12 +285,7 @@ namespace Convert_Data
 
                     dcm_Donvi_Nhans.Add(dcm_Donvi_Nhan);
                 }
-            } else
-            {
-                MessageBox.Show("error ne");
-            }
-
-            
+            }            
         }
 
         public void insert_Dcm_Activiti_Log(OracleConnection oracleConnection, Configs configs, string query, List<Dcm_Activiti_Log> data_list)
