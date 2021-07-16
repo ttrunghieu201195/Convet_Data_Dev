@@ -70,15 +70,16 @@ namespace Convert_Data
             this.lbl_LogRead = new System.Windows.Forms.Label();
             this.btn_VerifyData = new System.Windows.Forms.Button();
             this.txtProgress_Checking = new System.Windows.Forms.TextBox();
+            this.btn_PrepareData = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lbl_Doc
             // 
             this.lbl_Doc.AutoSize = true;
-            this.lbl_Doc.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_Doc.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_Doc.Location = new System.Drawing.Point(29, 94);
             this.lbl_Doc.Name = "lbl_Doc";
-            this.lbl_Doc.Size = new System.Drawing.Size(110, 23);
+            this.lbl_Doc.Size = new System.Drawing.Size(105, 22);
             this.lbl_Doc.TabIndex = 0;
             this.lbl_Doc.Text = "DCM_DOC";
             // 
@@ -163,10 +164,10 @@ namespace Convert_Data
             // lbl_DocRelation
             // 
             this.lbl_DocRelation.AutoSize = true;
-            this.lbl_DocRelation.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_DocRelation.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_DocRelation.Location = new System.Drawing.Point(29, 146);
             this.lbl_DocRelation.Name = "lbl_DocRelation";
-            this.lbl_DocRelation.Size = new System.Drawing.Size(223, 23);
+            this.lbl_DocRelation.Size = new System.Drawing.Size(209, 22);
             this.lbl_DocRelation.TabIndex = 7;
             this.lbl_DocRelation.Text = "DCM_DOC_RELATION";
             this.lbl_DocRelation.Click += new System.EventHandler(this.label1_Click);
@@ -198,10 +199,10 @@ namespace Convert_Data
             // lbl_Femfile
             // 
             this.lbl_Femfile.AutoSize = true;
-            this.lbl_Femfile.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_Femfile.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_Femfile.Location = new System.Drawing.Point(29, 194);
             this.lbl_Femfile.Name = "lbl_Femfile";
-            this.lbl_Femfile.Size = new System.Drawing.Size(106, 23);
+            this.lbl_Femfile.Size = new System.Drawing.Size(100, 22);
             this.lbl_Femfile.TabIndex = 11;
             this.lbl_Femfile.Text = "FEM_FILE";
             // 
@@ -232,10 +233,10 @@ namespace Convert_Data
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.Location = new System.Drawing.Point(29, 246);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(251, 29);
+            this.label3.Size = new System.Drawing.Size(189, 22);
             this.label3.TabIndex = 15;
             this.label3.Text = "DCM_ATTACH_FILE";
             // 
@@ -266,10 +267,10 @@ namespace Convert_Data
             // lbl_ActivitiLog
             // 
             this.lbl_ActivitiLog.AutoSize = true;
-            this.lbl_ActivitiLog.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_ActivitiLog.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_ActivitiLog.Location = new System.Drawing.Point(29, 300);
             this.lbl_ActivitiLog.Name = "lbl_ActivitiLog";
-            this.lbl_ActivitiLog.Size = new System.Drawing.Size(263, 29);
+            this.lbl_ActivitiLog.Size = new System.Drawing.Size(195, 22);
             this.lbl_ActivitiLog.TabIndex = 19;
             this.lbl_ActivitiLog.Text = "DCM_ACTIVITI_LOG";
             // 
@@ -300,10 +301,10 @@ namespace Convert_Data
             // lbl_Assign
             // 
             this.lbl_Assign.AutoSize = true;
-            this.lbl_Assign.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_Assign.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_Assign.Location = new System.Drawing.Point(29, 350);
             this.lbl_Assign.Name = "lbl_Assign";
-            this.lbl_Assign.Size = new System.Drawing.Size(174, 29);
+            this.lbl_Assign.Size = new System.Drawing.Size(134, 22);
             this.lbl_Assign.TabIndex = 23;
             this.lbl_Assign.Text = "DCM_ASSIGN";
             // 
@@ -334,10 +335,10 @@ namespace Convert_Data
             // lbl_DonviNhan
             // 
             this.lbl_DonviNhan.AutoSize = true;
-            this.lbl_DonviNhan.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_DonviNhan.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_DonviNhan.Location = new System.Drawing.Point(29, 403);
             this.lbl_DonviNhan.Name = "lbl_DonviNhan";
-            this.lbl_DonviNhan.Size = new System.Drawing.Size(248, 29);
+            this.lbl_DonviNhan.Size = new System.Drawing.Size(191, 22);
             this.lbl_DonviNhan.TabIndex = 27;
             this.lbl_DonviNhan.Text = "DCM_DONVI_NHAN";
             // 
@@ -368,10 +369,10 @@ namespace Convert_Data
             // lbl_Log
             // 
             this.lbl_Log.AutoSize = true;
-            this.lbl_Log.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_Log.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_Log.Location = new System.Drawing.Point(29, 455);
             this.lbl_Log.Name = "lbl_Log";
-            this.lbl_Log.Size = new System.Drawing.Size(139, 29);
+            this.lbl_Log.Size = new System.Drawing.Size(103, 22);
             this.lbl_Log.TabIndex = 31;
             this.lbl_Log.Text = "DCM_LOG";
             // 
@@ -402,17 +403,17 @@ namespace Convert_Data
             // lbl_LogRead
             // 
             this.lbl_LogRead.AutoSize = true;
-            this.lbl_LogRead.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_LogRead.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_LogRead.Location = new System.Drawing.Point(29, 507);
             this.lbl_LogRead.Name = "lbl_LogRead";
-            this.lbl_LogRead.Size = new System.Drawing.Size(176, 23);
+            this.lbl_LogRead.Size = new System.Drawing.Size(166, 22);
             this.lbl_LogRead.TabIndex = 35;
             this.lbl_LogRead.Text = "DCM_LOG_READ";
             // 
             // btn_VerifyData
             // 
             this.btn_VerifyData.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_VerifyData.Location = new System.Drawing.Point(552, 569);
+            this.btn_VerifyData.Location = new System.Drawing.Point(458, 563);
             this.btn_VerifyData.Name = "btn_VerifyData";
             this.btn_VerifyData.Size = new System.Drawing.Size(95, 36);
             this.btn_VerifyData.TabIndex = 39;
@@ -423,16 +424,28 @@ namespace Convert_Data
             // txtProgress_Checking
             // 
             this.txtProgress_Checking.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtProgress_Checking.Location = new System.Drawing.Point(102, 569);
+            this.txtProgress_Checking.Location = new System.Drawing.Point(33, 563);
             this.txtProgress_Checking.Name = "txtProgress_Checking";
             this.txtProgress_Checking.Size = new System.Drawing.Size(274, 30);
             this.txtProgress_Checking.TabIndex = 40;
+            // 
+            // btn_PrepareData
+            // 
+            this.btn_PrepareData.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_PrepareData.Location = new System.Drawing.Point(582, 563);
+            this.btn_PrepareData.Name = "btn_PrepareData";
+            this.btn_PrepareData.Size = new System.Drawing.Size(151, 36);
+            this.btn_PrepareData.TabIndex = 41;
+            this.btn_PrepareData.Text = "Prepare Data";
+            this.btn_PrepareData.UseVisualStyleBackColor = true;
+            this.btn_PrepareData.Click += new System.EventHandler(this.btn_PrepareData_Click);
             // 
             // CheckingDataForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(825, 632);
+            this.Controls.Add(this.btn_PrepareData);
             this.Controls.Add(this.txtProgress_Checking);
             this.Controls.Add(this.btn_VerifyData);
             this.Controls.Add(this.txtMiss_LogRead);
@@ -525,5 +538,6 @@ namespace Convert_Data
         private System.Windows.Forms.Label lbl_LogRead;
         private System.Windows.Forms.Button btn_VerifyData;
         private System.Windows.Forms.TextBox txtProgress_Checking;
+        private System.Windows.Forms.Button btn_PrepareData;
     }
 }

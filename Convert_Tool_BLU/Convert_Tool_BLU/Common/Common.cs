@@ -30,7 +30,7 @@ namespace Convert_Data
             DCM_LOG_READ
         }
 
-        private static string[] table_arr = { "DCM_DOC_RELATION", "FEM_FILE", "DCM_ATTACH_FILE", "DCM_ACTIVITI_LOG", "DCM_ASSIGN", "DCM_DONVI_NHAN", "DCM_LOG", "DCM_LOG_READ" };
+        public static string[] table_arr = {"DCM_DOC", "DCM_DOC_RELATION", "FEM_FILE", "DCM_ATTACH_FILE", "DCM_ACTIVITI_LOG", "DCM_ASSIGN", "DCM_DONVI_NHAN", "DCM_LOG", "DCM_LOG_READ" };
 
         public static long GetCurrentSeq(OracleConnection connection, string schema, string seqName)
         {
@@ -275,7 +275,6 @@ namespace Convert_Data
             {
                 Delete(oracleConnection, schema, string.Format(Constants.sql_delete_table, schema, table));
             }
-            Delete(oracleConnection, "CLOUD_ADMIN_DEV_BLU_2", Constants.sql_delete_DCM_TRACK);
         }
 
         public static void DeleteDCM_DOC(OracleConnection connection, string schema)
@@ -285,7 +284,7 @@ namespace Convert_Data
             {
                 foreach (string table in table_arr)
                 {
-                    string query = string.Format(Constants.SQL_GET_CONVERTED_DATA_COUNT, table);
+                    string query = string.Format(Constants.SQL_GET_CONVERTED_DATA_COUNT, schema+".", table);
                     cmd = new OracleCommand(query, connection);
                     int totalRecords = int.Parse(((decimal)cmd.ExecuteScalar()).ToString());
                     int threshold = 10000;

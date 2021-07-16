@@ -142,7 +142,7 @@ namespace Convert_Data
                 string coquan_banhanh = row["coquan_banhanh"].ToString();
                 if (coquan_banhanh != null && coquan_banhanh != String.Empty)
                 {
-                    dcm_Doc.coquan_banhanh = coquan_banhanh.Trim();
+                    dcm_Doc.coquan_banhanh = Common.Escape_String(coquan_banhanh.Trim());
                 }
 
                 // 7 - hinh thuc code
@@ -354,7 +354,18 @@ namespace Convert_Data
                             dcm_Doc.trang_thai = 2;
                             break;
                         case "1":
-                            dcm_Doc.trang_thai = 1;
+                            string stateid = row["stateid"].ToString();
+                            if (!string.IsNullOrEmpty(stateid))
+                            {
+                                if (stateid == "6")
+                                {
+                                    dcm_Doc.trang_thai = 1;
+                                }
+                                if (stateid == "5")
+                                {
+                                    dcm_Doc.trang_thai = 22;
+                                }
+                            }
                             break;
                         default:
                             dcm_Doc.trang_thai = 1;
@@ -441,7 +452,7 @@ namespace Convert_Data
                 string coquan_banhanh = row["coquan_banhanh"].ToString();
                 if (coquan_banhanh != null && coquan_banhanh != String.Empty)
                 {
-                    dcm_Doc.coquan_banhanh = coquan_banhanh.Trim();
+                    dcm_Doc.coquan_banhanh = Common.Escape_String(coquan_banhanh.Trim());
                 }
 
                 // 9 - hinh thuc code
@@ -464,7 +475,7 @@ namespace Convert_Data
                             dcm_Doc.priority_code = "KHAN";
                             break;
                         case "3":
-                            dcm_Doc.priority_code = "HOATOC";
+                            dcm_Doc.priority_code = "THUONGKHAN";
                             break;
                         default:
                             dcm_Doc.priority_code = "THUONG";

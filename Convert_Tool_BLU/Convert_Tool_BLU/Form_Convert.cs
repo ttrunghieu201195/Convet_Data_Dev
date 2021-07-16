@@ -555,8 +555,8 @@ namespace Convert_Data
 
         private void btn_OpenVerifyForm(object sender, EventArgs e)
         {
-            // Open connection
-            CheckingDataForm checkingDataForm = new CheckingDataForm();
+            CollectConfigs();
+            CheckingDataForm checkingDataForm = new CheckingDataForm(configs);
             checkingDataForm.Show();
         }
 

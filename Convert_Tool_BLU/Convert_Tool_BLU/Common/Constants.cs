@@ -608,20 +608,20 @@ namespace Convert_Data
             + "      , a.note1 ykien_xuly "
             + "      ,  string_agg(case when b.organizationid>0 and b.type=4 then '-1' "
             + "             when b.organizationid>0 and (b.type=0 or b.type is null) then '0' "
-            + "             when b.organizationid>0 and dd.\"SCHEMA_ID\" is null then '' "
-            + "             when b.organizationid>0 then CAST(dd.\"SCHEMA_ID\" as text) end, ';' ORDER BY b.id) agent_id "
+            + "             when b.organizationid>0 and b.type in (0,4,3) and dd.\"SCHEMA_ID\" is null then '' "
+            + "             when b.organizationid>0 and b.type in (0,3,4) and dd.\"SCHEMA_ID\" is not null then CAST(dd.\"SCHEMA_ID\" as text) end, ';' ORDER BY b.id) agent_id "
             + "      , 'end' task_key, 'Ban hành' action_tv, 'VT_BANHANH' approved "
             + "      , string_agg(case when b.userid>0 and (b.organizationid is null or b.organizationid=0) and (b.viewdocument=0 or b.viewdocument is null) then '0' "
             + "             when b.userid>0 and (b.organizationid is null or b.organizationid=0) and b.viewdocument=1 and b.reviewdatenote is null then '1' "
             + "             when b.userid>0 and (b.organizationid is null or b.organizationid=0) and b.viewdocument=1 and b.reviewdatenote is not null then '2' end, ';' ORDER BY b.id) trang_thai_xuly "
             + "      , string_agg(case when b.userid>0 and (b.organizationid is null or b.organizationid=0) and b.reviewdatenote is null then '' "
             + "             when b.userid>0 and (b.organizationid is null or b.organizationid=0) and b.reviewdatenote is not null then to_char(b.reviewdatenote, ' DD/MM/YYYY HH24:MI:SS') end, ';' ORDER BY b.id) thoigian_xuly "
-            + "      , string_agg(case when b.organizationid>0 and (b.viewdocument=0 or b.viewdocument is null) then '0' "
-            + "             when b.organizationid>0 and b.viewdocument=1 and b.reviewdatenote is null then '1' "
-            + "             when b.organizationid>0 and b.viewdocument=1 and b.reviewdatenote is not null then '2' end, ';' ORDER BY b.id) trang_thai_xuly_donvi "
-            + "      , string_agg(case when b.organizationid>0 and b.reviewdatenote is null and b.bookdate is null then '' "
-            + " 			when b.organizationid>0 and b.bookdate is not null then to_char(b.bookdate, ' DD/MM/YYYY HH24:MI:SS')  "
-            + "             when b.organizationid>0 and b.reviewdatenote is not null then to_char(b.reviewdatenote, ' DD/MM/YYYY HH24:MI:SS') end, ';' ORDER BY b.id) thoigian_xuly_donvi "
+            + "      , string_agg(case when b.organizationid>0 and (b.viewdocument=0 or b.viewdocument is null) and b.type in (0,4,3) then '0' "
+            + "             when b.organizationid>0 and b.viewdocument=1 and b.reviewdatenote is null and b.type in (0,4,3) then '1' "
+            + "             when b.organizationid>0 and b.viewdocument=1 and b.reviewdatenote is not null and b.type in (0,4,3) then '2' end, ';' ORDER BY b.id) trang_thai_xuly_donvi "
+            + "      , string_agg(case when b.organizationid>0 and b.reviewdatenote is null and b.bookdate is null and b.type in (0,4,3) then '' "
+            + "             when b.organizationid>0 and b.bookdate is not null and b.type in (0,4,3) then to_char(b.bookdate, ' DD/MM/YYYY HH24:MI:SS')  "
+            + "             when b.organizationid>0 and b.reviewdatenote is not null and b.type in (0,4,3) then to_char(b.reviewdatenote, ' DD/MM/YYYY HH24:MI:SS') end, ';' ORDER BY b.id) thoigian_xuly_donvi "
             + "      , string_agg(case when b.organizationid>0 then CAST(b.type as text) end, ';' ORDER BY b.id) loai_dv "
             + "      , 0 truoc_banhanh "
             + " from \"public\".\"documentoutgoing\" a "
@@ -980,8 +980,8 @@ namespace Convert_Data
         public static string SEQ_DCM_QUYTAC_NHAYSO = "DCM_QUYTAC_NHAYSO_SEQ";
 
         #region CHECKING_COVERTED_DATA
-        public static string SQL_GET_CONVERTED_DATA_COUNT = "SELECT COUNT(1) FROM QLVB_BLU_TINHBACLIEU.{0}";
-        public static string SQL_GET_CONVERTED_DATA = "SELECT ID FROM QLVB_BLU_TINHBACLIEU.{0}";
+        public static string SQL_GET_CONVERTED_DATA_COUNT = "SELECT COUNT(1) FROM {0}{1}";
+        public static string SQL_GET_CONVERTED_DATA = "SELECT ID FROM {0}{1}";
         public static string SQL_INSERT_CONVERTED_DATA = "INSERT INTO CLOUD_ADMIN_DEV_BLU_4.{0}_TEST(ID) VALUES(:ID)";
 
         public static string SQL_INSERT_CONVERTED_DATA_DCM_ACTIVITI_LOG = "INSERT INTO CLOUD_ADMIN_DEV_BLU_4.DCM_ACTIVITI_LOG_TEST(ID) VALUES(:ID)";

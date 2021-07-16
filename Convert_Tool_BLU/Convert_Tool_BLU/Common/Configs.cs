@@ -1,6 +1,6 @@
 ﻿namespace Convert_Data
 {
-    class Configs
+    public class Configs
     {
         public string Schema { get; set; }
         public string Year { get; set; }

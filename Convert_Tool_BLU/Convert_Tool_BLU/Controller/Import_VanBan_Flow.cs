@@ -39,8 +39,9 @@ namespace Convert_Data
 
         protected override void ParseData(DataRow row, Common.VB_TYPE vb_type)
         {
+            Dcm_Activiti_Log dcm_Activiti_Log;
             try {
-                Dcm_Activiti_Log dcm_Activiti_Log = new Dcm_Activiti_Log();
+                dcm_Activiti_Log = new Dcm_Activiti_Log();
                 string cell_value = "";
                 // 1 - stt
 
@@ -208,84 +209,96 @@ namespace Convert_Data
         private void appendToListDcmAssign(long id_acti_log, long idVB, string nguoi_gui, DateTime thoigian_gui, string ds_nguoinhan, string ds_vaitro_nguoinhan
                                             , string ds_trangthai_xuly, string ds_thoigian_xuly, int? truoc_banhanh)
         {
-            string[] nguoi_nhan_arr = ds_nguoinhan.Split(';');
-            string[] dsvaitro_nguoinhan_arr = ds_vaitro_nguoinhan.Split(';');
-            string[] ds_trangthai_xuly_arr = ds_trangthai_xuly.Split(';');
-            string[] ds_thoigian_xuly_arr = ds_thoigian_xuly.Split(';');
-
-            if (nguoi_nhan_arr.Length > 0 && nguoi_nhan_arr.Length == dsvaitro_nguoinhan_arr.Length && nguoi_nhan_arr.Length == ds_trangthai_xuly_arr.Length && ds_trangthai_xuly_arr.Length == ds_thoigian_xuly_arr.Length)
+            try
             {
-                for (int i = 0; i < nguoi_nhan_arr.Length; i++)
+                string[] nguoi_nhan_arr = ds_nguoinhan.Split(';');
+                string[] dsvaitro_nguoinhan_arr = ds_vaitro_nguoinhan.Split(';');
+                string[] ds_trangthai_xuly_arr = ds_trangthai_xuly.Split(';');
+                string[] ds_thoigian_xuly_arr = ds_thoigian_xuly.Split(';');
+
+                if (nguoi_nhan_arr.Length > 0 && nguoi_nhan_arr.Length == dsvaitro_nguoinhan_arr.Length && nguoi_nhan_arr.Length == ds_trangthai_xuly_arr.Length && ds_trangthai_xuly_arr.Length == ds_thoigian_xuly_arr.Length)
                 {
-                    if (nguoi_nhan_arr[i] == string.Empty)
+                    for (int i = 0; i < nguoi_nhan_arr.Length; i++)
                     {
-                        continue;
+                        if (nguoi_nhan_arr[i] == string.Empty)
+                        {
+                            continue;
+                        }
+
+                        Dcm_Assign dcm_Assign = new Dcm_Assign();
+
+                        dcm_Assign.id = ++SEQ_DCM_ASSIGN;
+                        dcm_Assign.document_id = idVB;
+                        dcm_Assign.assignee = nguoi_nhan_arr[i].Trim();
+                        dcm_Assign.assigner = nguoi_gui;
+                        dcm_Assign.assigned_date = thoigian_gui;
+
+                        string role_code = Common.getRoleCode_NguoiNhan(dsvaitro_nguoinhan_arr.Length > 0 ? dsvaitro_nguoinhan_arr[i].Trim() : "1");
+                        dcm_Assign.role_type_code = role_code;
+
+                        dcm_Assign.xu_ly = int.Parse(ds_trangthai_xuly_arr[i].Trim());
+
+                        if (ds_trangthai_xuly_arr[i] == "2")
+                        {
+                            DateTime xuly_date = DateTime.ParseExact(ds_thoigian_xuly_arr[i].Trim(), "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                            dcm_Assign.ngay_xuly = xuly_date;
+                        }
+
+                        dcm_Assign.activiti_log_id = dcm_Assign.assignee == dcm_Assign.assigner ? 0 : id_acti_log;
+                        dcm_Assign.truoc_banhanh = truoc_banhanh;
+
+                        dcm_Assigns.Add(dcm_Assign);
                     }
-
-                    Dcm_Assign dcm_Assign = new Dcm_Assign();
-
-                    dcm_Assign.id = ++SEQ_DCM_ASSIGN;
-                    dcm_Assign.document_id = idVB;
-                    dcm_Assign.assignee = nguoi_nhan_arr[i].Trim();
-                    dcm_Assign.assigner = nguoi_gui;
-                    dcm_Assign.assigned_date = thoigian_gui;
-
-                    string role_code = Common.getRoleCode_NguoiNhan(dsvaitro_nguoinhan_arr.Length > 0 ? dsvaitro_nguoinhan_arr[i].Trim() : "1");
-                    dcm_Assign.role_type_code = role_code;
-
-                    dcm_Assign.xu_ly = int.Parse(ds_trangthai_xuly_arr[i].Trim());
-
-                    if (ds_trangthai_xuly_arr[i] == "2")
-                    {
-                        DateTime xuly_date = DateTime.ParseExact(ds_thoigian_xuly_arr[i].Trim(), "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
-                        dcm_Assign.ngay_xuly = xuly_date;
-                    }
-
-                    dcm_Assign.activiti_log_id = dcm_Assign.assignee == dcm_Assign.assigner ? 0 : id_acti_log;
-                    dcm_Assign.truoc_banhanh = truoc_banhanh;
-                    
-                    dcm_Assigns.Add(dcm_Assign);
                 }
+            } catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
 
         private void appendToListDcmDonviNhan(long id_acti_log, long id_vb, string ds_donvi, string ds_vaitro_donvi, string agent_id, DateTime thoigian_gui
                                                 , string ds_trangthai_xuly_donvi, string ds_thoigian_xuly_donvi, int? truoc_banhanh, Common.VB_TYPE vb_type)
         {
-            string[] ds_donvi_arr = ds_donvi.Split(';');
-            string[] ds_vaitro_donvi_arr = ds_vaitro_donvi.Split(';');
-            string[] ds_trangthai_xuly_donvi_arr = ds_trangthai_xuly_donvi.Split(';');
-            string[] ds_thoigian_xuly_donvi_arr = ds_thoigian_xuly_donvi.Split(';');
-
-            string[] ds_agent_id = agent_id.Split(';');
-
-            if (ds_donvi_arr.Length > 0 && ds_donvi_arr.Length == ds_vaitro_donvi_arr.Length && ds_vaitro_donvi_arr.Length == ds_trangthai_xuly_donvi_arr.Length && ds_trangthai_xuly_donvi_arr.Length == ds_thoigian_xuly_donvi_arr.Length)
+            try
             {
-                for (int i = 0; i < ds_donvi_arr.Length; i++)
+                string[] ds_donvi_arr = ds_donvi.Split(';');
+                string[] ds_vaitro_donvi_arr = ds_vaitro_donvi.Split(';');
+                string[] ds_trangthai_xuly_donvi_arr = ds_trangthai_xuly_donvi.Split(';');
+                string[] ds_thoigian_xuly_donvi_arr = ds_thoigian_xuly_donvi.Split(';');
+
+                string[] ds_agent_id = agent_id.Split(';');
+
+                if (ds_donvi_arr.Length > 0 && ds_donvi_arr.Length == ds_vaitro_donvi_arr.Length && ds_vaitro_donvi_arr.Length == ds_trangthai_xuly_donvi_arr.Length && ds_trangthai_xuly_donvi_arr.Length == ds_thoigian_xuly_donvi_arr.Length)
                 {
-                    if (ds_donvi_arr[i] == string.Empty)
+                    for (int i = 0; i < ds_donvi_arr.Length; i++)
                     {
-                        continue;
+                        if (ds_donvi_arr[i] == string.Empty)
+                        {
+                            continue;
+                        }
+
+                        Dcm_Donvi_Nhan dcm_Donvi_Nhan = new Dcm_Donvi_Nhan();
+                        dcm_Donvi_Nhan.ID = ++SEQ_DCM_DONVI_NHAN;
+                        dcm_Donvi_Nhan.DOC_ID = id_vb;
+                        dcm_Donvi_Nhan.XULY_CHINH = ds_vaitro_donvi_arr[i].Trim();
+                        dcm_Donvi_Nhan.AGENT_ID = vb_type == Common.VB_TYPE.VB_DEN ? 0 : long.Parse(ds_agent_id[i].Trim());
+                        dcm_Donvi_Nhan.UNIT_ID = long.Parse(ds_donvi_arr[i].Trim());
+
+                        dcm_Donvi_Nhan.ROLE_TYPE_CODE = Common.getRoleCode_DonVi(ds_vaitro_donvi_arr.Length > 0 ? ds_vaitro_donvi_arr[i].Trim() : "1");
+
+                        dcm_Donvi_Nhan.ACTIVITI_LOG_ID = id_acti_log;
+                        dcm_Donvi_Nhan.ASSIGNED_DATE = thoigian_gui;
+                        dcm_Donvi_Nhan.XU_LY = int.Parse(ds_trangthai_xuly_donvi_arr[i].Trim());
+
+                        dcm_Donvi_Nhan.TRUOC_BANHANH = truoc_banhanh;
+
+                        dcm_Donvi_Nhans.Add(dcm_Donvi_Nhan);
                     }
-
-                    Dcm_Donvi_Nhan dcm_Donvi_Nhan = new Dcm_Donvi_Nhan();
-                    dcm_Donvi_Nhan.ID = ++SEQ_DCM_DONVI_NHAN;
-                    dcm_Donvi_Nhan.DOC_ID = id_vb;
-                    dcm_Donvi_Nhan.XULY_CHINH = ds_vaitro_donvi_arr[i].Trim();
-                    dcm_Donvi_Nhan.AGENT_ID = vb_type == Common.VB_TYPE.VB_DEN ? 0 : long.Parse(ds_agent_id[i].Trim());
-                    dcm_Donvi_Nhan.UNIT_ID = long.Parse(ds_donvi_arr[i].Trim());
-
-                    dcm_Donvi_Nhan.ROLE_TYPE_CODE = Common.getRoleCode_DonVi(ds_vaitro_donvi_arr.Length > 0 ? ds_vaitro_donvi_arr[i].Trim() : "1"); 
-
-                    dcm_Donvi_Nhan.ACTIVITI_LOG_ID = id_acti_log;
-                    dcm_Donvi_Nhan.ASSIGNED_DATE = thoigian_gui;
-                    dcm_Donvi_Nhan.XU_LY = int.Parse(ds_trangthai_xuly_donvi_arr[i].Trim());
-
-                    dcm_Donvi_Nhan.TRUOC_BANHANH = truoc_banhanh;
-
-                    dcm_Donvi_Nhans.Add(dcm_Donvi_Nhan);
                 }
-            }            
+            } catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         public void insert_Dcm_Activiti_Log(OracleConnection oracleConnection, Configs configs, string query, List<Dcm_Activiti_Log> data_list)
