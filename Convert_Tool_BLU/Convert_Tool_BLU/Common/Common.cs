@@ -88,7 +88,7 @@ namespace Convert_Data
             str = str.Substring(str.IndexOf("@") + 1, str.Length - str.IndexOf("@") - 1);
             if (Regex.IsMatch(str, @"#\d+"))
             {
-                str = str.Substring(0, str.IndexOf("#")) + str.Substring(str.IndexOf("."), (str.Length - str.IndexOf(".")));
+                str = str.Substring(0, str.LastIndexOf("#")) + str.Substring(str.LastIndexOf("."), (str.Length - str.LastIndexOf(".")));
             }
             return str;
         }

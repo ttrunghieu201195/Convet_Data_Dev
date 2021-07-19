@@ -802,6 +802,24 @@ namespace Convert_Data
 
         #endregion DONVI_SO
 
+        #region PROC_SO
+        public static string PROC_SO_VBDI_INFO = "ds_vb_di_sobannganh";
+        public static string PROC_SO_VBDEN_INFO = "ds_vb_den_sobannganh";
+        public static string PROC_SO_VBDI_FLOW = "luong_vb_di_sobannganh";
+        public static string PROC_SO_VBDEN_FLOW = "luong_vb_den_sobannganh";
+        public static string PROC_SO_VBDI_LOG = "log_vb_di_sobannganh";
+        public static string PROC_SO_VBDEN_LOG = "log_vb_den_sobannganh";
+        #endregion PROC_SO
+
+        #region PROC_UBND
+        public static string PROC_UBND_VBDI_INFO = "ds_vb_di_ubnd";
+        public static string PROC_UBND_VBDEN_INFO = "ds_vb_den_ubnd";
+        public static string PROC_UBND_VBDI_FLOW = "luong_vb_di_ubnd";
+        public static string PROC_UBND_VBDEN_FLOW = "luong_vb_den_ubnd";
+        public static string PROC_UBND_VBDI_LOG = "log_vb_di_ubnd";
+        public static string PROC_UBND_VBDEN_LOG = "log_vb_den_ubnd";
+        #endregion PROC_UBND
+
         #region DANHMUC
         #region sql_danhmuc_sovanban
         public static string sql_danhmuc_sovanban = "SELECT a.id \"ID\",  "
