@@ -38,10 +38,6 @@ namespace Convert_Data
             // 
             this.cb_Services.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cb_Services.FormattingEnabled = true;
-            this.cb_Services.Items.AddRange(new object[] {
-            "Convert Data",
-            "Move Data",
-            "Delete Data"});
             this.cb_Services.Location = new System.Drawing.Point(213, 124);
             this.cb_Services.Name = "cb_Services";
             this.cb_Services.Size = new System.Drawing.Size(229, 33);
@@ -53,7 +49,7 @@ namespace Convert_Data
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(91, 127);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(105, 31);
+            this.label1.Size = new System.Drawing.Size(84, 25);
             this.label1.TabIndex = 1;
             this.label1.Text = "Service:";
             // 
@@ -78,6 +74,7 @@ namespace Convert_Data
             this.Controls.Add(this.cb_Services);
             this.Name = "TestingForm";
             this.Text = "TestingForm";
+            this.Load += new System.EventHandler(this.TestingForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

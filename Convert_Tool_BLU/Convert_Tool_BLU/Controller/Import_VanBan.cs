@@ -68,7 +68,16 @@ namespace Convert_Data
             try
             {
                 exported_error = false;
-                var cmd = new NpgsqlCommand(query, postgresConnection);
+                string proc = query.Substring(0, query.IndexOf("("));
+                Console.WriteLine(proc);
+                string param = query.Substring(query.IndexOf("(") + 1, query.IndexOf(")") - (query.IndexOf("(") + 1));
+                int donvi_code = int.Parse(param.Split(';')[0]);
+                string years = param.Split(';')[1];
+                Console.WriteLine(param.Split(';')[0] + " - " + param.Split(';')[1]);
+                var cmd = new NpgsqlCommand(proc, postgresConnection);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("organizationid", donvi_code);
+                cmd.Parameters.AddWithValue("yeardocument", years);
 
                 NpgsqlDataAdapter dataAdapter = new NpgsqlDataAdapter(cmd);
                 DataSet dataSet = new DataSet();

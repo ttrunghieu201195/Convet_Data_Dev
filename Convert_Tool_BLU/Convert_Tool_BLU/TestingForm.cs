@@ -53,5 +53,10 @@ namespace Convert_Data
             }
             Console.WriteLine(cb_Services.SelectedIndex.ToString() + " - " +  cb_Services.SelectedItem.ToString());
         }
+
+        private void TestingForm_Load(object sender, EventArgs e)
+        {
+            UpdateComboBoxService();
+        }
     }
 }

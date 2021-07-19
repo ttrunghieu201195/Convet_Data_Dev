@@ -210,7 +210,8 @@ namespace Convert_Data
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exporting data from Postgres ..."));
                     Import_VanBan import_VanBan = new Import_VanBan();
-                    string query = string.Format(configs.IsUBND ? Constants.sql_thongtin_vb_di : Constants.sql_so_thongtin_vbdi, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu, configs.Year);
+                    string query = configs.IsUBND ? Constants.PROC_UBND_VBDI_INFO : Constants.PROC_SO_VBDI_INFO + "(" + configs.Donvi_lay_du_lieu + ";" + configs.Year + ")";
+                    //string.Format(configs.IsUBND ? Constants.sql_thongtin_vb_di : Constants.sql_so_thongtin_vbdi, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu, configs.Year);
                     import_VanBan.exportdataFromPostgres(postgresConnection, configs, query, Common.VB_TYPE.VB_DI);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported data from Postgres!"));
                     timer.Stop();
@@ -268,7 +269,8 @@ namespace Convert_Data
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exporting outgoing doc flow data from Postgres ..."));
                     Import_VanBan_Flow import_Outgoing_Doc_Flow = new Import_VanBan_Flow();
-                    string query = string.Format(configs.IsUBND ? Constants.sql_luong_xuly_vb_di : Constants.sql_so_luong_xuly_vbdi, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu, configs.Year);
+                    string query = configs.IsUBND ? Constants.PROC_UBND_VBDI_FLOW : Constants.PROC_SO_VBDI_FLOW + "(" + configs.Donvi_lay_du_lieu + ";" + configs.Year + ")";
+                        //string.Format(configs.IsUBND ? Constants.sql_luong_xuly_vb_di : Constants.sql_so_luong_xuly_vbdi, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu, configs.Year);
                     import_Outgoing_Doc_Flow.exportdataFromPostgres(postgresConnection, query, Common.VB_TYPE.VB_DI);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported outgoing doc flow data from Postgres!"));
                     timer.Stop();
@@ -319,7 +321,8 @@ namespace Convert_Data
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exporting outgoing doc log data from Postgres ..."));
                     Import_VanBan_Log import_VanBan_Log = new Import_VanBan_Log();
-                    string query = string.Format(configs.IsUBND ? Constants.sql_log_xuly_vb_di : Constants.sql_so_log_xuly_vbdi, configs.Donvi_lay_du_lieu, configs.Year);
+                    string query = configs.IsUBND ? Constants.PROC_UBND_VBDI_LOG : Constants.PROC_SO_VBDI_LOG + "(" + configs.Donvi_lay_du_lieu + ";" + configs.Year + ")";
+                    //string.Format(configs.IsUBND ? Constants.sql_log_xuly_vb_di : Constants.sql_so_log_xuly_vbdi, configs.Donvi_lay_du_lieu, configs.Year);
                     import_VanBan_Log.exportdataFromPostgres(postgresConnection, query, Common.VB_TYPE.VB_DI);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported outgoing doc log data from Postgres!"));
                     timer.Stop();
@@ -361,7 +364,8 @@ namespace Convert_Data
                     timer.Reset();
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exporting incoming doc data from Postgres ..."));
-                    string query = string.Format(configs.IsUBND ? Constants.sql_thongtin_vb_den : Constants.sql_so_thongtin_vbden, configs.Donvi_lay_du_lieu, configs.Year);
+                    string query = configs.IsUBND ? Constants.PROC_UBND_VBDEN_INFO : Constants.PROC_SO_VBDEN_INFO + "(" + configs.Donvi_lay_du_lieu + ";" + configs.Year + ")";
+                    //string.Format(configs.IsUBND ? Constants.sql_thongtin_vb_den : Constants.sql_so_thongtin_vbden, configs.Donvi_lay_du_lieu, configs.Year);
                     Import_VanBan import_VanBan = new Import_VanBan();
                     import_VanBan.exportdataFromPostgres(postgresConnection, configs, query, Common.VB_TYPE.VB_DEN);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported incoming doc data from Postgres!"));
@@ -431,17 +435,18 @@ namespace Convert_Data
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exporting incoming doc flow data from Postgres ..."));
                     Import_VanBan_Flow import_Incoming_Doc_Flow = new Import_VanBan_Flow();
-                    string query = "";
-                    if (configs.IsUBND)
+                    string query = configs.IsUBND ? Constants.PROC_UBND_VBDEN_FLOW : Constants.PROC_SO_VBDEN_FLOW + "(" + configs.Donvi_lay_du_lieu + ";" + configs.Year + ")";
+                    /*if (configs.IsUBND)
                     {
                         query = string.Format(Constants.sql_luong_xuly_vb_den, configs.Year, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu
                         , configs.Year, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu
                         , configs.Year, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu);
                     } else
                     {
-                        query = string.Format(Constants.sql_so_luong_xuly_vbden, configs.Year, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu
-                        , configs.Year, configs.Donvi_lay_du_lieu);
-                    }
+                        query = Constants.PROC_SO_VBDEN_FLOW + "(" + configs.Donvi_lay_du_lieu + ";" + configs.Year + ")";
+                        *//*string.Format(Constants.sql_so_luong_xuly_vbden, configs.Year, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu
+                    , configs.Year, configs.Donvi_lay_du_lieu);*//*
+                    }*/
                     import_Incoming_Doc_Flow.exportdataFromPostgres(postgresConnection, query, Common.VB_TYPE.VB_DEN);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported outgoing doc flow data from Postgres!"));
                     timer.Stop();
@@ -493,7 +498,8 @@ namespace Convert_Data
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exporting incoming doc log data from Postgres ..."));
                     Import_VanBan_Log import_VanBan_Log = new Import_VanBan_Log();
-                    string query = string.Format(configs.IsUBND ? Constants.sql_log_xuly_vb_den : Constants.sql_so_log_xuly_vbden, configs.Donvi_lay_du_lieu, configs.Year);
+                    string query = configs.IsUBND ? Constants.PROC_UBND_VBDEN_LOG : Constants.PROC_SO_VBDEN_LOG + "(" + configs.Donvi_lay_du_lieu + ";" + configs.Year + ")";
+                    //string.Format(configs.IsUBND ? Constants.sql_log_xuly_vb_den : Constants.sql_so_log_xuly_vbden, configs.Donvi_lay_du_lieu, configs.Year);
                     import_VanBan_Log.exportdataFromPostgres(postgresConnection, query, Common.VB_TYPE.VB_DEN);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported incoming doc data from Postgres!"));
                     timer.Stop();
