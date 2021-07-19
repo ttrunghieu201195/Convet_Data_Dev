@@ -15,21 +15,28 @@ namespace Convert_Data
         Configs configs = new Configs();
         NpgsqlConnection postgresConnection;
         //OracleConnection oracleConnection;
-        public form_Convert()
+        public form_Convert(Configs configs)
         {
             InitializeComponent();
+            this.configs = configs;
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            postgresConnection = Connection.getInstance().GetPostgresConnection();
-            //oracleConnection = new OracleConnection(Constants.oracle_connstring);
-            //postgresConnection.Open();
+            //Load_ComboBox_Donvi();
+            Console.WriteLine(configs.Des_IP);
+            Console.WriteLine(configs.Source_IP);
+        }
+
+        private void Load_ComboBox_Donvi()
+        {
+            //postgresConnection = Connection.getInstance().GetPostgresConnection();
+            string postgres_ConnStr = string.Format(Constants.postgres_connstring, configs.Source_IP, configs.Source_Port, configs.Source_User, configs.Source_Pass, configs.Source_Service);
+            postgresConnection = new NpgsqlConnection(postgres_ConnStr);
             cbBox_Donvi.DataSource = Common.GetDanhMucDonvi(postgresConnection, Constants.sql_danhmuc_donvi_schema);
             cbBox_Donvi.DisplayMember = "name";
             cbBox_Donvi.ValueMember = "organizationid";
             cbBox_Donvi.SelectedIndex = cbBox_Donvi.FindString("UBND tỉnh Bạc Liêu");
-            //Common.TestCallProcFromPostgres(postgresConnection);
         }
 
         private void run_Action(object sender, EventArgs e)
@@ -51,7 +58,9 @@ namespace Convert_Data
         {
             // Create connection
             //NpgsqlConnection postgresConnection = new NpgsqlConnection(Constants.postgres_connstring);
-            OracleConnection oracleConnection = Connection.getInstance().GetOracleConnection();
+            //OracleConnection oracleConnection = Connection.getInstance().GetOracleConnection();
+            string oracle_connstr = string.Format(Constants.oracle_connstring, configs.Des_IP, configs.Des_Port, configs.Des_Service, configs.Des_User, configs.Des_Pass);
+            OracleConnection oracleConnection = new OracleConnection(oracle_connstr);
             // Initial timer
             Stopwatch timer = new Stopwatch();
             try
@@ -528,9 +537,9 @@ namespace Convert_Data
                 // Update seq to db
                 Common.updateSeqFromProcedure(oracleConnection, configs);
                 // Close connection
-                /*postgresConnection.Close();
-                oracleConnection.Close();*/
-                Connection.getInstance().CloseConnection();
+                postgresConnection.Close();
+                oracleConnection.Close();
+                //Connection.getInstance().CloseConnection();
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Done"));
             }
         }
@@ -538,7 +547,7 @@ namespace Convert_Data
         private void CollectConfigs()
         {
             configs.Schema = txt_Schema.Text.Trim();
-            configs.Year = Common.getExportedDataYears(txt_Year.Text.Trim());
+            configs.Year = Common.GetExportedDataYears(txt_StartYear.Text.Trim(), txt_EndYear.Text.Trim());
             configs.Donvi_lay_du_lieu = int.Parse(cbBox_Donvi.SelectedValue.ToString());
             configs.IsUBND = configs.Donvi_lay_du_lieu == 3528;
         }
@@ -565,6 +574,12 @@ namespace Convert_Data
             DataRowView row = (DataRowView)cbBox_Donvi.SelectedItem;
             configs.Old_schema = row["schema"].ToString();
             Console.WriteLine(configs.Old_schema);
+        }
+
+        private void btn_Load_Config_Click(object sender, EventArgs e)
+        {
+            /*Configuration configuration = new Configuration(configs);
+            configuration.Show();*/
         }
     }
 }

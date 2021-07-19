@@ -10,7 +10,7 @@ namespace Convert_Data.Models
     {
         public long id { get; set; }
         public string task_key { get; set; }
-        public DateTime updated_date { get; set; }
+        public DateTime? updated_date { get; set; } = null;
         public string updated_by { get; set; }
         public string action { get; set; }
         public long doc_id { get; set; }

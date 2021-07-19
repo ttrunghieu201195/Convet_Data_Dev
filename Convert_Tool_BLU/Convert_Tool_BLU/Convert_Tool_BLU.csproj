@@ -93,6 +93,12 @@
     <Compile Include="Common\Configs.cs" />
     <Compile Include="Common\Connection.cs" />
     <Compile Include="Common\Constants.cs" />
+    <Compile Include="Configuration.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Configuration.Designer.cs">
+      <DependentUpon>Configuration.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controller\Import_DCM_TYPE.cs" />
     <Compile Include="Controller\Import_LinhVuc.cs" />
     <Compile Include="Controller\Import_Abstract.cs" />
@@ -123,8 +129,17 @@
     <Compile Include="Models\Fem_File.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TestingForm.Designer.cs">
+      <DependentUpon>TestingForm.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="CheckingDataForm.resx">
       <DependentUpon>CheckingDataForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configuration.resx">
+      <DependentUpon>Configuration.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form_Convert.resx">
       <DependentUpon>Form_Convert.cs</DependentUpon>
@@ -140,6 +155,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="TestingForm.resx">
+      <DependentUpon>TestingForm.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

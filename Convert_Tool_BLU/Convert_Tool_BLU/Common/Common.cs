@@ -93,22 +93,18 @@ namespace Convert_Data
             return str;
         }
 
-        public static string getExportedDataYears(string input)
+        public static string GetExportedDataYears(string startYear, string endYear)
         {
-            string[] arr = input.Split(',');
             string years = "";
-            for (int i = 0; i < arr.Length; i++)
+            int start = int.Parse(startYear);
+            int end = int.Parse(endYear);
+            while (start < end)
             {
-                if (arr[i].Trim() != String.Empty)
-                {
-                    if (i > 0)
-                    {
-                        years += ",";
-                    }
-                    years += "'" + arr[i].Trim() + "'";
-                    
-                }
+                years += start + ",";
+                start++;
             }
+            years += end;
+
             return years;
         }
 

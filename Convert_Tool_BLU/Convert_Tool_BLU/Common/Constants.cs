@@ -14,10 +14,12 @@ namespace Convert_Data
         private static string postgres_db = "dms_ubnd_baclieu_release";
         private static string postgres_user = "postgres";
         private static string postgres_pass = "root";
-        public static string postgres_connstring = String.Format("Server={0};Port={1};" +
+        /*public static string postgres_connstring = String.Format("Server={0};Port={1};" +
                 "User Id={2};Password={3};Database={4};Timeout=300;CommandTimeout=900",
                 postgres_host, postgres_port, postgres_user,
-                postgres_pass, postgres_db);
+                postgres_pass, postgres_db);*/
+        public static string postgres_connstring = "Server={0};Port={1};" +
+                "User Id={2};Password={3};Database={4};Timeout=300;CommandTimeout=900";
         #endregion
 
         #region oracle connection
@@ -26,10 +28,14 @@ namespace Convert_Data
         private static string oracle_service_name = "eofdichvu";
         private static string oracle_user = "CLOUD_ADMIN_DEV_BLU_4";
         private static string oracle_pass = "d3vblu@2020";
-        public static string oracle_connstring = String.Format("Data Source=( DESCRIPTION = " +
+        /*public static string oracle_connstring = String.Format("Data Source=( DESCRIPTION = " +
             "( ADDRESS_LIST = ( ADDRESS = ( PROTOCOL = TCP )( HOST = {0} )(PORT = {1} ) ) )" +
             "(CONNECT_DATA = (SERVER = DEDICATED )(SERVICE_NAME = {2}) ) ); " +
-            "User Id = {3}; Password = {4};", oracle_host, oracle_port, oracle_service_name, oracle_user, oracle_pass);
+            "User Id = {3}; Password = {4};", oracle_host, oracle_port, oracle_service_name, oracle_user, oracle_pass);*/
+        public static string oracle_connstring = "Data Source=( DESCRIPTION = " +
+            "( ADDRESS_LIST = ( ADDRESS = ( PROTOCOL = TCP )( HOST = {0} )(PORT = {1} ) ) )" +
+            "(CONNECT_DATA = (SERVER = DEDICATED )(SERVICE_NAME = {2}) ) ); " +
+            "User Id = {3}; Password = {4};";
         #endregion oracle connection
 
         #region

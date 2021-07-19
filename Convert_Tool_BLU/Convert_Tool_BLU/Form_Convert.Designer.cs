@@ -46,7 +46,7 @@ namespace Convert_Data
             this.txt_Schema = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.txt_Year = new System.Windows.Forms.TextBox();
+            this.txt_StartYear = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.txt_Progress = new System.Windows.Forms.TextBox();
             this.chkbox_DeleteDoc = new System.Windows.Forms.CheckBox();
@@ -54,8 +54,22 @@ namespace Convert_Data
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label4 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.txt_EndYear = new System.Windows.Forms.TextBox();
             this.cbBox_Donvi = new System.Windows.Forms.ComboBox();
             this.btn_OpenVerify = new System.Windows.Forms.Button();
+            this.bindingNavigatorMoveFirstItem = new System.Windows.Forms.ToolStripButton();
+            this.bindingNavigatorMovePreviousItem = new System.Windows.Forms.ToolStripButton();
+            this.bindingNavigatorSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.bindingNavigatorPositionItem = new System.Windows.Forms.ToolStripTextBox();
+            this.bindingNavigatorCountItem = new System.Windows.Forms.ToolStripLabel();
+            this.bindingNavigatorSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.bindingNavigatorMoveNextItem = new System.Windows.Forms.ToolStripButton();
+            this.bindingNavigatorMoveLastItem = new System.Windows.Forms.ToolStripButton();
+            this.bindingNavigatorSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
+            this.bindingNavigatorDeleteItem = new System.Windows.Forms.ToolStripButton();
+            this.btn_Delete = new System.Windows.Forms.Button();
             this.grpBox_DocInfo.SuspendLayout();
             this.grpBox_Category.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -268,7 +282,7 @@ namespace Convert_Data
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(404, 55);
+            this.label2.Location = new System.Drawing.Point(426, 55);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(47, 22);
@@ -276,15 +290,16 @@ namespace Convert_Data
             this.label2.Text = "Năm";
             this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
-            // txt_Year
+            // txt_StartYear
             // 
-            this.txt_Year.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_Year.Location = new System.Drawing.Point(459, 52);
-            this.txt_Year.Margin = new System.Windows.Forms.Padding(4);
-            this.txt_Year.Multiline = true;
-            this.txt_Year.Name = "txt_Year";
-            this.txt_Year.Size = new System.Drawing.Size(361, 35);
-            this.txt_Year.TabIndex = 12;
+            this.txt_StartYear.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_StartYear.Location = new System.Drawing.Point(493, 51);
+            this.txt_StartYear.Margin = new System.Windows.Forms.Padding(4);
+            this.txt_StartYear.Multiline = true;
+            this.txt_StartYear.Name = "txt_StartYear";
+            this.txt_StartYear.Size = new System.Drawing.Size(59, 29);
+            this.txt_StartYear.TabIndex = 12;
+            this.txt_StartYear.Text = "2011";
             // 
             // label3
             // 
@@ -352,10 +367,12 @@ namespace Convert_Data
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.label5);
+            this.groupBox2.Controls.Add(this.txt_EndYear);
             this.groupBox2.Controls.Add(this.cbBox_Donvi);
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.label2);
-            this.groupBox2.Controls.Add(this.txt_Year);
+            this.groupBox2.Controls.Add(this.txt_StartYear);
             this.groupBox2.Font = new System.Drawing.Font("Times New Roman", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox2.Location = new System.Drawing.Point(135, 31);
             this.groupBox2.Name = "groupBox2";
@@ -363,6 +380,28 @@ namespace Convert_Data
             this.groupBox2.TabIndex = 19;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Dữ liệu đầu vào";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(560, 55);
+            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(17, 22);
+            this.label5.TabIndex = 23;
+            this.label5.Text = "-";
+            // 
+            // txt_EndYear
+            // 
+            this.txt_EndYear.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_EndYear.Location = new System.Drawing.Point(585, 51);
+            this.txt_EndYear.Margin = new System.Windows.Forms.Padding(4);
+            this.txt_EndYear.Multiline = true;
+            this.txt_EndYear.Name = "txt_EndYear";
+            this.txt_EndYear.Size = new System.Drawing.Size(66, 29);
+            this.txt_EndYear.TabIndex = 22;
+            this.txt_EndYear.Text = "2019";
             // 
             // cbBox_Donvi
             // 
@@ -378,7 +417,7 @@ namespace Convert_Data
             // btn_OpenVerify
             // 
             this.btn_OpenVerify.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_OpenVerify.Location = new System.Drawing.Point(567, 747);
+            this.btn_OpenVerify.Location = new System.Drawing.Point(383, 747);
             this.btn_OpenVerify.Name = "btn_OpenVerify";
             this.btn_OpenVerify.Size = new System.Drawing.Size(110, 39);
             this.btn_OpenVerify.TabIndex = 20;
@@ -386,11 +425,78 @@ namespace Convert_Data
             this.btn_OpenVerify.UseVisualStyleBackColor = true;
             this.btn_OpenVerify.Click += new System.EventHandler(this.btn_OpenVerifyForm);
             // 
+            // bindingNavigatorMoveFirstItem
+            // 
+            this.bindingNavigatorMoveFirstItem.Name = "bindingNavigatorMoveFirstItem";
+            this.bindingNavigatorMoveFirstItem.Size = new System.Drawing.Size(23, 23);
+            // 
+            // bindingNavigatorMovePreviousItem
+            // 
+            this.bindingNavigatorMovePreviousItem.Name = "bindingNavigatorMovePreviousItem";
+            this.bindingNavigatorMovePreviousItem.Size = new System.Drawing.Size(23, 23);
+            // 
+            // bindingNavigatorSeparator
+            // 
+            this.bindingNavigatorSeparator.Name = "bindingNavigatorSeparator";
+            this.bindingNavigatorSeparator.Size = new System.Drawing.Size(6, 6);
+            // 
+            // bindingNavigatorPositionItem
+            // 
+            this.bindingNavigatorPositionItem.Name = "bindingNavigatorPositionItem";
+            this.bindingNavigatorPositionItem.Size = new System.Drawing.Size(100, 27);
+            // 
+            // bindingNavigatorCountItem
+            // 
+            this.bindingNavigatorCountItem.Name = "bindingNavigatorCountItem";
+            this.bindingNavigatorCountItem.Size = new System.Drawing.Size(23, 23);
+            // 
+            // bindingNavigatorSeparator1
+            // 
+            this.bindingNavigatorSeparator1.Name = "bindingNavigatorSeparator1";
+            this.bindingNavigatorSeparator1.Size = new System.Drawing.Size(6, 6);
+            // 
+            // bindingNavigatorMoveNextItem
+            // 
+            this.bindingNavigatorMoveNextItem.Name = "bindingNavigatorMoveNextItem";
+            this.bindingNavigatorMoveNextItem.Size = new System.Drawing.Size(23, 23);
+            // 
+            // bindingNavigatorMoveLastItem
+            // 
+            this.bindingNavigatorMoveLastItem.Name = "bindingNavigatorMoveLastItem";
+            this.bindingNavigatorMoveLastItem.Size = new System.Drawing.Size(23, 23);
+            // 
+            // bindingNavigatorSeparator2
+            // 
+            this.bindingNavigatorSeparator2.Name = "bindingNavigatorSeparator2";
+            this.bindingNavigatorSeparator2.Size = new System.Drawing.Size(6, 6);
+            // 
+            // bindingNavigatorAddNewItem
+            // 
+            this.bindingNavigatorAddNewItem.Name = "bindingNavigatorAddNewItem";
+            this.bindingNavigatorAddNewItem.Size = new System.Drawing.Size(23, 23);
+            // 
+            // bindingNavigatorDeleteItem
+            // 
+            this.bindingNavigatorDeleteItem.Name = "bindingNavigatorDeleteItem";
+            this.bindingNavigatorDeleteItem.Size = new System.Drawing.Size(23, 23);
+            // 
+            // btn_Delete
+            // 
+            this.btn_Delete.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_Delete.Location = new System.Drawing.Point(565, 747);
+            this.btn_Delete.Margin = new System.Windows.Forms.Padding(4);
+            this.btn_Delete.Name = "btn_Delete";
+            this.btn_Delete.Size = new System.Drawing.Size(97, 39);
+            this.btn_Delete.TabIndex = 21;
+            this.btn_Delete.Text = "Delete";
+            this.btn_Delete.UseVisualStyleBackColor = true;
+            // 
             // form_Convert
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1040, 797);
+            this.Controls.Add(this.btn_Delete);
             this.Controls.Add(this.btn_OpenVerify);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -437,7 +543,7 @@ namespace Convert_Data
         private System.Windows.Forms.TextBox txt_Schema;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox txt_Year;
+        private System.Windows.Forms.TextBox txt_StartYear;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txt_Progress;
         private System.Windows.Forms.CheckBox chkbox_DeleteDoc;
@@ -447,6 +553,20 @@ namespace Convert_Data
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.ComboBox cbBox_Donvi;
         private System.Windows.Forms.Button btn_OpenVerify;
+        private System.Windows.Forms.ToolStripButton bindingNavigatorAddNewItem;
+        private System.Windows.Forms.ToolStripLabel bindingNavigatorCountItem;
+        private System.Windows.Forms.ToolStripButton bindingNavigatorDeleteItem;
+        private System.Windows.Forms.ToolStripButton bindingNavigatorMoveFirstItem;
+        private System.Windows.Forms.ToolStripButton bindingNavigatorMovePreviousItem;
+        private System.Windows.Forms.ToolStripSeparator bindingNavigatorSeparator;
+        private System.Windows.Forms.ToolStripTextBox bindingNavigatorPositionItem;
+        private System.Windows.Forms.ToolStripSeparator bindingNavigatorSeparator1;
+        private System.Windows.Forms.ToolStripButton bindingNavigatorMoveNextItem;
+        private System.Windows.Forms.ToolStripButton bindingNavigatorMoveLastItem;
+        private System.Windows.Forms.ToolStripSeparator bindingNavigatorSeparator2;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox txt_EndYear;
+        private System.Windows.Forms.Button btn_Delete;
     }
 }
 

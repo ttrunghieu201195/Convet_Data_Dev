@@ -65,7 +65,7 @@ namespace Convert_Data
                 cell_value = row["thoigian_gui"].ToString();
                 if (cell_value != null && cell_value != string.Empty)
                 {
-                    DateTime updated_date = DateTime.ParseExact(cell_value.Trim(), "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                    DateTime? updated_date = DateTime.ParseExact(cell_value.Trim(), "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
                     dcm_Activiti_Log.updated_date = updated_date;
                 }
 
@@ -206,7 +206,7 @@ namespace Convert_Data
             }
         }
 
-        private void appendToListDcmAssign(long id_acti_log, long idVB, string nguoi_gui, DateTime thoigian_gui, string ds_nguoinhan, string ds_vaitro_nguoinhan
+        private void appendToListDcmAssign(long id_acti_log, long idVB, string nguoi_gui, DateTime? thoigian_gui, string ds_nguoinhan, string ds_vaitro_nguoinhan
                                             , string ds_trangthai_xuly, string ds_thoigian_xuly, int? truoc_banhanh)
         {
             try
@@ -256,7 +256,7 @@ namespace Convert_Data
             }
         }
 
-        private void appendToListDcmDonviNhan(long id_acti_log, long id_vb, string ds_donvi, string ds_vaitro_donvi, string agent_id, DateTime thoigian_gui
+        private void appendToListDcmDonviNhan(long id_acti_log, long id_vb, string ds_donvi, string ds_vaitro_donvi, string agent_id, DateTime? thoigian_gui
                                                 , string ds_trangthai_xuly_donvi, string ds_thoigian_xuly_donvi, int? truoc_banhanh, Common.VB_TYPE vb_type)
         {
             try
