@@ -54,17 +54,17 @@ namespace Convert_Data.Controller
             DCM_TYPEs.Add(dcm_TYPE);
         }
 
-        protected override void ParseData(DataRow row, Common.VB_TYPE type_vb, DataTable dcm_type)
+        /*protected override void ParseData(DataRow row, Common.VB_TYPE type_vb, DataTable dcm_type)
         {
             throw new NotImplementedException();
-        }
+        }*/
 
         protected override void resetListData()
         {
             DCM_TYPEs.Clear();
         }
 
-        public void insert_Dcm_Type(OracleConnection oracleConnection, Configs configs, string query, List<DCM_TYPE> data_list)
+        public void insert_Dcm_Type(OracleConnection oracleConnection, string schema, string query, List<DCM_TYPE> data_list)
         {
             try
             {
@@ -84,7 +84,7 @@ namespace Convert_Data.Controller
 
                         cmd.ArrayBindCount = data.Count;
 
-                        cmd.CommandText = string.Format(query, configs.Schema);
+                        cmd.CommandText = string.Format(query, schema);
 
                         cmd.Parameters.Add("ID", OracleDbType.Int64);
                         cmd.Parameters.Add("NAME", OracleDbType.Varchar2);
@@ -114,6 +114,46 @@ namespace Convert_Data.Controller
             {
                 Console.WriteLine(ex.Message);
             }
+        }
+
+        protected override void ParseData(DataRow row)
+        {
+            DCM_TYPE dcm_TYPE = new DCM_TYPE();
+            string cell_value = row["ID"].ToString();
+            if (!string.IsNullOrEmpty(cell_value))
+            {
+                dcm_TYPE.ID = long.Parse(cell_value);
+            }
+
+            cell_value = row["NAME"].ToString();
+            if (!string.IsNullOrEmpty(cell_value))
+            {
+                dcm_TYPE.NAME = cell_value;
+            }
+
+            cell_value = row["CODE"].ToString();
+            if (!string.IsNullOrEmpty(cell_value))
+            {
+                dcm_TYPE.CODE = cell_value;
+            }
+
+            cell_value = row["STT_HIENTHI"].ToString();
+            if (!string.IsNullOrEmpty(cell_value))
+            {
+                dcm_TYPE.STT_HIENTHI = int.Parse(cell_value);
+            }
+
+            cell_value = row["KYHIEU"].ToString();
+            if (!string.IsNullOrEmpty(cell_value))
+            {
+                dcm_TYPE.KYHIEU = cell_value;
+            }
+            DCM_TYPEs.Add(dcm_TYPE);
+        }
+
+        protected override void ParseData<T>(T data, DataTable dcm_type)
+        {
+            throw new NotImplementedException();
         }
     }
 }

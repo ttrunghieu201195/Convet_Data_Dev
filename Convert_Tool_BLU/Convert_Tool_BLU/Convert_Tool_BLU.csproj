@@ -99,6 +99,8 @@
     <Compile Include="Configuration.Designer.cs">
       <DependentUpon>Configuration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controller\Import_DCM_QUYTAC_NHAYSO.cs" />
+    <Compile Include="Controller\Import_DCM_SOVB_TEMPLATESINHSO.cs" />
     <Compile Include="Controller\Import_DCM_TYPE.cs" />
     <Compile Include="Controller\Import_LinhVuc.cs" />
     <Compile Include="Controller\Import_Abstract.cs" />
@@ -127,6 +129,7 @@
     <Compile Include="Models\Dcm_Track.cs" />
     <Compile Include="Models\DCM_TYPE.cs" />
     <Compile Include="Models\Fem_File.cs" />
+    <Compile Include="Models\IDCM_.cs" />
     <Compile Include="MoveData.cs">
       <SubType>Form</SubType>
     </Compile>

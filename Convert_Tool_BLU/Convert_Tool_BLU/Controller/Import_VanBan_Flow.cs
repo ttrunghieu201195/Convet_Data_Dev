@@ -486,7 +486,17 @@ namespace Convert_Data
             dcm_Donvi_Nhans.Clear();
         }
 
-        protected override void ParseData(DataRow row, Common.VB_TYPE type_vb, DataTable dcm_type)
+        /*protected override void ParseData(DataRow row, Common.VB_TYPE type_vb, DataTable dcm_type)
+        {
+            throw new NotImplementedException();
+        }*/
+
+        protected override void ParseData(DataRow row)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void ParseData<T>(T data, DataTable dcm_type)
         {
             throw new NotImplementedException();
         }

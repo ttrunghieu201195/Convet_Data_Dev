@@ -68,16 +68,28 @@ namespace Convert_Data
             try
             {
                 exported_error = false;
+                var cmd = postgresConnection.CreateCommand();
+                
                 string proc = query.Substring(0, query.IndexOf("("));
+                cmd.CommandText = proc;
                 Console.WriteLine(proc);
                 string param = query.Substring(query.IndexOf("(") + 1, query.IndexOf(")") - (query.IndexOf("(") + 1));
                 int donvi_code = int.Parse(param.Split(';')[0]);
                 string years = param.Split(';')[1];
                 Console.WriteLine(param.Split(';')[0] + " - " + param.Split(';')[1]);
-                var cmd = new NpgsqlCommand(proc, postgresConnection);
+
+                if (type_vb == Common.VB_TYPE.VB_DI)
+                {
+                    cmd.Parameters.AddWithValue("organizationid", donvi_code);
+                    cmd.Parameters.AddWithValue("v_yeardocument", years);
+                } else if (type_vb == Common.VB_TYPE.VB_DEN)
+                {
+                    cmd.Parameters.AddWithValue("organizationid", donvi_code);
+                    cmd.Parameters.AddWithValue("yeardocument", years);
+                }
+                
+
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("organizationid", donvi_code);
-                cmd.Parameters.AddWithValue("yeardocument", years);
 
                 NpgsqlDataAdapter dataAdapter = new NpgsqlDataAdapter(cmd);
                 DataSet dataSet = new DataSet();
@@ -104,6 +116,80 @@ namespace Convert_Data
             {
                 Console.WriteLine(e.Message);
                 exported_error = true;
+            }
+        }
+
+        public void ExportData(OracleConnection connection, string query)
+        {
+            OracleCommand cmd = connection.CreateCommand();
+            try
+            {
+                exported_error = false;
+                cmd.CommandText = query;
+                OracleDataAdapter dataAdapter = new OracleDataAdapter(cmd);
+                DataSet dataSet = new DataSet();
+                DataTable dataTable = new DataTable();
+                dataAdapter.Fill(dataSet);
+                dataTable = dataSet.Tables[0];
+                resetListData();
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    ParseData(row);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                exported_error = true;
+            }
+            finally
+            {
+                cmd.Dispose();
+            }
+        }
+
+        private void ParseData(DataRow row)
+        {
+            try
+            {
+                Dcm_Doc dcm_Doc = new Dcm_Doc();
+                dcm_Doc.id_VanBan = int.Parse(row["ID"].ToString());
+                dcm_Doc.dcmtype_code = row["DCMTYPE_CODE"].ToString();
+                dcm_Doc.trich_yeu = row["TRICH_YEU"].ToString();
+                dcm_Doc.so_kyhieu = row["SO_KYHIEU"].ToString();
+                dcm_Doc.so_den_di = long.Parse(row["SO_DEN_DI"].ToString());
+                dcm_Doc.nguoi_ky_chinh = row["NGUOI_KY_CHINH"].ToString();
+                dcm_Doc.nguoi_vaoso = row["NGUOI_SOAN"].ToString();
+                dcm_Doc.so_vanban_code = row["SO_VANBAN_CODE"].ToString();
+                dcm_Doc.ngay_tao = DateTime.ParseExact(row["NGAY_TAO"].ToString().Trim(), "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                dcm_Doc.ngay_van_ban = DateTime.ParseExact(row["NGAY_VAN_BAN"].ToString().Trim(), "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                dcm_Doc.ngay_den_di = DateTime.ParseExact(row["NGAY_DEN_DI"].ToString().ToString().Trim(), "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                dcm_Doc.priority_code = row["PRIORITY_CODE"].ToString();
+                dcm_Doc.confidential_code = row["CONFIDENTIAL_CODE"].ToString();
+                dcm_Doc.linhvuc_code = row["LINHVUC_CODE"].ToString();
+                dcm_Doc.hinhthuc_gui_code = row["HINHTHUC_GUI_CODE"].ToString();
+                dcm_Doc.han_giaiquyet = DateTime.ParseExact(row["HAN_GIAIQUYET"].ToString().ToString().Trim(), "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                dcm_Doc.congvan_dendi = int.Parse(row["CONGVAN_DENDI"].ToString());
+                dcm_Doc.trang_thai = int.Parse(row["TRANG_THAI"].ToString());
+                dcm_Doc.ngay_ban_hanh = DateTime.ParseExact(row["ngay_ban_hanh"].ToString().ToString().Trim(), "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                dcm_Doc.donvi_soanthao = row["donvi_soanthao"].ToString();
+                dcm_Doc.coquan_banhanh = row["DONVI_BANHANH"].ToString();
+                dcm_Doc.unit_id = int.Parse(row["unit_id"].ToString());
+                dcm_Doc.dv_nhanngoai = row["DONVI_NHANNGOAI"].ToString();
+                dcm_Doc.nguoi_soan = row["NGUOI_SOANTHAO"].ToString();
+                dcm_Doc.chucvu_nguoiky = row["CHUCVU_NGUOIKY"].ToString();
+                dcm_Doc.doc_note = row["DOC_NOTE"].ToString();
+                dcm_Doc.vb_trinhky = int.Parse(row["VB_TRINH_KY"].ToString());
+                dcm_Doc.so_trinhky = int.Parse(row["SO_TRINH_KY"].ToString());
+                dcm_Doc.ghi_chu = row["GHI_CHU"].ToString();
+                dcm_Doc.ngay_trinhky = DateTime.ParseExact(row["NGAY_TRINH_KY"].ToString().Trim(), "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                dcm_Doc.ngay_ky = DateTime.ParseExact(row["NGAY_KY"].ToString().Trim(), "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);                
+                dcm_Doc.process_key = row["PROCESS_KEY"].ToString();
+
+                dcm_Docs.Add(dcm_Doc);
+            } catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
 

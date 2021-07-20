@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+using System;
 
-namespace Convert_Data
+namespace Convert_Data.Models
 {
-    class Dcm_Doc
+    class Dcm_Doc : IDCM_
     {
         public int id_VanBan { get; set; } = -1;
         public int? congvan_dendi { get; set; } = null;

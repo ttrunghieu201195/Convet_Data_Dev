@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Convert_Data.Models
 {
-    class DCM_LINHVUC
+    class DCM_LINHVUC : IDCM_
     {
         public long ID { get; set; }
         public string NAME { get; set; }

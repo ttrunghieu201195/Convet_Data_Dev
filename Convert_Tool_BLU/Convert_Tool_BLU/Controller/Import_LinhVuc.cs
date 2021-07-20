@@ -48,17 +48,17 @@ namespace Convert_Data.Controller
             DCM_LINHVUCs.Add(dcm_LINHVUC);
         }
 
-        protected override void ParseData(DataRow row, Common.VB_TYPE type_vb, DataTable dcm_type)
+        /*protected override void ParseData(DataRow row, Common.VB_TYPE type_vb, DataTable dcm_type)
         {
             throw new NotImplementedException();
-        }
+        }*/
 
         protected override void resetListData()
         {
             DCM_LINHVUCs.Clear();
         }
 
-        public void insert_Dcm_Linhvuc(OracleConnection oracleConnection, Configs configs, string query, List<DCM_LINHVUC> data_list)
+        public void insert_Dcm_Linhvuc(OracleConnection oracleConnection, string schema, string query, List<DCM_LINHVUC> data_list)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace Convert_Data.Controller
 
                         cmd.ArrayBindCount = data.Count;
 
-                        cmd.CommandText = string.Format(query, configs.Schema);
+                        cmd.CommandText = string.Format(query, schema);
 
                         cmd.Parameters.Add("ID", OracleDbType.Int64);
                         cmd.Parameters.Add("NAME", OracleDbType.Varchar2);
@@ -105,6 +105,41 @@ namespace Convert_Data.Controller
             {
                 Console.WriteLine(ex.Message);
             }
+        }
+
+        protected override void ParseData(DataRow row)
+        {
+
+            DCM_LINHVUC dcm_LINHVUC = new DCM_LINHVUC();
+            string cell_value = row["ID"].ToString();
+            if (!string.IsNullOrEmpty(cell_value))
+            {
+                dcm_LINHVUC.ID = long.Parse(cell_value);
+            }
+
+            cell_value = row["NAME"].ToString();
+            if (!string.IsNullOrEmpty(cell_value))
+            {
+                dcm_LINHVUC.NAME = cell_value;
+            }
+
+            cell_value = row["STT_HIENTHI"].ToString();
+            if (!string.IsNullOrEmpty(cell_value))
+            {
+                dcm_LINHVUC.STT_HIENTHI = int.Parse(cell_value);
+            }
+
+            cell_value = row["CODE"].ToString();
+            if (!string.IsNullOrEmpty(cell_value))
+            {
+                dcm_LINHVUC.CODE = cell_value;
+            }
+            DCM_LINHVUCs.Add(dcm_LINHVUC);
+        }
+
+        protected override void ParseData<T>(T data, DataTable dcm_type)
+        {
+            throw new NotImplementedException();
         }
     }
 }

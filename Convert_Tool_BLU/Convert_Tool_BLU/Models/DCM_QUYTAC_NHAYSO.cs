@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Convert_Data.Models
 {
-    class DCM_QUYTAC_NHAYSO
+    class DCM_QUYTAC_NHAYSO : IDCM_
     {
         public long ID { get; set; }
         public string MA_QUYTAC { get; set; } = "SOVANBAN";

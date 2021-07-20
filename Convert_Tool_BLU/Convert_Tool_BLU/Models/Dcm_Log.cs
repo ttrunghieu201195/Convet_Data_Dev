@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Convert_Data.Models
 {
-    class Dcm_Log
+    class Dcm_Log : IDCM_
     {
         public long id { get; set; }
         public string username { get; set; } = "";

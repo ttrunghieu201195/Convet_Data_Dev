@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Convert_Data.Models
 {
-    class Dcm_Track
+    class Dcm_Track : IDCM_
     {
         public long id { get; set; }
         public long doc_id { get; set; }

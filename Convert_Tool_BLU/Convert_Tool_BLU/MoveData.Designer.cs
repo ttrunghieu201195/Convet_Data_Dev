@@ -30,15 +30,15 @@ namespace Convert_Data
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.cb_From_Server = new System.Windows.Forms.ComboBox();
-            this.cb_To_Server = new System.Windows.Forms.ComboBox();
-            this.txt_From_Schema = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.txt_From_Schema = new System.Windows.Forms.TextBox();
+            this.cb_From_Server = new System.Windows.Forms.ComboBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.txt_To_Schema = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.cb_To_Server = new System.Windows.Forms.ComboBox();
             this.grpBox_Category = new System.Windows.Forms.GroupBox();
             this.chkBox_Linhvuc = new System.Windows.Forms.CheckBox();
             this.chkBox_HinhThuc = new System.Windows.Forms.CheckBox();
@@ -46,12 +46,18 @@ namespace Convert_Data
             this.chkBox_Priority = new System.Windows.Forms.CheckBox();
             this.chkBox_Book = new System.Windows.Forms.CheckBox();
             this.grpBox_DocInfo = new System.Windows.Forms.GroupBox();
-            this.chkbox_OutGoing_Info = new System.Windows.Forms.CheckBox();
-            this.chkbox_InComing_Log = new System.Windows.Forms.CheckBox();
-            this.chkbox_OutGoing_Flow = new System.Windows.Forms.CheckBox();
-            this.chkbox_InComing_Flow = new System.Windows.Forms.CheckBox();
-            this.chkbox_OutGoing_Log = new System.Windows.Forms.CheckBox();
-            this.chkbox_InComing_Info = new System.Windows.Forms.CheckBox();
+            this.chkBox_DCM_DOC = new System.Windows.Forms.CheckBox();
+            this.chkbox_DCM_ASSIGN = new System.Windows.Forms.CheckBox();
+            this.chkbox_FEM_FILE = new System.Windows.Forms.CheckBox();
+            this.chkbox_DCM_ATTACH_FILE = new System.Windows.Forms.CheckBox();
+            this.chkbox_DCM_ACTIVITI_LOG = new System.Windows.Forms.CheckBox();
+            this.chkBox_DCM_DOC_RELATION = new System.Windows.Forms.CheckBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.chkBox_Delete = new System.Windows.Forms.CheckBox();
+            this.chkBox_DCM_DONVI_NHAN = new System.Windows.Forms.CheckBox();
+            this.chkBox_DCM_LOG = new System.Windows.Forms.CheckBox();
+            this.chkBox_DCM_LOG_READ = new System.Windows.Forms.CheckBox();
+            this.txt_Progress = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.grpBox_Category.SuspendLayout();
@@ -72,45 +78,15 @@ namespace Convert_Data
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "From";
             // 
-            // groupBox2
+            // label2
             // 
-            this.groupBox2.Controls.Add(this.textBox2);
-            this.groupBox2.Controls.Add(this.label3);
-            this.groupBox2.Controls.Add(this.label4);
-            this.groupBox2.Controls.Add(this.cb_To_Server);
-            this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox2.Location = new System.Drawing.Point(403, 40);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(363, 127);
-            this.groupBox2.TabIndex = 1;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "To";
-            // 
-            // cb_From_Server
-            // 
-            this.cb_From_Server.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cb_From_Server.FormattingEnabled = true;
-            this.cb_From_Server.Location = new System.Drawing.Point(73, 30);
-            this.cb_From_Server.Name = "cb_From_Server";
-            this.cb_From_Server.Size = new System.Drawing.Size(187, 28);
-            this.cb_From_Server.TabIndex = 0;
-            // 
-            // cb_To_Server
-            // 
-            this.cb_To_Server.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cb_To_Server.FormattingEnabled = true;
-            this.cb_To_Server.Location = new System.Drawing.Point(105, 31);
-            this.cb_To_Server.Name = "cb_To_Server";
-            this.cb_To_Server.Size = new System.Drawing.Size(187, 28);
-            this.cb_To_Server.TabIndex = 1;
-            // 
-            // txt_From_Schema
-            // 
-            this.txt_From_Schema.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_From_Schema.Location = new System.Drawing.Point(73, 83);
-            this.txt_From_Schema.Name = "txt_From_Schema";
-            this.txt_From_Schema.Size = new System.Drawing.Size(187, 26);
-            this.txt_From_Schema.TabIndex = 1;
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(10, 83);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(59, 17);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "Schema";
             // 
             // label1
             // 
@@ -122,15 +98,44 @@ namespace Convert_Data
             this.label1.TabIndex = 2;
             this.label1.Text = "Server";
             // 
-            // label2
+            // txt_From_Schema
             // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(10, 83);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(59, 17);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "Schema";
+            this.txt_From_Schema.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_From_Schema.Location = new System.Drawing.Point(73, 83);
+            this.txt_From_Schema.Name = "txt_From_Schema";
+            this.txt_From_Schema.Size = new System.Drawing.Size(187, 26);
+            this.txt_From_Schema.TabIndex = 1;
+            // 
+            // cb_From_Server
+            // 
+            this.cb_From_Server.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cb_From_Server.FormattingEnabled = true;
+            this.cb_From_Server.Location = new System.Drawing.Point(73, 30);
+            this.cb_From_Server.Name = "cb_From_Server";
+            this.cb_From_Server.Size = new System.Drawing.Size(187, 28);
+            this.cb_From_Server.TabIndex = 0;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.txt_To_Schema);
+            this.groupBox2.Controls.Add(this.label3);
+            this.groupBox2.Controls.Add(this.label4);
+            this.groupBox2.Controls.Add(this.cb_To_Server);
+            this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox2.Location = new System.Drawing.Point(403, 40);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(363, 127);
+            this.groupBox2.TabIndex = 1;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "To";
+            // 
+            // txt_To_Schema
+            // 
+            this.txt_To_Schema.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_To_Schema.Location = new System.Drawing.Point(105, 83);
+            this.txt_To_Schema.Name = "txt_To_Schema";
+            this.txt_To_Schema.Size = new System.Drawing.Size(187, 26);
+            this.txt_To_Schema.TabIndex = 6;
             // 
             // label3
             // 
@@ -152,13 +157,14 @@ namespace Convert_Data
             this.label4.TabIndex = 4;
             this.label4.Text = "Server";
             // 
-            // textBox2
+            // cb_To_Server
             // 
-            this.textBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox2.Location = new System.Drawing.Point(105, 83);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(187, 26);
-            this.textBox2.TabIndex = 6;
+            this.cb_To_Server.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cb_To_Server.FormattingEnabled = true;
+            this.cb_To_Server.Location = new System.Drawing.Point(105, 31);
+            this.cb_To_Server.Name = "cb_To_Server";
+            this.cb_To_Server.Size = new System.Drawing.Size(187, 28);
+            this.cb_To_Server.TabIndex = 1;
             // 
             // grpBox_Category
             // 
@@ -232,91 +238,162 @@ namespace Convert_Data
             // 
             // grpBox_DocInfo
             // 
-            this.grpBox_DocInfo.Controls.Add(this.chkbox_OutGoing_Info);
-            this.grpBox_DocInfo.Controls.Add(this.chkbox_InComing_Log);
-            this.grpBox_DocInfo.Controls.Add(this.chkbox_OutGoing_Flow);
-            this.grpBox_DocInfo.Controls.Add(this.chkbox_InComing_Flow);
-            this.grpBox_DocInfo.Controls.Add(this.chkbox_OutGoing_Log);
-            this.grpBox_DocInfo.Controls.Add(this.chkbox_InComing_Info);
+            this.grpBox_DocInfo.Controls.Add(this.chkBox_DCM_LOG_READ);
+            this.grpBox_DocInfo.Controls.Add(this.chkBox_DCM_LOG);
+            this.grpBox_DocInfo.Controls.Add(this.chkBox_DCM_DONVI_NHAN);
+            this.grpBox_DocInfo.Controls.Add(this.chkBox_DCM_DOC);
+            this.grpBox_DocInfo.Controls.Add(this.chkbox_DCM_ASSIGN);
+            this.grpBox_DocInfo.Controls.Add(this.chkbox_FEM_FILE);
+            this.grpBox_DocInfo.Controls.Add(this.chkbox_DCM_ATTACH_FILE);
+            this.grpBox_DocInfo.Controls.Add(this.chkbox_DCM_ACTIVITI_LOG);
+            this.grpBox_DocInfo.Controls.Add(this.chkBox_DCM_DOC_RELATION);
             this.grpBox_DocInfo.Font = new System.Drawing.Font("Times New Roman", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.grpBox_DocInfo.Location = new System.Drawing.Point(45, 281);
             this.grpBox_DocInfo.Name = "grpBox_DocInfo";
-            this.grpBox_DocInfo.Size = new System.Drawing.Size(721, 132);
+            this.grpBox_DocInfo.Size = new System.Drawing.Size(721, 203);
             this.grpBox_DocInfo.TabIndex = 9;
             this.grpBox_DocInfo.TabStop = false;
             this.grpBox_DocInfo.Text = "Thông tin văn bản";
             // 
-            // chkbox_OutGoing_Info
+            // chkBox_DCM_DOC
             // 
-            this.chkbox_OutGoing_Info.AutoSize = true;
-            this.chkbox_OutGoing_Info.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkbox_OutGoing_Info.Location = new System.Drawing.Point(20, 38);
-            this.chkbox_OutGoing_Info.Name = "chkbox_OutGoing_Info";
-            this.chkbox_OutGoing_Info.Size = new System.Drawing.Size(150, 23);
-            this.chkbox_OutGoing_Info.TabIndex = 1;
-            this.chkbox_OutGoing_Info.Text = "Thông tin văn bản đi";
-            this.chkbox_OutGoing_Info.UseVisualStyleBackColor = true;
+            this.chkBox_DCM_DOC.AutoSize = true;
+            this.chkBox_DCM_DOC.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkBox_DCM_DOC.Location = new System.Drawing.Point(20, 38);
+            this.chkBox_DCM_DOC.Name = "chkBox_DCM_DOC";
+            this.chkBox_DCM_DOC.Size = new System.Drawing.Size(106, 23);
+            this.chkBox_DCM_DOC.TabIndex = 1;
+            this.chkBox_DCM_DOC.Text = "DCM_DOC";
+            this.chkBox_DCM_DOC.UseVisualStyleBackColor = true;
             // 
-            // chkbox_InComing_Log
+            // chkbox_DCM_ASSIGN
             // 
-            this.chkbox_InComing_Log.AutoSize = true;
-            this.chkbox_InComing_Log.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkbox_InComing_Log.Location = new System.Drawing.Point(454, 94);
-            this.chkbox_InComing_Log.Name = "chkbox_InComing_Log";
-            this.chkbox_InComing_Log.Size = new System.Drawing.Size(163, 23);
-            this.chkbox_InComing_Log.TabIndex = 6;
-            this.chkbox_InComing_Log.Text = "Log xử lý văn bản đến";
-            this.chkbox_InComing_Log.UseVisualStyleBackColor = true;
+            this.chkbox_DCM_ASSIGN.AutoSize = true;
+            this.chkbox_DCM_ASSIGN.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkbox_DCM_ASSIGN.Location = new System.Drawing.Point(245, 81);
+            this.chkbox_DCM_ASSIGN.Name = "chkbox_DCM_ASSIGN";
+            this.chkbox_DCM_ASSIGN.Size = new System.Drawing.Size(129, 23);
+            this.chkbox_DCM_ASSIGN.TabIndex = 6;
+            this.chkbox_DCM_ASSIGN.Text = "DCM_ASSIGN";
+            this.chkbox_DCM_ASSIGN.UseVisualStyleBackColor = true;
             // 
-            // chkbox_OutGoing_Flow
+            // chkbox_FEM_FILE
             // 
-            this.chkbox_OutGoing_Flow.AutoSize = true;
-            this.chkbox_OutGoing_Flow.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkbox_OutGoing_Flow.Location = new System.Drawing.Point(220, 38);
-            this.chkbox_OutGoing_Flow.Name = "chkbox_OutGoing_Flow";
-            this.chkbox_OutGoing_Flow.Size = new System.Drawing.Size(166, 23);
-            this.chkbox_OutGoing_Flow.TabIndex = 2;
-            this.chkbox_OutGoing_Flow.Text = "Luồng xử lý văn bản đi";
-            this.chkbox_OutGoing_Flow.UseVisualStyleBackColor = true;
+            this.chkbox_FEM_FILE.AutoSize = true;
+            this.chkbox_FEM_FILE.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkbox_FEM_FILE.Location = new System.Drawing.Point(20, 122);
+            this.chkbox_FEM_FILE.Name = "chkbox_FEM_FILE";
+            this.chkbox_FEM_FILE.Size = new System.Drawing.Size(100, 23);
+            this.chkbox_FEM_FILE.TabIndex = 2;
+            this.chkbox_FEM_FILE.Text = "FEM_FILE";
+            this.chkbox_FEM_FILE.UseVisualStyleBackColor = true;
             // 
-            // chkbox_InComing_Flow
+            // chkbox_DCM_ATTACH_FILE
             // 
-            this.chkbox_InComing_Flow.AutoSize = true;
-            this.chkbox_InComing_Flow.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkbox_InComing_Flow.Location = new System.Drawing.Point(220, 94);
-            this.chkbox_InComing_Flow.Name = "chkbox_InComing_Flow";
-            this.chkbox_InComing_Flow.Size = new System.Drawing.Size(177, 23);
-            this.chkbox_InComing_Flow.TabIndex = 5;
-            this.chkbox_InComing_Flow.Text = "Luồng xử lý văn bản đến";
-            this.chkbox_InComing_Flow.UseVisualStyleBackColor = true;
+            this.chkbox_DCM_ATTACH_FILE.AutoSize = true;
+            this.chkbox_DCM_ATTACH_FILE.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkbox_DCM_ATTACH_FILE.Location = new System.Drawing.Point(20, 163);
+            this.chkbox_DCM_ATTACH_FILE.Name = "chkbox_DCM_ATTACH_FILE";
+            this.chkbox_DCM_ATTACH_FILE.Size = new System.Drawing.Size(171, 23);
+            this.chkbox_DCM_ATTACH_FILE.TabIndex = 5;
+            this.chkbox_DCM_ATTACH_FILE.Text = "DCM_ATTACH_FILE";
+            this.chkbox_DCM_ATTACH_FILE.UseVisualStyleBackColor = true;
             // 
-            // chkbox_OutGoing_Log
+            // chkbox_DCM_ACTIVITI_LOG
             // 
-            this.chkbox_OutGoing_Log.AutoSize = true;
-            this.chkbox_OutGoing_Log.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkbox_OutGoing_Log.Location = new System.Drawing.Point(454, 38);
-            this.chkbox_OutGoing_Log.Name = "chkbox_OutGoing_Log";
-            this.chkbox_OutGoing_Log.Size = new System.Drawing.Size(152, 23);
-            this.chkbox_OutGoing_Log.TabIndex = 3;
-            this.chkbox_OutGoing_Log.Text = "Log xử lý văn bản đi";
-            this.chkbox_OutGoing_Log.UseVisualStyleBackColor = true;
+            this.chkbox_DCM_ACTIVITI_LOG.AutoSize = true;
+            this.chkbox_DCM_ACTIVITI_LOG.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkbox_DCM_ACTIVITI_LOG.Location = new System.Drawing.Point(245, 38);
+            this.chkbox_DCM_ACTIVITI_LOG.Name = "chkbox_DCM_ACTIVITI_LOG";
+            this.chkbox_DCM_ACTIVITI_LOG.Size = new System.Drawing.Size(178, 23);
+            this.chkbox_DCM_ACTIVITI_LOG.TabIndex = 3;
+            this.chkbox_DCM_ACTIVITI_LOG.Text = "DCM_ACTIVITI_LOG";
+            this.chkbox_DCM_ACTIVITI_LOG.UseVisualStyleBackColor = true;
             // 
-            // chkbox_InComing_Info
+            // chkBox_DCM_DOC_RELATION
             // 
-            this.chkbox_InComing_Info.AutoSize = true;
-            this.chkbox_InComing_Info.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkbox_InComing_Info.Location = new System.Drawing.Point(20, 94);
-            this.chkbox_InComing_Info.Name = "chkbox_InComing_Info";
-            this.chkbox_InComing_Info.Size = new System.Drawing.Size(161, 23);
-            this.chkbox_InComing_Info.TabIndex = 4;
-            this.chkbox_InComing_Info.Text = "Thông tin văn bản đến";
-            this.chkbox_InComing_Info.UseVisualStyleBackColor = true;
+            this.chkBox_DCM_DOC_RELATION.AutoSize = true;
+            this.chkBox_DCM_DOC_RELATION.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkBox_DCM_DOC_RELATION.Location = new System.Drawing.Point(20, 81);
+            this.chkBox_DCM_DOC_RELATION.Name = "chkBox_DCM_DOC_RELATION";
+            this.chkBox_DCM_DOC_RELATION.Size = new System.Drawing.Size(189, 23);
+            this.chkBox_DCM_DOC_RELATION.TabIndex = 4;
+            this.chkBox_DCM_DOC_RELATION.Text = "DCM_DOC_RELATION";
+            this.chkBox_DCM_DOC_RELATION.UseVisualStyleBackColor = true;
+            // 
+            // button1
+            // 
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.Location = new System.Drawing.Point(461, 502);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(88, 35);
+            this.button1.TabIndex = 11;
+            this.button1.Text = "Run";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // chkBox_Delete
+            // 
+            this.chkBox_Delete.AutoSize = true;
+            this.chkBox_Delete.Checked = true;
+            this.chkBox_Delete.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkBox_Delete.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkBox_Delete.Location = new System.Drawing.Point(403, 159);
+            this.chkBox_Delete.Name = "chkBox_Delete";
+            this.chkBox_Delete.Size = new System.Drawing.Size(169, 20);
+            this.chkBox_Delete.TabIndex = 12;
+            this.chkBox_Delete.Text = "Delete Before Move Data";
+            this.chkBox_Delete.UseVisualStyleBackColor = true;
+            // 
+            // chkBox_DCM_DONVI_NHAN
+            // 
+            this.chkBox_DCM_DONVI_NHAN.AutoSize = true;
+            this.chkBox_DCM_DONVI_NHAN.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkBox_DCM_DONVI_NHAN.Location = new System.Drawing.Point(245, 122);
+            this.chkBox_DCM_DONVI_NHAN.Name = "chkBox_DCM_DONVI_NHAN";
+            this.chkBox_DCM_DONVI_NHAN.Size = new System.Drawing.Size(177, 23);
+            this.chkBox_DCM_DONVI_NHAN.TabIndex = 7;
+            this.chkBox_DCM_DONVI_NHAN.Text = "DCM_DONVI_NHAN";
+            this.chkBox_DCM_DONVI_NHAN.UseVisualStyleBackColor = true;
+            // 
+            // chkBox_DCM_LOG
+            // 
+            this.chkBox_DCM_LOG.AutoSize = true;
+            this.chkBox_DCM_LOG.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkBox_DCM_LOG.Location = new System.Drawing.Point(491, 38);
+            this.chkBox_DCM_LOG.Name = "chkBox_DCM_LOG";
+            this.chkBox_DCM_LOG.Size = new System.Drawing.Size(104, 23);
+            this.chkBox_DCM_LOG.TabIndex = 8;
+            this.chkBox_DCM_LOG.Text = "DCM_LOG";
+            this.chkBox_DCM_LOG.UseVisualStyleBackColor = true;
+            // 
+            // chkBox_DCM_LOG_READ
+            // 
+            this.chkBox_DCM_LOG_READ.AutoSize = true;
+            this.chkBox_DCM_LOG_READ.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkBox_DCM_LOG_READ.Location = new System.Drawing.Point(491, 81);
+            this.chkBox_DCM_LOG_READ.Name = "chkBox_DCM_LOG_READ";
+            this.chkBox_DCM_LOG_READ.Size = new System.Drawing.Size(153, 23);
+            this.chkBox_DCM_LOG_READ.TabIndex = 9;
+            this.chkBox_DCM_LOG_READ.Text = "DCM_LOG_READ";
+            this.chkBox_DCM_LOG_READ.UseVisualStyleBackColor = true;
+            // 
+            // txt_Progress
+            // 
+            this.txt_Progress.Location = new System.Drawing.Point(45, 502);
+            this.txt_Progress.Multiline = true;
+            this.txt_Progress.Name = "txt_Progress";
+            this.txt_Progress.Size = new System.Drawing.Size(324, 35);
+            this.txt_Progress.TabIndex = 13;
             // 
             // MoveData
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 511);
+            this.ClientSize = new System.Drawing.Size(800, 560);
+            this.Controls.Add(this.txt_Progress);
+            this.Controls.Add(this.chkBox_Delete);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.grpBox_Category);
             this.Controls.Add(this.grpBox_DocInfo);
             this.Controls.Add(this.groupBox2);
@@ -333,6 +410,7 @@ namespace Convert_Data
             this.grpBox_DocInfo.ResumeLayout(false);
             this.grpBox_DocInfo.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -345,7 +423,7 @@ namespace Convert_Data
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txt_From_Schema;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox txt_To_Schema;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.GroupBox grpBox_Category;
@@ -355,11 +433,17 @@ namespace Convert_Data
         private System.Windows.Forms.CheckBox chkBox_Priority;
         private System.Windows.Forms.CheckBox chkBox_Book;
         private System.Windows.Forms.GroupBox grpBox_DocInfo;
-        private System.Windows.Forms.CheckBox chkbox_OutGoing_Info;
-        private System.Windows.Forms.CheckBox chkbox_InComing_Log;
-        private System.Windows.Forms.CheckBox chkbox_OutGoing_Flow;
-        private System.Windows.Forms.CheckBox chkbox_InComing_Flow;
-        private System.Windows.Forms.CheckBox chkbox_OutGoing_Log;
-        private System.Windows.Forms.CheckBox chkbox_InComing_Info;
+        private System.Windows.Forms.CheckBox chkBox_DCM_DOC;
+        private System.Windows.Forms.CheckBox chkbox_DCM_ASSIGN;
+        private System.Windows.Forms.CheckBox chkbox_FEM_FILE;
+        private System.Windows.Forms.CheckBox chkbox_DCM_ATTACH_FILE;
+        private System.Windows.Forms.CheckBox chkbox_DCM_ACTIVITI_LOG;
+        private System.Windows.Forms.CheckBox chkBox_DCM_DOC_RELATION;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.CheckBox chkBox_Delete;
+        private System.Windows.Forms.CheckBox chkBox_DCM_LOG_READ;
+        private System.Windows.Forms.CheckBox chkBox_DCM_LOG;
+        private System.Windows.Forms.CheckBox chkBox_DCM_DONVI_NHAN;
+        private System.Windows.Forms.TextBox txt_Progress;
     }
 }

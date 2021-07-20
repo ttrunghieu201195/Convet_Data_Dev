@@ -19,10 +19,18 @@ namespace Convert_Data
 
         public enum TABLE
         {
+            DCM_CONFIDENTIAL,
+            DCM_PRIORITY,
+            DCM_TYPE,
+            DCM_LINHVUC,
+            DCM_SOVANBAN,
+            DCM_QUYTAC_NHAYSO,
+            DCM_SOVB_TEMPLATESINHSO,
             DCM_DOC,
             DCM_DOC_RELATION,
             FEM_FILE,
             DCM_ATTACH_FILE,
+            DCM_TRACK,
             DCM_ACTIVITI_LOG,
             DCM_ASSIGN,
             DCM_DONVI_NHAN,
@@ -34,7 +42,7 @@ namespace Convert_Data
 
         public static long GetCurrentSeq(OracleConnection connection, string schema, string seqName)
         {
-            string sql = "select " + schema + "." + seqName + ".NextVal from dual";
+            string sql = "select " + schema + seqName + ".NextVal from dual";
             OracleCommand objCommand1 = new OracleCommand(sql, connection);
             decimal result = (decimal)objCommand1.ExecuteScalar();
             return long.Parse(result.ToString());
@@ -162,8 +170,8 @@ namespace Convert_Data
             UpdateSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_LOG, ++Import_VanBan_Log.SEQ_DCM_LOG - Constants.INCREASEID_OTHERS);
             //UpdateSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_LOG_READ, ++Import_VanBan_Log.SEQ_DCM_LOG_READ - Constants.INCREASEID_OTHERS);
 
-            UpdateSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_SOVB_TEMPLATESINHSO, ++Import_SoVanBan.SEQ_DCM_SOVB_TEMPLATESINHSO - Constants.INCREASEID_OTHERS);
-            UpdateSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_QUYTAC_NHAYSO, ++Import_SoVanBan.SEQ_DCM_QUYTAC_NHAYSO - Constants.INCREASEID_OTHERS);
+            UpdateSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_SOVB_TEMPLATESINHSO, ++Import_DCM_SOVB_TEMPLATESINHSO.SEQ_DCM_SOVB_TEMPLATESINHSO - Constants.INCREASEID_OTHERS);
+            UpdateSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_QUYTAC_NHAYSO, ++Import_DCM_QUYTAC_NHAYSO.SEQ_DCM_QUYTAC_NHAYSO - Constants.INCREASEID_OTHERS);
         }
 
         public static void updateSeqFromProcedure(OracleConnection oracleConnection, Configs configs)
@@ -228,7 +236,7 @@ namespace Convert_Data
             Import_VanBan.SEQ_DCM_DOC_RELATION = GetCurrentSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_DOC_RELATION);
             Import_VanBan.SEQ_FEM_FILE = GetCurrentSeq(oracleConnection, configs.Schema, Constants.SEQ_FEM_FILE);
             Import_VanBan.SEQ_DCM_ATTACH_FILE = GetCurrentSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_ATTACH_FILE);
-            Import_VanBan.SEQ_DCM_TRACK = GetCurrentSeq(oracleConnection, "CLOUD_ADMIN_DEV_BLU_2", Constants.SEQ_DCM_TRACK);
+            Import_VanBan.SEQ_DCM_TRACK = GetCurrentSeq(oracleConnection, "CLOUD_ADMIN_DEV_BLU_2.", Constants.SEQ_DCM_TRACK);
             
             Import_VanBan_Flow.SEQ_DCM_ACTIVITI_LOG = GetCurrentSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_ACTIVITI_LOG);
             Import_VanBan_Flow.SEQ_DCM_ASSIGN = GetCurrentSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_ASSIGN);
@@ -237,8 +245,8 @@ namespace Convert_Data
             Import_VanBan_Log.SEQ_DCM_LOG = GetCurrentSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_LOG);
             //Import_VanBan_Log.SEQ_DCM_LOG_READ = getCurrentSeq(oracleConnection, configs.schema, Constants.SEQ_DCM_LOG_READ);
 
-            Import_SoVanBan.SEQ_DCM_SOVB_TEMPLATESINHSO = GetCurrentSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_SOVB_TEMPLATESINHSO);
-            Import_SoVanBan.SEQ_DCM_QUYTAC_NHAYSO = GetCurrentSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_QUYTAC_NHAYSO);
+            Import_DCM_SOVB_TEMPLATESINHSO.SEQ_DCM_SOVB_TEMPLATESINHSO = GetCurrentSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_SOVB_TEMPLATESINHSO);
+            Import_DCM_QUYTAC_NHAYSO.SEQ_DCM_QUYTAC_NHAYSO = GetCurrentSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_QUYTAC_NHAYSO);
         }
 
         public static List<List<T>> SplitList<T>(List<T> data) where T:class
@@ -257,41 +265,25 @@ namespace Convert_Data
             return list_obj;
         }
 
-        private static void Delete(OracleConnection oracleConnection, string schema, string query)
+        public static void DeleteTable(OracleConnection connection, string schema, Common.TABLE table)
         {
-            
-            OracleCommand cmd = new OracleCommand(string.Format(query,schema), oracleConnection);
-            cmd.ExecuteNonQuery();
-            cmd.Dispose();
-        }
-
-        public static void DeleteAllTableRelatedToDcmDoc(OracleConnection oracleConnection, string schema)
-        {
-            foreach (string table in table_arr)
-            {
-                Delete(oracleConnection, schema, string.Format(Constants.sql_delete_table, schema, table));
-            }
-        }
-
-        public static void DeleteDCM_DOC(OracleConnection connection, string schema)
-        {
-            OracleCommand cmd = null;
+            OracleCommand cmd = connection.CreateCommand();
             try
             {
-                foreach (string table in table_arr)
-                {
-                    string query = string.Format(Constants.SQL_GET_CONVERTED_DATA_COUNT, schema+".", table);
-                    cmd = new OracleCommand(query, connection);
-                    int totalRecords = int.Parse(((decimal)cmd.ExecuteScalar()).ToString());
-                    int threshold = 10000;
-                    int count_loop = totalRecords / threshold + (totalRecords % threshold > 0 ? 1 : 0);
+                string query = string.Format(Constants.SQL_GET_CONVERTED_DATA_COUNT, schema, table);
+                
+                cmd.CommandText = query;
+                int totalRecs = int.Parse(((decimal)cmd.ExecuteScalar()).ToString());
+                Console.WriteLine("Total records in " + table + ": " + totalRecs);
+                int threshold = 10000;
+                int count_loop = totalRecs / threshold + (totalRecs % threshold > 0 ? 1 : 0);
 
-                    for (int i = 0; i < count_loop; i++)
-                    {
-                        cmd = new OracleCommand(string.Format(Constants.sql_delete_table, schema, table, threshold), connection);
-                        cmd.ExecuteNonQuery();
-                        Console.WriteLine("Deleted " + threshold + " records in "+ table);
-                    }
+                for (int i = 0; i < count_loop; i++)
+                {
+                    query = string.Format(Constants.sql_delete_table, schema, table, threshold);
+                    cmd.CommandText = query;
+                    cmd.ExecuteNonQuery();
+                    Console.WriteLine("Deleted " + threshold + " records in " + table);
                 }
             } catch (Exception ex)
             {
@@ -299,10 +291,8 @@ namespace Convert_Data
             }
             finally
             {
-                if (cmd != null)
-                {
-                    cmd.Dispose();
-                }
+                cmd.Dispose();
+
             }
         }
 
@@ -328,6 +318,20 @@ namespace Convert_Data
             DataSet dataSet = new DataSet();
             dataAdapter.Fill(dataSet);
             return dataSet.Tables[0];
+        }
+
+        public static DataTable GetDcm_Type(OracleConnection connection, string schema, string query)
+        {
+            OracleCommand cmd = new OracleCommand(string.Format(query, schema), connection);
+
+            OracleDataAdapter dataAdapter = new OracleDataAdapter(cmd);
+            DataSet dataSet = new DataSet();
+            DataTable dataTable = new DataTable();
+
+            dataAdapter.Fill(dataSet);
+            dataTable = dataSet.Tables[0];
+
+            return dataTable;
         }
     }
 }

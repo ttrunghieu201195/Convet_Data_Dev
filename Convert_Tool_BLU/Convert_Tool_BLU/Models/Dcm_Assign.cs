@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Convert_Data.Models
 {
-    class Dcm_Assign
+    class Dcm_Assign : IDCM_
     {
         public long id { get; set; }
         public long document_id { get; set; }
