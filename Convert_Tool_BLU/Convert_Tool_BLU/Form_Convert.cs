@@ -21,18 +21,34 @@ namespace Convert_Data
             this.configs = configs;
         }
 
+        public form_Convert()
+        {
+            InitializeComponent();
+        }
+
         private void Form1_Load(object sender, EventArgs e)
         {
-            //Load_ComboBox_Donvi();
+            Load_ComboBox_Donvi();
+            Load_ComboBox_Schema();
             Console.WriteLine(configs.Des_IP);
             Console.WriteLine(configs.Source_IP);
         }
 
+        private void Load_ComboBox_Schema()
+        {
+            OracleConnection bluConnection = Connection.getInstance().GetBLUConnection();
+            cb_Schemas.DataSource = Common.GetSchemasFromBLU(bluConnection, Constants.SQL_SCHEMAS_BLU);
+            cb_Schemas.DisplayMember = "schema";
+            cb_Schemas.ValueMember = "schema";
+            cb_Schemas.SelectedIndex = cb_Schemas.FindString("QLVB_BLU_TINHBACLIEU.");
+
+        }
+
         private void Load_ComboBox_Donvi()
         {
-            //postgresConnection = Connection.getInstance().GetPostgresConnection();
-            string postgres_ConnStr = string.Format(Constants.postgres_connstring, configs.Source_IP, configs.Source_Port, configs.Source_User, configs.Source_Pass, configs.Source_Service);
-            postgresConnection = new NpgsqlConnection(postgres_ConnStr);
+            postgresConnection = Connection.getInstance().GetPostgresConnection();
+            //string postgres_ConnStr = string.Format(Constants.postgres_connstring, configs.Source_IP, configs.Source_Port, configs.Source_User, configs.Source_Pass, configs.Source_Service);
+            //postgresConnection = new NpgsqlConnection(postgres_ConnStr);
             cbBox_Donvi.DataSource = Common.GetDanhMucDonvi(postgresConnection, Constants.sql_danhmuc_donvi_schema);
             cbBox_Donvi.DisplayMember = "name";
             cbBox_Donvi.ValueMember = "organizationid";
@@ -58,9 +74,9 @@ namespace Convert_Data
         {
             // Create connection
             //NpgsqlConnection postgresConnection = new NpgsqlConnection(Constants.postgres_connstring);
-            //OracleConnection oracleConnection = Connection.getInstance().GetOracleConnection();
-            string oracle_connstr = string.Format(Constants.oracle_connstring, configs.Des_IP, configs.Des_Port, configs.Des_Service, configs.Des_User, configs.Des_Pass);
-            OracleConnection oracleConnection = new OracleConnection(oracle_connstr);
+            OracleConnection oracleConnection = Connection.getInstance().GetOracleConnection();
+            //string oracle_connstr = string.Format(Constants.oracle_connstring, configs.Des_IP, configs.Des_Port, configs.Des_Service, configs.Des_User, configs.Des_Pass);
+            //OracleConnection oracleConnection = new OracleConnection(oracle_connstr);
             // Initial timer
             Stopwatch timer = new Stopwatch();
             try
@@ -552,7 +568,7 @@ namespace Convert_Data
 
         private void CollectConfigs()
         {
-            configs.Schema = txt_Schema.Text.Trim();
+            configs.Schema = cb_Schemas.SelectedValue.ToString();
             configs.Year = Common.GetExportedDataYears(txt_StartYear.Text.Trim(), txt_EndYear.Text.Trim());
             configs.Donvi_lay_du_lieu = int.Parse(cbBox_Donvi.SelectedValue.ToString());
             configs.IsUBND = configs.Donvi_lay_du_lieu == 3528;
@@ -586,6 +602,11 @@ namespace Convert_Data
         {
             /*Configuration configuration = new Configuration(configs);
             configuration.Show();*/
+        }
+
+        private void cb_Schemas_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Console.WriteLine(cb_Schemas.SelectedValue);
         }
     }
 }

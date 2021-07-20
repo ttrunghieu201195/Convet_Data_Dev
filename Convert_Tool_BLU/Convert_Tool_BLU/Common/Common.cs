@@ -320,5 +320,14 @@ namespace Convert_Data
 
             return dataTable;
         }
+
+        public static DataTable GetSchemasFromBLU(OracleConnection connection, string query)
+        {
+            OracleCommand cmd = new OracleCommand(query, connection);
+            OracleDataAdapter dataAdapter = new OracleDataAdapter(cmd);
+            DataSet dataSet = new DataSet();
+            dataAdapter.Fill(dataSet);
+            return dataSet.Tables[0];
+        }
     }
 }

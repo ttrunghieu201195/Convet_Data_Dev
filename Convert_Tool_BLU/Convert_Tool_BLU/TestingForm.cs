@@ -36,13 +36,13 @@ namespace Convert_Data
             switch(cb_Services.SelectedIndex)
             {
                 case 0:
-                    //form_Convert form_Convert = new form_Convert();
-                    //form_Convert.Show();
-                    Configuration configuration = new Configuration();
-                    configuration.Show();
+                    form_Convert form_Convert = new form_Convert();
+                    form_Convert.Show();
                     break;
                 case 1:
                     // Move Data
+                    MoveData configuration = new MoveData();
+                    configuration.Show();
                     break;
                 case 2:
                     // Delete Data

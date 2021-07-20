@@ -14,12 +14,12 @@ namespace Convert_Data
         private static string postgres_db = "dms_ubnd_baclieu_release";
         private static string postgres_user = "postgres";
         private static string postgres_pass = "root";
-        /*public static string postgres_connstring = String.Format("Server={0};Port={1};" +
+        public static string postgres_connstring = String.Format("Server={0};Port={1};" +
                 "User Id={2};Password={3};Database={4};Timeout=300;CommandTimeout=900",
                 postgres_host, postgres_port, postgres_user,
-                postgres_pass, postgres_db);*/
-        public static string postgres_connstring = "Server={0};Port={1};" +
-                "User Id={2};Password={3};Database={4};Timeout=300;CommandTimeout=900";
+                postgres_pass, postgres_db);
+        /*public static string postgres_connstring = "Server={0};Port={1};" +
+                "User Id={2};Password={3};Database={4};Timeout=300;CommandTimeout=900";*/
         #endregion
 
         #region oracle connection
@@ -28,22 +28,22 @@ namespace Convert_Data
         private static string oracle_service_name = "eofdichvu";
         private static string oracle_user = "CLOUD_ADMIN_DEV_BLU_4";
         private static string oracle_pass = "d3vblu@2020";
-        /*public static string oracle_connstring = String.Format("Data Source=( DESCRIPTION = " +
+        public static string oracle_connstring = String.Format("Data Source=( DESCRIPTION = " +
             "( ADDRESS_LIST = ( ADDRESS = ( PROTOCOL = TCP )( HOST = {0} )(PORT = {1} ) ) )" +
             "(CONNECT_DATA = (SERVER = DEDICATED )(SERVICE_NAME = {2}) ) ); " +
-            "User Id = {3}; Password = {4};", oracle_host, oracle_port, oracle_service_name, oracle_user, oracle_pass);*/
-        public static string oracle_connstring = "Data Source=( DESCRIPTION = " +
+            "User Id = {3}; Password = {4};", oracle_host, oracle_port, oracle_service_name, oracle_user, oracle_pass);
+        /*public static string oracle_connstring = "Data Source=( DESCRIPTION = " +
             "( ADDRESS_LIST = ( ADDRESS = ( PROTOCOL = TCP )( HOST = {0} )(PORT = {1} ) ) )" +
             "(CONNECT_DATA = (SERVER = DEDICATED )(SERVICE_NAME = {2}) ) ); " +
-            "User Id = {3}; Password = {4};";
+            "User Id = {3}; Password = {4};";*/
         #endregion oracle connection
 
-        #region
+        #region BLU_CONNECTION
         public static string BLU_CONNSTRING = String.Format("Data Source=( DESCRIPTION = " +
             "( ADDRESS_LIST = ( ADDRESS = ( PROTOCOL = TCP )( HOST = {0} )(PORT = {1} ) ) )" +
             "(CONNECT_DATA = (SERVER = DEDICATED )(SERVICE_NAME = {2}) ) ); " +
             "User Id = {3}; Password = {4};", "10.163.8.36", oracle_port, "eoffice", "EOFFICE_RO", "roeof2021");
-        #endregion
+        #endregion BLU_CONNECTION
 
         #region query data
         #region postgres query
@@ -876,6 +876,10 @@ namespace Convert_Data
 
 
         #region oracle query
+        #region SchemaBLU
+        public static string SQL_SCHEMAS_BLU = "SELECT SCHEMA, NAME FROM CLOUD_ADMIN.AGENT";
+        #endregion SchemaBLU
+
         #region insert dcm_doc
         public static string sql_insert_dcm_doc = @"INSERT INTO {0}.DCM_DOC(ID,DCMTYPE_CODE,TRICH_YEU,SO_KYHIEU,SO_DEN_DI"
             + ",NGUOI_KY_CHINH,NGUOI_SOAN,SO_VANBAN_CODE,NGAY_TAO,NGAY_VAN_BAN,NGAY_DEN_DI,SO_BAN,SO_TRANG,PRIORITY_CODE,CONFIDENTIAL_CODE"
