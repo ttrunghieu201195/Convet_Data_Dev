@@ -101,12 +101,13 @@ namespace Convert_Data.Controller
 
         protected override void ParseData<T>(T data, DataTable dcm_type)
         {
+            Dcm_SoVanBan soVanBan = data as Dcm_SoVanBan;
             foreach (DataRow row in dcm_type.Rows)
             {
                 string dcm_type_code = row["CODE"].ToString();
                 DCM_SOVB_TEMPLATESINHSO dcm_SOVB_TEMPLATESINHSO = new DCM_SOVB_TEMPLATESINHSO();
                 dcm_SOVB_TEMPLATESINHSO.id = ++SEQ_DCM_SOVB_TEMPLATESINHSO;
-                dcm_SOVB_TEMPLATESINHSO.SOVANBAN_CODE = data.code;
+                dcm_SOVB_TEMPLATESINHSO.SOVANBAN_CODE = soVanBan.code;
                 dcm_SOVB_TEMPLATESINHSO.TYPE_CODE = dcm_type_code;
 
                 dcm_SOVB_TEMPLATESINHSOs.Add(dcm_SOVB_TEMPLATESINHSO);
@@ -114,3 +115,4 @@ namespace Convert_Data.Controller
         }
     }
 }
+

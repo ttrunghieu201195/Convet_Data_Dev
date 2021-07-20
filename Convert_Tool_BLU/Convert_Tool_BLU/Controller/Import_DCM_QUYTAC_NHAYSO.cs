@@ -98,9 +98,9 @@ namespace Convert_Data.Controller
             throw new NotImplementedException();
         }
 
-        protected override void ParseData<T>(T data, DataTable dcm_type)// where T : class
+        protected override void ParseData<T>(T data, DataTable dcm_type)
         {
-            Dcm_SoVanBan soVanBan = data;
+            Dcm_SoVanBan soVanBan = data as Dcm_SoVanBan;
             foreach (DataRow row in dcm_type.Rows)
             {
                 string dcm_type_code = row["CODE"].ToString();

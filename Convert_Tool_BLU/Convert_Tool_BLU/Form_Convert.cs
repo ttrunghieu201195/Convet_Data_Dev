@@ -179,7 +179,7 @@ namespace Convert_Data
                     timer.Reset();
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting outgoing doc to Dcm_SoVanBan ..."));
-                    import_SoVanBan.insert_Dcm_SoVanBan(oracleConnection, configs, Constants.SQL_INSERT_DCM_SOVANBAN, import_SoVanBan.GetDcm_SoVanBans());
+                    //import_SoVanBan.insert_Dcm_SoVanBan(oracleConnection, configs, Constants.SQL_INSERT_DCM_SOVANBAN, import_SoVanBan.GetDcm_SoVanBans());
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted outgoing doc to Dcm_SoVanBan!"));
                     timer.Stop();
                     Console.WriteLine("Total imported data to Dcm_SoVanBan: " + import_SoVanBan.GetDcm_SoVanBans().Count);
@@ -302,6 +302,10 @@ namespace Convert_Data
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported outgoing doc flow data from Postgres!"));
                     timer.Stop();
                     Console.WriteLine("Consumption of exported outgoing doc flow data: " + timer.ElapsedMilliseconds / 1000 + "(s)");
+
+                    // DCM_ASSIGN
+                    //Import_DCM_ASSIGN import_DCM_ASSIGN = new Import_DCM_ASSIGN();
+                    //import_DCM_ASSIGN.ExportData(import_Outgoing_Doc_Flow.GetDcm_Activiti_Logs());
 
                     if (!import_Outgoing_Doc_Flow.isExportError())
                     {

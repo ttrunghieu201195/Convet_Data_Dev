@@ -91,6 +91,14 @@ namespace Convert_Data
             }
         }
 
+        /*public void ExportData<T>(List<T> data) where T : class
+        {
+            foreach (T t in data)
+            {
+                //ParseData<T>(t);
+            }
+        }*/
+
         public void ExportData(OracleConnection connection, string query)
         {
             OracleCommand cmd = connection.CreateCommand();
@@ -122,6 +130,7 @@ namespace Convert_Data
 
         protected abstract void ParseData(DataRow row);
         protected abstract void ParseData<T>(T data, DataTable dcm_type) where T : class;
+        //protected abstract void ParseData<T>(T data) where T : class;
         protected abstract void resetListData();
         protected abstract void ParseData(DataRow row, Common.VB_TYPE type_vb);
         //protected abstract void ParseData(DataRow row, Common.VB_TYPE type_vb, DataTable dcm_type);

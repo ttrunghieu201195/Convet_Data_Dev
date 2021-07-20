@@ -99,6 +99,7 @@
     <Compile Include="Configuration.Designer.cs">
       <DependentUpon>Configuration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controller\Import_DCM_ASSIGN.cs" />
     <Compile Include="Controller\Import_DCM_QUYTAC_NHAYSO.cs" />
     <Compile Include="Controller\Import_DCM_SOVB_TEMPLATESINHSO.cs" />
     <Compile Include="Controller\Import_DCM_TYPE.cs" />

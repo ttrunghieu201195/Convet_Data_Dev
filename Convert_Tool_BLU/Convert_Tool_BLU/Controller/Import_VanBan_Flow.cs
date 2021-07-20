@@ -500,5 +500,10 @@ namespace Convert_Data
         {
             throw new NotImplementedException();
         }
+
+/*        protected override void ParseData<T>(T data)
+        {
+            throw new NotImplementedException();
+        }*/
     }
 }
