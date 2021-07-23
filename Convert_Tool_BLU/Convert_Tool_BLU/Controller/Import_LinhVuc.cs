@@ -58,16 +58,16 @@ namespace Convert_Data.Controller
             DCM_LINHVUCs.Clear();
         }
 
-        public void insert_Dcm_Linhvuc(OracleConnection oracleConnection, string schema, string query, List<DCM_LINHVUC> data_list)
+        public void insert_Dcm_Linhvuc(OracleConnection oracleConnection, string schema, string query)
         {
             try
             {
-                if (data_list.Count > 0)
+                if (DCM_LINHVUCs.Count > 0)
                 {
                     Stopwatch timer = new Stopwatch();
-                    Console.WriteLine("Total data to dcm_linhvuc: " + data_list.Count);
+                    Console.WriteLine("Total data to dcm_linhvuc: " + DCM_LINHVUCs.Count);
 
-                    List<List<DCM_LINHVUC>> splited_data = Common.SplitList(data_list);
+                    List<List<DCM_LINHVUC>> splited_data = Common.SplitList(DCM_LINHVUCs);
                     Console.WriteLine("Total splited data to dcm_linhvuc: " + splited_data.Count);
 
                     foreach (List<DCM_LINHVUC> data in splited_data)
@@ -140,6 +140,62 @@ namespace Convert_Data.Controller
         protected override void ParseData<T>(T data, DataTable dcm_type)
         {
             throw new NotImplementedException();
+        }
+
+        protected override void Insert(OracleConnection oracleConnection, string toSchema)
+        {
+            try
+            {
+                string query = string.Format(Constants.SQL_INSERT_DCM_LINHVUC, toSchema);
+                if (DCM_LINHVUCs.Count > 0)
+                {
+                    Stopwatch timer = new Stopwatch();
+                    Console.WriteLine("Total data to dcm_linhvuc: " + DCM_LINHVUCs.Count);
+
+                    List<List<DCM_LINHVUC>> splited_data = Common.SplitList(DCM_LINHVUCs);
+                    Console.WriteLine("Total splited data to dcm_linhvuc: " + splited_data.Count);
+
+                    foreach (List<DCM_LINHVUC> data in splited_data)
+                    {
+                        timer.Start();
+                        OracleCommand cmd = oracleConnection.CreateCommand();
+                        cmd.CommandType = CommandType.Text;
+
+                        cmd.ArrayBindCount = data.Count;
+
+                        cmd.CommandText = query;
+
+                        cmd.Parameters.Add("ID", OracleDbType.Int64);
+                        cmd.Parameters.Add("NAME", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("CODE", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("NGUOI_TAO", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("NGAY_TAO", OracleDbType.Date);
+                        cmd.Parameters.Add("STT_HIENTHI", OracleDbType.Int64);
+
+                        cmd.Parameters["ID"].Value = data.Select(dcm_linhvuc => dcm_linhvuc.ID).ToArray();
+                        cmd.Parameters["NAME"].Value = data.Select(dcm_linhvuc => dcm_linhvuc.NAME).ToArray();
+                        cmd.Parameters["CODE"].Value = data.Select(dcm_linhvuc => dcm_linhvuc.CODE).ToArray();
+                        cmd.Parameters["NGUOI_TAO"].Value = data.Select(dcm_linhvuc => dcm_linhvuc.NGUOI_TAO).ToArray();
+                        cmd.Parameters["NGAY_TAO"].Value = data.Select(dcm_linhvuc => dcm_linhvuc.NGAY_TAO).ToArray();
+                        cmd.Parameters["STT_HIENTHI"].Value = data.Select(dcm_linhvuc => dcm_linhvuc.STT_HIENTHI).ToArray();
+
+                        cmd.ExecuteNonQuery();
+                        cmd.Dispose();
+                        timer.Stop();
+                        Console.WriteLine("Imported data to dcm_linhvuc: " + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        timer.Reset();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        protected override string getDataQuery(string fromSchema)
+        {
+            return string.Format(Constants.SQL_SELECT_ALL_DATA, fromSchema, Common.TABLE.DCM_LINHVUC);
         }
     }
 }

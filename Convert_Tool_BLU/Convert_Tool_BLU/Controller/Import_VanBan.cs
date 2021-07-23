@@ -161,17 +161,38 @@ namespace Convert_Data
                 dcm_Doc.nguoi_ky_chinh = row["NGUOI_KY_CHINH"].ToString();
                 dcm_Doc.nguoi_vaoso = row["NGUOI_SOAN"].ToString();
                 dcm_Doc.so_vanban_code = row["SO_VANBAN_CODE"].ToString();
-                dcm_Doc.ngay_tao = DateTime.ParseExact(row["NGAY_TAO"].ToString().Trim(), "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
-                dcm_Doc.ngay_van_ban = DateTime.ParseExact(row["NGAY_VAN_BAN"].ToString().Trim(), "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
-                dcm_Doc.ngay_den_di = DateTime.ParseExact(row["NGAY_DEN_DI"].ToString().ToString().Trim(), "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                if (!string.IsNullOrEmpty(row["NGAY_TAO"].ToString()))
+                {
+                    dcm_Doc.ngay_tao = (DateTime)row["NGAY_TAO"];
+                }
+                if (!string.IsNullOrEmpty(row["NGAY_VAN_BAN"].ToString()))
+                {
+                    dcm_Doc.ngay_van_ban = (DateTime)row["NGAY_VAN_BAN"];
+                }
+                if (!string.IsNullOrEmpty(row["NGAY_DEN_DI"].ToString()))
+                {
+                    dcm_Doc.ngay_den_di = (DateTime)row["NGAY_DEN_DI"];
+                }
                 dcm_Doc.priority_code = row["PRIORITY_CODE"].ToString();
                 dcm_Doc.confidential_code = row["CONFIDENTIAL_CODE"].ToString();
                 dcm_Doc.linhvuc_code = row["LINHVUC_CODE"].ToString();
                 dcm_Doc.hinhthuc_gui_code = row["HINHTHUC_GUI_CODE"].ToString();
-                dcm_Doc.han_giaiquyet = DateTime.ParseExact(row["HAN_GIAIQUYET"].ToString().ToString().Trim(), "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
-                dcm_Doc.congvan_dendi = int.Parse(row["CONGVAN_DENDI"].ToString());
-                dcm_Doc.trang_thai = int.Parse(row["TRANG_THAI"].ToString());
-                dcm_Doc.ngay_ban_hanh = DateTime.ParseExact(row["ngay_ban_hanh"].ToString().ToString().Trim(), "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                if (!string.IsNullOrEmpty(row["HAN_GIAIQUYET"].ToString()))
+                {
+                    dcm_Doc.han_giaiquyet = (DateTime)row["HAN_GIAIQUYET"];
+                }
+                if (!string.IsNullOrEmpty(row["CONGVAN_DENDI"].ToString()))
+                {
+                    dcm_Doc.congvan_dendi = int.Parse(row["CONGVAN_DENDI"].ToString());
+                }
+                if (!string.IsNullOrEmpty(row["TRANG_THAI"].ToString()))
+                {
+                    dcm_Doc.trang_thai = int.Parse(row["TRANG_THAI"].ToString());
+                }
+                if (!string.IsNullOrEmpty(row["ngay_ban_hanh"].ToString()))
+                {
+                    dcm_Doc.ngay_ban_hanh = (DateTime)row["ngay_ban_hanh"];
+                }
                 dcm_Doc.donvi_soanthao = row["donvi_soanthao"].ToString();
                 dcm_Doc.coquan_banhanh = row["DONVI_BANHANH"].ToString();
                 dcm_Doc.unit_id = int.Parse(row["unit_id"].ToString());
@@ -179,11 +200,23 @@ namespace Convert_Data
                 dcm_Doc.nguoi_soan = row["NGUOI_SOANTHAO"].ToString();
                 dcm_Doc.chucvu_nguoiky = row["CHUCVU_NGUOIKY"].ToString();
                 dcm_Doc.doc_note = row["DOC_NOTE"].ToString();
-                dcm_Doc.vb_trinhky = int.Parse(row["VB_TRINH_KY"].ToString());
-                dcm_Doc.so_trinhky = int.Parse(row["SO_TRINH_KY"].ToString());
+                if (!string.IsNullOrEmpty(row["VB_TRINH_KY"].ToString()))
+                {
+                    dcm_Doc.vb_trinhky = int.Parse(row["VB_TRINH_KY"].ToString());
+                }
+                if (!string.IsNullOrEmpty(row["SO_TRINH_KY"].ToString()))
+                {
+                    dcm_Doc.so_trinhky = int.Parse(row["SO_TRINH_KY"].ToString());
+                }
                 dcm_Doc.ghi_chu = row["GHI_CHU"].ToString();
-                dcm_Doc.ngay_trinhky = DateTime.ParseExact(row["NGAY_TRINH_KY"].ToString().Trim(), "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
-                dcm_Doc.ngay_ky = DateTime.ParseExact(row["NGAY_KY"].ToString().Trim(), "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);                
+                if (!string.IsNullOrEmpty(row["NGAY_TRINH_KY"].ToString()))
+                {
+                    dcm_Doc.ngay_trinhky = (DateTime)row["NGAY_TRINH_KY"];
+                }
+                if (!string.IsNullOrEmpty(row["NGAY_KY"].ToString()))
+                {
+                    dcm_Doc.ngay_ky = (DateTime)row["NGAY_KY"];
+                }
                 dcm_Doc.process_key = row["PROCESS_KEY"].ToString();
 
                 dcm_Docs.Add(dcm_Doc);
@@ -786,7 +819,7 @@ namespace Convert_Data
             dcm_Tracks.Add(dcm_Track);
         }
 
-        public void insert_Dcm_Doc(OracleConnection oracleConnection, Configs configs, string query, List<Dcm_Doc> data_list)
+        public void insert_Dcm_Doc(OracleConnection oracleConnection, string query, List<Dcm_Doc> data_list)
         {
             try
             {
@@ -806,7 +839,7 @@ namespace Convert_Data
 
                         cmd.ArrayBindCount = data.Count;
 
-                        cmd.CommandText = string.Format(query, configs.Schema);
+                        cmd.CommandText = query;
 
                         cmd.Parameters.Add("ID", OracleDbType.Int64);
                         cmd.Parameters.Add("DCMTYPE_CODE", OracleDbType.Varchar2);

@@ -129,22 +129,87 @@ namespace Convert_Data
         protected override void resetListData()
         {
 			dcm_Logs.Clear();
-
+			dcm_Log_Reads.Clear();
 		}
-
-        /*protected override void ParseData(DataRow row, Common.VB_TYPE type_vb, DataTable dcm_type)
-        {
-            throw new NotImplementedException();
-        }*/
 
         protected override void ParseData(DataRow row)
         {
-            throw new NotImplementedException();
+			Dcm_Log dcm_Log = new Dcm_Log();
+            dcm_Log.id = long.Parse(row["ID"].ToString());
+            dcm_Log.username = row["USERNAME"].ToString();
+			if (!string.IsNullOrEmpty(row["DATE_LOG"].ToString()))
+			{
+				dcm_Log.date_log = (DateTime)row["DATE_LOG"];
+			}
+			if (!string.IsNullOrEmpty(row["DCM_ID"].ToString()))
+			{
+				dcm_Log.dcm_id = long.Parse(row["DCM_ID"].ToString());
+			}
+			if (!string.IsNullOrEmpty(row["IS_READ"].ToString()))
+			{
+				dcm_Log.is_read = int.Parse(row["IS_READ"].ToString());
+			}
+
+			dcm_Logs.Add(dcm_Log);
         }
 
         protected override void ParseData<T>(T data, DataTable dcm_type)
         {
             throw new NotImplementedException();
         }
+
+        protected override void Insert(OracleConnection oracleConnection, string toSchema)
+        {
+			try
+			{
+				string query = string.Format(Constants.sql_insert_dcm_log, toSchema);
+				if (dcm_Logs.Count > 0)
+				{
+					Stopwatch timer = new Stopwatch();
+					Console.WriteLine("Total data to dcm_log: " + dcm_Logs.Count);
+
+					List<List<Dcm_Log>> splited_data = Common.SplitList(dcm_Logs);
+					Console.WriteLine("Total splited data to dcm_log: " + splited_data.Count);
+
+					foreach (List<Dcm_Log> data in splited_data)
+					{
+						timer.Start();
+						OracleCommand cmd = oracleConnection.CreateCommand();
+						cmd.CommandType = CommandType.Text;
+
+						cmd.ArrayBindCount = data.Count;
+
+						cmd.CommandText = query;
+
+						cmd.Parameters.Add("ID", OracleDbType.Int64);
+						cmd.Parameters.Add("USERNAME", OracleDbType.Varchar2);
+						cmd.Parameters.Add("DATE_LOG", OracleDbType.Date);
+						cmd.Parameters.Add("DCM_ID", OracleDbType.Int64);
+						cmd.Parameters.Add("IS_READ", OracleDbType.Int64);
+
+						cmd.Parameters["ID"].Value = data.Select(dcm_log => dcm_log.id).ToArray();
+						cmd.Parameters["USERNAME"].Value = data.Select(dcm_log => dcm_log.username).ToArray();
+						cmd.Parameters["DATE_LOG"].Value = data.Select(dcm_log => dcm_log.date_log).ToArray();
+						cmd.Parameters["DCM_ID"].Value = data.Select(dcm_log => dcm_log.dcm_id).ToArray();
+						cmd.Parameters["IS_READ"].Value = data.Select(dcm_log => dcm_log.is_read).ToArray();
+
+						cmd.ExecuteNonQuery();
+						cmd.Dispose();
+						timer.Stop();
+						Console.WriteLine("Imported data to dcm_log: " + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
+						timer.Reset();
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message);
+			}
+		}
+
+        protected override string getDataQuery(string fromSchema)
+        {
+			return string.Format(Constants.SQL_SELECT_ALL_DATA, fromSchema, Common.TABLE.DCM_LOG);
+		}
     }
 }

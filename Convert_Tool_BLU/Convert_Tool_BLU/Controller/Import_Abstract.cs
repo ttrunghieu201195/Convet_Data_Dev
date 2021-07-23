@@ -4,6 +4,7 @@ using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 
 namespace Convert_Data
 {
@@ -99,13 +100,15 @@ namespace Convert_Data
             }
         }*/
 
-        public void ExportData(OracleConnection connection, string query)
+        public void ExportData(OracleConnection connection, string fromSchema)
         {
             OracleCommand cmd = connection.CreateCommand();
             try
             {
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
                 exported_error = false;
-                cmd.CommandText = query;
+                cmd.CommandText = getDataQuery(fromSchema);
                 OracleDataAdapter dataAdapter = new OracleDataAdapter(cmd);
                 DataSet dataSet = new DataSet();
                 DataTable dataTable = new DataTable();
@@ -116,6 +119,8 @@ namespace Convert_Data
                 {
                     ParseData(row);
                 }
+                stopWatch.Stop();
+                Console.WriteLine("Export Time: " + stopWatch.ElapsedMilliseconds / 1000 + "(s)");
             }
             catch (Exception ex)
             {
@@ -139,5 +144,13 @@ namespace Convert_Data
         {
             return exported_error;
         }
+
+        protected abstract void Insert(OracleConnection oracleConnection, string toSchema);
+        public void MoveData(OracleConnection oracleConnection, string fromSchema, string toSchema)
+        {
+            ExportData(oracleConnection, fromSchema);
+            Insert(oracleConnection, toSchema);
+        }
+        protected abstract string getDataQuery(string fromSchema);
     }
 }

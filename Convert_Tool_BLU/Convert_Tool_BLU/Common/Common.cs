@@ -45,6 +45,25 @@ namespace Convert_Data
             string sql = "select " + schema + seqName + ".NextVal from dual";
             OracleCommand objCommand1 = new OracleCommand(sql, connection);
             decimal result = (decimal)objCommand1.ExecuteScalar();
+            return long.Parse(result.ToString()) > Constants.INCREASEID_OTHERS ? long.Parse(result.ToString()) : Constants.INCREASEID_OTHERS;
+        }
+
+        public static long GetMaxID(OracleConnection connection, string schema, TABLE table)
+        {
+            decimal result = 0;
+            try
+            {
+                string sql = "SELECT MAX(ID) FROM " + schema + table;
+                OracleCommand cmd = new OracleCommand(sql, connection);
+                if (!string.IsNullOrEmpty(cmd.ExecuteScalar().ToString()))
+                {
+                    result = (decimal)cmd.ExecuteScalar();
+                }                
+            } catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            result = result > Constants.INCREASEID_OTHERS ? result : Constants.INCREASEID_OTHERS;
             return long.Parse(result.ToString());
         }
 
@@ -174,12 +193,12 @@ namespace Convert_Data
             UpdateSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_QUYTAC_NHAYSO, ++Import_DCM_QUYTAC_NHAYSO.SEQ_DCM_QUYTAC_NHAYSO - Constants.INCREASEID_OTHERS);
         }
 
-        public static void updateSeqFromProcedure(OracleConnection oracleConnection, Configs configs)
+        public static void UpdateSeqFromProcedure(OracleConnection oracleConnection, string schema)
         {
             OracleCommand cmd = oracleConnection.CreateCommand();
             cmd.CommandText = "CLOUD_ADMIN_DEV_BLU_2.SF_UPDATE_SEQ";
             cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.Add("ps_schema", OracleDbType.Varchar2).Value = configs.Schema;
+            cmd.Parameters.Add("ps_schema", OracleDbType.Varchar2).Value = schema;
             cmd.ExecuteNonQuery();
             cmd.Dispose();
         }
@@ -231,7 +250,7 @@ namespace Convert_Data
             }
         }
         
-        public static void InitialSeqFromDB(OracleConnection oracleConnection, Configs configs)
+        public static void _InitialSeqFromDB(OracleConnection oracleConnection, Configs configs)
         {
             Import_VanBan.SEQ_DCM_DOC_RELATION = GetCurrentSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_DOC_RELATION);
             Import_VanBan.SEQ_FEM_FILE = GetCurrentSeq(oracleConnection, configs.Schema, Constants.SEQ_FEM_FILE);
@@ -247,6 +266,24 @@ namespace Convert_Data
 
             Import_DCM_SOVB_TEMPLATESINHSO.SEQ_DCM_SOVB_TEMPLATESINHSO = GetCurrentSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_SOVB_TEMPLATESINHSO);
             Import_DCM_QUYTAC_NHAYSO.SEQ_DCM_QUYTAC_NHAYSO = GetCurrentSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_QUYTAC_NHAYSO);
+        }
+
+        public static void InitialSeqFromDB(OracleConnection oracleConnection, Configs configs)
+        {
+            Import_VanBan.SEQ_DCM_DOC_RELATION = GetMaxID(oracleConnection, configs.Schema, TABLE.DCM_DOC_RELATION);
+            Import_VanBan.SEQ_FEM_FILE = GetMaxID(oracleConnection, configs.Schema, TABLE.FEM_FILE);
+            Import_VanBan.SEQ_DCM_ATTACH_FILE = GetMaxID(oracleConnection, configs.Schema, TABLE.DCM_ATTACH_FILE);
+            Import_VanBan.SEQ_DCM_TRACK = GetMaxID(oracleConnection, "CLOUD_ADMIN_DEV_BLU_2.", TABLE.DCM_TRACK);
+
+            Import_VanBan_Flow.SEQ_DCM_ACTIVITI_LOG = GetMaxID(oracleConnection, configs.Schema, TABLE.DCM_ACTIVITI_LOG);
+            Import_VanBan_Flow.SEQ_DCM_ASSIGN = GetMaxID(oracleConnection, configs.Schema, TABLE.DCM_ASSIGN);
+            Import_VanBan_Flow.SEQ_DCM_DONVI_NHAN = GetMaxID(oracleConnection, configs.Schema, TABLE.DCM_DONVI_NHAN);
+
+            Import_VanBan_Log.SEQ_DCM_LOG = GetMaxID(oracleConnection, configs.Schema, TABLE.DCM_LOG);
+            //Import_DCM_LOG_READ.SEQ_DCM_LOG_READ = GetMaxID(oracleConnection, configs.Schema, TABLE.DCM_LOG_READ);
+
+            Import_DCM_SOVB_TEMPLATESINHSO.SEQ_DCM_SOVB_TEMPLATESINHSO = GetMaxID(oracleConnection, configs.Schema, TABLE.DCM_SOVB_TEMPLATESINHSO);
+            Import_DCM_QUYTAC_NHAYSO.SEQ_DCM_QUYTAC_NHAYSO = GetMaxID(oracleConnection, configs.Schema, TABLE.DCM_QUYTAC_NHAYSO);
         }
 
         public static List<List<T>> SplitList<T>(List<T> data) where T:class

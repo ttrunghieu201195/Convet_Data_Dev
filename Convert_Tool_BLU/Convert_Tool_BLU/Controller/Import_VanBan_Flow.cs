@@ -44,7 +44,7 @@ namespace Convert_Data
                 dcm_Activiti_Log = new Dcm_Activiti_Log();
                 string cell_value = "";
                 // 1 - stt
-
+                int stt = int.Parse(row["stt"].ToString());
                 dcm_Activiti_Log.id = ++SEQ_DCM_ACTIVITI_LOG;
 
                 // 2 - doc_id
@@ -198,7 +198,7 @@ namespace Convert_Data
                     dcm_Activiti_Logs.Add(dcm_Activiti_Log);
                 }
 
-                appendToListDcmAssign(dcm_Activiti_Log.id, dcm_Activiti_Log.doc_id, dcm_Activiti_Log.updated_by, dcm_Activiti_Log.updated_date, ds_nguoinhan, ds_vaitro_nguoinhan, ds_trangthai_xuly, ds_thoigian_xuly, truoc_banhanh);
+                appendToListDcmAssign(dcm_Activiti_Log.id, dcm_Activiti_Log.doc_id, dcm_Activiti_Log.updated_by, dcm_Activiti_Log.updated_date, ds_nguoinhan, ds_vaitro_nguoinhan, ds_trangthai_xuly, ds_thoigian_xuly, truoc_banhanh, stt);
                 appendToListDcmDonviNhan(dcm_Activiti_Log.id, dcm_Activiti_Log.doc_id, ds_donvi_nhan, ds_vaitro_donvi, ds_agent_id, dcm_Activiti_Log.updated_date, ds_trangthai_xuly_donvi, ds_thoigian_xuly_donvi, truoc_banhanh, vb_type);
             } catch (Exception ex)
             {
@@ -207,7 +207,7 @@ namespace Convert_Data
         }
 
         private void appendToListDcmAssign(long id_acti_log, long idVB, string nguoi_gui, DateTime? thoigian_gui, string ds_nguoinhan, string ds_vaitro_nguoinhan
-                                            , string ds_trangthai_xuly, string ds_thoigian_xuly, int? truoc_banhanh)
+                                            , string ds_trangthai_xuly, string ds_thoigian_xuly, int? truoc_banhanh, int stt)
         {
             try
             {
@@ -243,8 +243,9 @@ namespace Convert_Data
                             DateTime xuly_date = DateTime.ParseExact(ds_thoigian_xuly_arr[i].Trim(), "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
                             dcm_Assign.ngay_xuly = xuly_date;
                         }
-
-                        dcm_Assign.activiti_log_id = dcm_Assign.assignee == dcm_Assign.assigner ? 0 : id_acti_log;
+                        
+                        //dcm_Assign.activiti_log_id = dcm_Assign.assignee == dcm_Assign.assigner ? 0 : id_acti_log;
+                        dcm_Assign.activiti_log_id = stt == 0 && dcm_Assign.assignee == dcm_Assign.assigner ? 0 : id_acti_log;
                         dcm_Assign.truoc_banhanh = truoc_banhanh;
 
                         dcm_Assigns.Add(dcm_Assign);
@@ -486,14 +487,22 @@ namespace Convert_Data
             dcm_Donvi_Nhans.Clear();
         }
 
-        /*protected override void ParseData(DataRow row, Common.VB_TYPE type_vb, DataTable dcm_type)
-        {
-            throw new NotImplementedException();
-        }*/
-
         protected override void ParseData(DataRow row)
         {
-            throw new NotImplementedException();
+            Dcm_Activiti_Log dcm_Activiti_Log = new Dcm_Activiti_Log();
+            dcm_Activiti_Log.id = long.Parse(row["ID"].ToString());
+            dcm_Activiti_Log.task_key = row["TASK_KEY"].ToString();
+            dcm_Activiti_Log.updated_date = (DateTime)row["UPDATED_DATE"];
+            dcm_Activiti_Log.updated_by = row["UPDATED_BY"].ToString();
+            dcm_Activiti_Log.action = row["ACTION"].ToString();
+            dcm_Activiti_Log.doc_id = long.Parse(row["DOC_ID"].ToString());
+            dcm_Activiti_Log.approved = row["APPROVED"].ToString();
+            dcm_Activiti_Log.comment_ = row["COMMENT_"].ToString();
+            dcm_Activiti_Log.comment_full = row["COMMENT_FULL"].ToString();
+            dcm_Activiti_Log.formid = row["FORMID"].ToString();
+            dcm_Activiti_Log.action_code = row["ACTION_CODE"].ToString();
+            
+            dcm_Activiti_Logs.Add(dcm_Activiti_Log);
         }
 
         protected override void ParseData<T>(T data, DataTable dcm_type)
@@ -501,9 +510,70 @@ namespace Convert_Data
             throw new NotImplementedException();
         }
 
-/*        protected override void ParseData<T>(T data)
+        protected override void Insert(OracleConnection oracleConnection, string toSchema)
         {
-            throw new NotImplementedException();
-        }*/
+            try
+            {
+                string query = string.Format(Constants.sql_insert_dcm_activiti_log, toSchema);
+                if (dcm_Activiti_Logs.Count > 0)
+                {
+                    Stopwatch timer = new Stopwatch();
+                    Console.WriteLine("Total data to dcm_activiti_log: " + dcm_Activiti_Logs.Count);
+
+                    List<List<Dcm_Activiti_Log>> splited_data = Common.SplitList(dcm_Activiti_Logs);
+                    Console.WriteLine("Total splited data to dcm_activiti_log: " + splited_data.Count);
+
+                    foreach (List<Dcm_Activiti_Log> data in splited_data)
+                    {
+                        timer.Start();
+                        OracleCommand cmd = oracleConnection.CreateCommand();
+                        cmd.CommandType = CommandType.Text;
+
+                        cmd.ArrayBindCount = data.Count;
+
+                        cmd.CommandText = query;
+
+                        cmd.Parameters.Add("ID", OracleDbType.Int64);
+                        cmd.Parameters.Add("TASK_KEY", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("UPDATED_DATE", OracleDbType.Date);
+                        cmd.Parameters.Add("UPDATED_BY", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("ACTION", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("DOC_ID", OracleDbType.Int64);
+                        cmd.Parameters.Add("APPROVED", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("COMMENT_", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("COMMENT_FULL", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("FORMID", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("ACTION_CODE", OracleDbType.Varchar2);
+
+                        cmd.Parameters["ID"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.id).ToArray();
+                        cmd.Parameters["TASK_KEY"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.task_key).ToArray();
+                        cmd.Parameters["UPDATED_DATE"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.updated_date).ToArray();
+                        cmd.Parameters["UPDATED_BY"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.updated_by).ToArray();
+                        cmd.Parameters["ACTION"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.action).ToArray();
+                        cmd.Parameters["DOC_ID"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.doc_id).ToArray();
+                        cmd.Parameters["APPROVED"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.approved).ToArray();
+                        cmd.Parameters["COMMENT_"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.comment_).ToArray();
+                        cmd.Parameters["COMMENT_FULL"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.comment_full).ToArray();
+                        cmd.Parameters["FORMID"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.formid).ToArray();
+                        cmd.Parameters["ACTION_CODE"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.action_code).ToArray();
+
+                        cmd.ExecuteNonQuery();
+                        cmd.Dispose();
+                        timer.Stop();
+                        Console.WriteLine("Imported data to dcm_activiti_log: " + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        timer.Reset();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        protected override string getDataQuery(string fromSchema)
+        {
+            return string.Format(Constants.SQL_SELECT_DCM_ACTIVITI_LOG, fromSchema);
+        }
     }
 }

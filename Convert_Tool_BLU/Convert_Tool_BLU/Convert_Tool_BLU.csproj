@@ -89,6 +89,12 @@
     <Compile Include="CheckingDataForm.Designer.cs">
       <DependentUpon>CheckingDataForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="CleanProgress.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CleanProgress.Designer.cs">
+      <DependentUpon>CleanProgress.cs</DependentUpon>
+    </Compile>
     <Compile Include="Common\Common.cs" />
     <Compile Include="Common\Configs.cs" />
     <Compile Include="Common\Connection.cs" />
@@ -100,9 +106,14 @@
       <DependentUpon>Configuration.cs</DependentUpon>
     </Compile>
     <Compile Include="Controller\Import_DCM_ASSIGN.cs" />
+    <Compile Include="Controller\Import_DCM_ATTACH_FILE.cs" />
+    <Compile Include="Controller\Import_DCM_DOC_RELATION.cs" />
+    <Compile Include="Controller\Import_DCM_DONVI_NHAN.cs" />
+    <Compile Include="Controller\Import_DCM_LOG_READ.cs" />
     <Compile Include="Controller\Import_DCM_QUYTAC_NHAYSO.cs" />
     <Compile Include="Controller\Import_DCM_SOVB_TEMPLATESINHSO.cs" />
     <Compile Include="Controller\Import_DCM_TYPE.cs" />
+    <Compile Include="Controller\Import_FEM_FILE.cs" />
     <Compile Include="Controller\Import_LinhVuc.cs" />
     <Compile Include="Controller\Import_Abstract.cs" />
     <Compile Include="Controller\Import_SoVanBan.cs" />
@@ -124,6 +135,7 @@
     <Compile Include="Models\Dcm_Donvi_Nhan.cs" />
     <Compile Include="Models\DCM_LINHVUC.cs" />
     <Compile Include="Models\Dcm_Log.cs" />
+    <Compile Include="Models\DCM_LOG_READ.cs" />
     <Compile Include="Models\DCM_QUYTAC_NHAYSO.cs" />
     <Compile Include="Models\Dcm_SoVanBan.cs" />
     <Compile Include="Models\DCM_SOVB_TEMPLATESINHSO.cs" />
@@ -147,6 +159,9 @@
     </Compile>
     <EmbeddedResource Include="CheckingDataForm.resx">
       <DependentUpon>CheckingDataForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CleanProgress.resx">
+      <DependentUpon>CleanProgress.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Configuration.resx">
       <DependentUpon>Configuration.cs</DependentUpon>

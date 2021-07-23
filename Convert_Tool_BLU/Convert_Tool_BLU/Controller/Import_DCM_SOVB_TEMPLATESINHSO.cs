@@ -21,18 +21,19 @@ namespace Convert_Data.Controller
         }
         protected override void ParseData(DataRow row)
         {
-            throw new NotImplementedException();
+            DCM_SOVB_TEMPLATESINHSO dCM_SOVB_TEMPLATESINHSO = new DCM_SOVB_TEMPLATESINHSO();
+            dCM_SOVB_TEMPLATESINHSO .id = long.Parse(row["ID"].ToString());
+            dCM_SOVB_TEMPLATESINHSO.SOVANBAN_CODE = row["SOVANBAN_CODE"].ToString();
+            dCM_SOVB_TEMPLATESINHSO.TYPE_CODE = row["TYPE_CODE"].ToString();
+            dCM_SOVB_TEMPLATESINHSO.TEMPLATE_SINH_SOVB_CODE = row["TEMPLATE_SINH_SOVB_CODE"].ToString();
+
+            dcm_SOVB_TEMPLATESINHSOs.Add(dCM_SOVB_TEMPLATESINHSO);
         }
 
         protected override void ParseData(DataRow row, Common.VB_TYPE type_vb)
         {
             throw new NotImplementedException();
         }
-
-        /*protected override void ParseData(DataRow row, Common.VB_TYPE type_vb, DataTable dcm_type)
-        {
-            throw new NotImplementedException();
-        }*/
 
         public void ParseData(DataTable dcm_type, string sovanban_code)
         {
@@ -96,7 +97,7 @@ namespace Convert_Data.Controller
 
         protected override void resetListData()
         {
-            throw new NotImplementedException();
+            dcm_SOVB_TEMPLATESINHSOs.Clear();
         }
 
         protected override void ParseData<T>(T data, DataTable dcm_type)
@@ -112,6 +113,58 @@ namespace Convert_Data.Controller
 
                 dcm_SOVB_TEMPLATESINHSOs.Add(dcm_SOVB_TEMPLATESINHSO);
             }
+        }
+
+        protected override void Insert(OracleConnection oracleConnection, string toSchema)
+        {
+            try
+            {
+                string query = string.Format(Constants.sql_insert_Dcm_SoVB_TemplateSinhSo, toSchema);
+                if (dcm_SOVB_TEMPLATESINHSOs.Count > 0)
+                {
+                    Stopwatch timer = new Stopwatch();
+                    Console.WriteLine("Total data to DCM_SOVB_TEMPLATESINHSO: " + dcm_SOVB_TEMPLATESINHSOs.Count);
+
+                    List<List<DCM_SOVB_TEMPLATESINHSO>> splited_data = Common.SplitList(dcm_SOVB_TEMPLATESINHSOs);
+                    Console.WriteLine("Total splited data to DCM_SOVB_TEMPLATESINHSO: " + splited_data.Count);
+
+                    foreach (List<DCM_SOVB_TEMPLATESINHSO> data in splited_data)
+                    {
+                        timer.Start();
+                        OracleCommand cmd = oracleConnection.CreateCommand();
+                        cmd.CommandType = CommandType.Text;
+
+                        cmd.ArrayBindCount = data.Count;
+
+                        cmd.CommandText = query;
+
+                        cmd.Parameters.Add("ID", OracleDbType.Int64);
+                        cmd.Parameters.Add("SOVANBAN_CODE", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("TYPE_CODE", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("TEMPLATE_SINH_SOVB_CODE", OracleDbType.Varchar2);
+
+                        cmd.Parameters["ID"].Value = data.Select(dcm_template_sinhso => dcm_template_sinhso.id).ToArray();
+                        cmd.Parameters["SOVANBAN_CODE"].Value = data.Select(dcm_template_sinhso => dcm_template_sinhso.SOVANBAN_CODE).ToArray();
+                        cmd.Parameters["TYPE_CODE"].Value = data.Select(dcm_template_sinhso => dcm_template_sinhso.TYPE_CODE).ToArray();
+                        cmd.Parameters["TEMPLATE_SINH_SOVB_CODE"].Value = data.Select(dcm_template_sinhso => dcm_template_sinhso.TEMPLATE_SINH_SOVB_CODE).ToArray();
+
+                        cmd.ExecuteNonQuery();
+                        cmd.Dispose();
+                        timer.Stop();
+                        Console.WriteLine("Imported data to DCM_SOVB_TEMPLATESINHSO: " + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        timer.Reset();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        protected override string getDataQuery(string fromSchema)
+        {
+            return string.Format(Constants.SQL_SELECT_DCM_SOVB_TEMPLATESINHSO, fromSchema);
         }
     }
 }

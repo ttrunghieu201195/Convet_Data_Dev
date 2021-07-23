@@ -74,9 +74,10 @@ namespace Convert_Data
         {
             // Create connection
             //NpgsqlConnection postgresConnection = new NpgsqlConnection(Constants.postgres_connstring);
-            OracleConnection oracleConnection = Connection.getInstance().GetOracleConnection();
+            //OracleConnection oracleConnection = Connection.getInstance().GetOracleConnection();
             //string oracle_connstr = string.Format(Constants.oracle_connstring, configs.Des_IP, configs.Des_Port, configs.Des_Service, configs.Des_User, configs.Des_Pass);
-            //OracleConnection oracleConnection = new OracleConnection(oracle_connstr);
+            OracleConnection oracleConnection = new OracleConnection(Constants.oracle_connstring);
+            oracleConnection.Open();
             // Initial timer
             Stopwatch timer = new Stopwatch();
             try
@@ -88,7 +89,7 @@ namespace Convert_Data
                  }*/
 
                 // Initial seq from db
-                Common.InitialSeqFromDB(oracleConnection, configs);
+                //Common.InitialSeqFromDB(oracleConnection, configs);
 
                 if (chkbox_deleteCategory.Checked)
                 {
@@ -155,7 +156,7 @@ namespace Convert_Data
                     timer.Reset();
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting linh vuc to dcm_linhvuc ..."));
-                    import_LinhVuc.insert_Dcm_Linhvuc(oracleConnection, configs.Schema, Constants.SQL_INSERT_DCM_LINHVUC, import_LinhVuc.GetDCM_LINHVUCs());
+                    import_LinhVuc.insert_Dcm_Linhvuc(oracleConnection, configs.Schema, Constants.SQL_INSERT_DCM_LINHVUC);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted linh vuc to dcm_linhvuc !"));
                     timer.Stop();
                     Console.WriteLine("Consumption of imported data to dcm_linhvuc: " + timer.ElapsedMilliseconds / 1000 + "(s)");
@@ -170,6 +171,8 @@ namespace Convert_Data
                     Import_SoVanBan import_SoVanBan = new Import_SoVanBan();
                     DataTable dcm_type = Common.GetDcm_Type(oracleConnection, configs.Schema, Constants.sql_get_dcm_type);
                     string query = string.Format(Constants.sql_danhmuc_sovanban, configs.Donvi_lay_du_lieu);
+                    Import_DCM_SOVB_TEMPLATESINHSO.SEQ_DCM_SOVB_TEMPLATESINHSO = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_SOVB_TEMPLATESINHSO);
+                    Import_DCM_QUYTAC_NHAYSO.SEQ_DCM_QUYTAC_NHAYSO = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_QUYTAC_NHAYSO);
                     import_SoVanBan.exportdataFromPostgres(postgresConnection, CommandType.Text, query, Common.VB_TYPE.NONE);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported book data from Postgres..."));
                     timer.Stop();
@@ -179,7 +182,8 @@ namespace Convert_Data
                     timer.Reset();
                     timer.Start();
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting outgoing doc to Dcm_SoVanBan ..."));
-                    //import_SoVanBan.insert_Dcm_SoVanBan(oracleConnection, configs, Constants.SQL_INSERT_DCM_SOVANBAN, import_SoVanBan.GetDcm_SoVanBans());
+                    query = string.Format(Constants.SQL_INSERT_DCM_SOVANBAN, configs.Schema);
+                    import_SoVanBan.insert_Dcm_SoVanBan(oracleConnection, query);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted outgoing doc to Dcm_SoVanBan!"));
                     timer.Stop();
                     Console.WriteLine("Total imported data to Dcm_SoVanBan: " + import_SoVanBan.GetDcm_SoVanBans().Count);
@@ -238,7 +242,9 @@ namespace Convert_Data
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exporting data from Postgres ..."));
                     Import_VanBan import_VanBan = new Import_VanBan();
                     string query = configs.IsUBND ? Constants.PROC_UBND_VBDI_INFO : Constants.PROC_SO_VBDI_INFO + "(" + configs.Donvi_lay_du_lieu + ";" + configs.Year + ")";
-                    //string.Format(configs.IsUBND ? Constants.sql_thongtin_vb_di : Constants.sql_so_thongtin_vbdi, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu, configs.Year);
+                    Import_VanBan.SEQ_DCM_DOC_RELATION = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_DOC_RELATION);
+                    Import_VanBan.SEQ_FEM_FILE = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.FEM_FILE);
+                    Import_VanBan.SEQ_DCM_ATTACH_FILE = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_ATTACH_FILE);
                     import_VanBan.exportdataFromPostgres(postgresConnection, configs, query, Common.VB_TYPE.VB_DI);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported data from Postgres!"));
                     timer.Stop();
@@ -250,7 +256,8 @@ namespace Convert_Data
                         timer.Reset();
                         timer.Start();
                         txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting outgoing doc to Dcm_Doc ..."));
-                        import_VanBan.insert_Dcm_Doc(oracleConnection, configs, Constants.sql_insert_dcm_doc, import_VanBan.GetDcm_Docs());
+                        query = string.Format(Constants.sql_insert_dcm_doc, configs.Schema);
+                        import_VanBan.insert_Dcm_Doc(oracleConnection, query, import_VanBan.GetDcm_Docs());
                         txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted outgoing doc to Dcm_Doc!"));
                         timer.Stop();
                         Console.WriteLine("Total imported data to dcm_doc: " + import_VanBan.GetDcm_Docs().Count);
@@ -297,7 +304,10 @@ namespace Convert_Data
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exporting outgoing doc flow data from Postgres ..."));
                     Import_VanBan_Flow import_Outgoing_Doc_Flow = new Import_VanBan_Flow();
                     string query = configs.IsUBND ? Constants.PROC_UBND_VBDI_FLOW : Constants.PROC_SO_VBDI_FLOW + "(" + configs.Donvi_lay_du_lieu + ";" + configs.Year + ")";
-                        //string.Format(configs.IsUBND ? Constants.sql_luong_xuly_vb_di : Constants.sql_so_luong_xuly_vbdi, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu, configs.Year);
+                    //string.Format(configs.IsUBND ? Constants.sql_luong_xuly_vb_di : Constants.sql_so_luong_xuly_vbdi, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu, configs.Year);
+                    Import_VanBan_Flow.SEQ_DCM_ACTIVITI_LOG = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_ACTIVITI_LOG);
+                    Import_VanBan_Flow.SEQ_DCM_ASSIGN = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_ASSIGN);
+                    Import_VanBan_Flow.SEQ_DCM_DONVI_NHAN = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_DONVI_NHAN);
                     import_Outgoing_Doc_Flow.exportdataFromPostgres(postgresConnection, CommandType.StoredProcedure, query, Common.VB_TYPE.VB_DI);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported outgoing doc flow data from Postgres!"));
                     timer.Stop();
@@ -354,6 +364,7 @@ namespace Convert_Data
                     Import_VanBan_Log import_VanBan_Log = new Import_VanBan_Log();
                     string query = configs.IsUBND ? Constants.PROC_UBND_VBDI_LOG : Constants.PROC_SO_VBDI_LOG + "(" + configs.Donvi_lay_du_lieu + ";" + configs.Year + ")";
                     //string.Format(configs.IsUBND ? Constants.sql_log_xuly_vb_di : Constants.sql_so_log_xuly_vbdi, configs.Donvi_lay_du_lieu, configs.Year);
+                    Import_VanBan_Log.SEQ_DCM_LOG = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_LOG);
                     import_VanBan_Log.exportdataFromPostgres(postgresConnection, CommandType.StoredProcedure, query, Common.VB_TYPE.VB_DI);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported outgoing doc log data from Postgres!"));
                     timer.Stop();
@@ -398,6 +409,10 @@ namespace Convert_Data
                     string query = configs.IsUBND ? Constants.PROC_UBND_VBDEN_INFO : Constants.PROC_SO_VBDEN_INFO + "(" + configs.Donvi_lay_du_lieu + ";" + configs.Year + ")";
                     //string.Format(configs.IsUBND ? Constants.sql_thongtin_vb_den : Constants.sql_so_thongtin_vbden, configs.Donvi_lay_du_lieu, configs.Year);
                     Import_VanBan import_VanBan = new Import_VanBan();
+                    Import_VanBan.SEQ_DCM_DOC_RELATION = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_DOC_RELATION);
+                    Import_VanBan.SEQ_FEM_FILE = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.FEM_FILE);
+                    Import_VanBan.SEQ_DCM_ATTACH_FILE = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_ATTACH_FILE);
+                    Import_VanBan.SEQ_DCM_TRACK = Common.GetMaxID(oracleConnection, "CLOUD_ADMIN_DEV_BLU_2.", Common.TABLE.DCM_TRACK);
                     import_VanBan.exportdataFromPostgres(postgresConnection, configs, query, Common.VB_TYPE.VB_DEN);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported incoming doc data from Postgres!"));
                     timer.Stop();
@@ -410,7 +425,8 @@ namespace Convert_Data
                         timer.Reset();
                         timer.Start();
                         txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserting incoming doc to Dcm_Doc ..."));
-                        import_VanBan.insert_Dcm_Doc(oracleConnection, configs, Constants.sql_insert_dcm_doc, import_VanBan.GetDcm_Docs());
+                        query = string.Format(Constants.sql_insert_dcm_doc, configs.Schema);
+                        import_VanBan.insert_Dcm_Doc(oracleConnection, query, import_VanBan.GetDcm_Docs());
                         txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted incoming doc to Dcm_Doc!"));
                         timer.Stop();
                         Console.WriteLine("Total imported data to dcm_doc: " + import_VanBan.GetDcm_Docs().Count);
@@ -478,6 +494,9 @@ namespace Convert_Data
                         *//*string.Format(Constants.sql_so_luong_xuly_vbden, configs.Year, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu
                     , configs.Year, configs.Donvi_lay_du_lieu);*//*
                     }*/
+                    Import_VanBan_Flow.SEQ_DCM_ACTIVITI_LOG = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_ACTIVITI_LOG);
+                    Import_VanBan_Flow.SEQ_DCM_ASSIGN = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_ASSIGN);
+                    Import_VanBan_Flow.SEQ_DCM_DONVI_NHAN = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_DONVI_NHAN);
                     import_Incoming_Doc_Flow.exportdataFromPostgres(postgresConnection, CommandType.StoredProcedure, query, Common.VB_TYPE.VB_DEN);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported outgoing doc flow data from Postgres!"));
                     timer.Stop();
@@ -531,6 +550,7 @@ namespace Convert_Data
                     Import_VanBan_Log import_VanBan_Log = new Import_VanBan_Log();
                     string query = configs.IsUBND ? Constants.PROC_UBND_VBDEN_LOG : Constants.PROC_SO_VBDEN_LOG + "(" + configs.Donvi_lay_du_lieu + ";" + configs.Year + ")";
                     //string.Format(configs.IsUBND ? Constants.sql_log_xuly_vb_den : Constants.sql_so_log_xuly_vbden, configs.Donvi_lay_du_lieu, configs.Year);
+                    Import_VanBan_Log.SEQ_DCM_LOG = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_LOG);
                     import_VanBan_Log.exportdataFromPostgres(postgresConnection, CommandType.StoredProcedure, query, Common.VB_TYPE.VB_DEN);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported incoming doc data from Postgres!"));
                     timer.Stop();
@@ -572,7 +592,13 @@ namespace Convert_Data
             finally
             {
                 // Update seq to db
-                Common.updateSeqFromProcedure(oracleConnection, configs);
+                try
+                {
+                    //Common.UpdateSeqFromProcedure(oracleConnection, configs.Schema);
+                } catch(Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
                 // Close connection
                 postgresConnection.Close();
                 oracleConnection.Close();

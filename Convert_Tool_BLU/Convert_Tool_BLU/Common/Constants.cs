@@ -881,6 +881,15 @@ namespace Convert_Data
         #endregion SchemaBLU
 
         #region insert dcm_doc
+        public static string SQL_SELECT_DCM_DOC = "SELECT id, confidential_code, linhvuc_code, dcmtype_code,donvi_soanthao, trich_yeu" +
+            ", agent_id, so_kyhieu,nguoi_ky_chinh, nguoi_ky_sao, ngay_den_di, ngay_van_ban,so_ban, so_trang, congvan_dendi, han_giaiquyet,congvan_lastversion" +
+            ", link_attachment, nguoi_soan,ngay_tao, trich_yeu_khongdau, last_update, noi_dung,so_congvan_traloi, congvan_traloi_id, nguoi_dang_giu,hinhthuc_gui_code" +
+            ", process_instance_id, dcmstatus_code,gui_canh_bao, trang_thai, priority_code, ghi_chu,so_vanban_code, taskid, ngay_ban_hanh, so_den_di,process_key" +
+            ", tukhoa_code, donvi_banhanh, donvi_luugoc,donvi_nhanngoai, unit_id, parent_id, ketthuc_hoso,finished_date, ykien_thammuu, is_processing,loai_vanban_noingoai" +
+            ", so_vanban_phong_id, so_kyhieu_phong,loai_coquan_banhanh_id, log_update, vb_ky_so, vb_giay,vanban_chidao, noidung_chidao, vbcd_hoanthanh,bussiness_doc_type" +
+            ", ds_user_taoviec,nguoi_xulychinh_cuoi, has_file_attach,xulychinh_cuoi_ketthuc, ma_dinh_danh, doc_type, mahoso,ma_duthao, nguoi_soanthao, ioffice_number" +
+            ",ds_display_cogiaoviec, info_search, language_code,chucvu_nguoiky, doc_note, xulychinh_cuoi_all,publish_ttdt, bnv_announcement, bnv_processtype,ngay_trinh_ky" +
+            ", ngay_ky, vb_trinh_ky, so_trinh_ky,check_phuc_dap, vb_kyuyquyen,dong_bang, vanban_bancansu FROM {0}DCM_DOC";
         public static string sql_insert_dcm_doc = @"INSERT INTO {0}DCM_DOC(ID,DCMTYPE_CODE,TRICH_YEU,SO_KYHIEU,SO_DEN_DI"
             + ",NGUOI_KY_CHINH,NGUOI_SOAN,SO_VANBAN_CODE,NGAY_TAO,NGAY_VAN_BAN,NGAY_DEN_DI,SO_BAN,SO_TRANG,PRIORITY_CODE,CONFIDENTIAL_CODE"
             + ",LINHVUC_CODE, HINHTHUC_GUI_CODE,HAN_GIAIQUYET,CONGVAN_DENDI,TRANG_THAI,ngay_ban_hanh,donvi_soanthao,DONVI_BANHANH, unit_id"
@@ -912,17 +921,23 @@ namespace Convert_Data
         #endregion sql_insert_dcm_track
 
         #region sql_insert_dcm_activiti_log
+        public static string SQL_SELECT_DCM_ACTIVITI_LOG = "SELECT ID,TASK_KEY,UPDATED_DATE,UPDATED_BY,ACTION"
+            + ",DOC_ID, APPROVED,COMMENT_,COMMENT_FULL,FORMID,ACTION_CODE FROM {0}DCM_ACTIVITI_LOG";
         public static string sql_insert_dcm_activiti_log = @"INSERT INTO {0}DCM_ACTIVITI_LOG(ID,TASK_KEY,UPDATED_DATE,UPDATED_BY,ACTION"
             + ",DOC_ID, APPROVED,COMMENT_,COMMENT_FULL,FORMID,ACTION_CODE) VALUES(:ID,:TASK_KEY,:UPDATED_DATE,:UPDATED_BY,:ACTION,:DOC_ID"
             +",:APPROVED,:COMMENT_,:COMMENT_FULL,:FORMID,:ACTION_CODE)";
         #endregion sql_insert_dcm_activiti_log
 
         #region sql_insert_dcm_assign
+        public static string SQL_SELECT_DCM_ASSIGN = "SELECT ID,DOCUMENT_ID,ASSIGNEE,ASSIGNER,ASSIGNED_DATE,ROLE_TYPE_CODE"
+            + ",XU_LY,NGAY_XULY,ACTIVITI_LOG_ID,TRUOC_BANHANH FROM {0}DCM_ASSIGN";
         public static string sql_insert_dcm_assign = @"INSERT INTO {0}DCM_ASSIGN(ID,DOCUMENT_ID,ASSIGNEE,ASSIGNER,ASSIGNED_DATE,ROLE_TYPE_CODE"
             + ",XU_LY,NGAY_XULY,ACTIVITI_LOG_ID,TRUOC_BANHANH) VALUES(:ID,:DOCUMENT_ID,:ASSIGNEE,:ASSIGNER,:ASSIGNED_DATE,:ROLE_TYPE_CODE,:XU_LY,:NGAY_XULY,:ACTIVITI_LOG_ID,:TRUOC_BANHANH)";
         #endregion sql_insert_dcm_assign
 
         #region sql_insert_dcm_donvi_nhan
+        public static string SQL_SELECT_DCM_DONVI_NHAN = "SELECT ID,DOC_ID, XULY_CHINH, AGENT_ID, UNIT_ID, ROLE_TYPE_CODE, DONVI_TRONG_NGOAI"
+            + ", ACTIVITI_LOG_ID, ASSIGNED_DATE, XU_LY, TRUOC_BANHANH, TRANGTHAI_GUI FROM {0}DCM_DONVI_NHAN";
         public static string sql_insert_dcm_donvi_nhan = @"INSERT INTO {0}DCM_DONVI_NHAN(ID,DOC_ID, XULY_CHINH, AGENT_ID, UNIT_ID, ROLE_TYPE_CODE, DONVI_TRONG_NGOAI"
             + ", ACTIVITI_LOG_ID, ASSIGNED_DATE, XU_LY, TRUOC_BANHANH, TRANGTHAI_GUI) VALUES (:ID,:DOC_ID,:XULY_CHINH,:AGENT_ID,:UNIT_ID,:ROLE_TYPE_CODE,:DONVI_TRONG_NGOAI"
             +",:ACTIVITI_LOG_ID,:ASSIGNED_DATE,:XU_LY,:TRUOC_BANHANH,:TRANGTHAI_GUI)";
@@ -957,7 +972,7 @@ namespace Convert_Data
 
         #region DANHMUC
         #region DCM_SOVANBAN
-        public static string SQL_SELECT__DCM_SOVANBAN = "SELECT ID,NAME,SOBATDAU,MA_LOAI_SO,NGAY_BATDAU_SUDUNG,NGAY_DONGSO,UNIT_CODE,CODE" +
+        public static string SQL_SELECT_DCM_SOVANBAN = "SELECT ID,NAME,SOBATDAU,MA_LOAI_SO,NGAY_BATDAU_SUDUNG,NGAY_DONGSO,UNIT_CODE,CODE" +
             ",NGUOI_THEODOI,NGUOI_QUANTRI,STT_HIENTHI FROM {0}DCM_SOVANBAN";
         public static string SQL_INSERT_DCM_SOVANBAN = "INSERT INTO {0}DCM_SOVANBAN(ID,NAME,SOBATDAU,MA_LOAI_SO,NGAY_BATDAU_SUDUNG,NGAY_DONGSO"
                 + ",UNIT_CODE,CODE,NGUOI_THEODOI,NGUOI_QUANTRI,STT_HIENTHI) VALUES(:ID,:NAME,:SOBATDAU,:MA_LOAI_SO,:NGAY_BATDAU_SUDUNG,:NGAY_DONGSO"
@@ -1015,7 +1030,7 @@ namespace Convert_Data
         public static string SEQ_DCM_ATTACH_FILE = "DCM_ATTACH_FILE_SEQ";
         public static string SEQ_DCM_TRACK = "DCM_TRACK_SEQ";
 
-        public static string SEQ_DCM_ACTIVITI_LOG = "DCM_ACTIVITI_LOG_SEQ";
+        public static string SEQ_DCM_ACTIVITI_LOG = "ACTIVITI_LOG_SEQ";
         public static string SEQ_DCM_ASSIGN = "DCM_ASSIGN_SEQ";
         public static string SEQ_DCM_DONVI_NHAN = "DCM_DONVI_NHAN_SEQ";
 

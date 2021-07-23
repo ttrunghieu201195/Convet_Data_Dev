@@ -155,5 +155,63 @@ namespace Convert_Data.Controller
         {
             throw new NotImplementedException();
         }
+
+        protected override void Insert(OracleConnection oracleConnection, string toSchema)
+        {
+            try
+            {
+                string query = string.Format(Constants.SQL_INSERT_DCM_TYPE, toSchema);
+                if (DCM_TYPEs.Count > 0)
+                {
+                    Stopwatch timer = new Stopwatch();
+                    Console.WriteLine("Total data to dcm_type: " + DCM_TYPEs.Count);
+
+                    List<List<DCM_TYPE>> splited_data = Common.SplitList(DCM_TYPEs);
+                    Console.WriteLine("Total splited data to dcm_type: " + splited_data.Count);
+
+                    foreach (List<DCM_TYPE> data in splited_data)
+                    {
+                        timer.Start();
+                        OracleCommand cmd = oracleConnection.CreateCommand();
+                        cmd.CommandType = CommandType.Text;
+
+                        cmd.ArrayBindCount = data.Count;
+
+                        cmd.CommandText = query;
+
+                        cmd.Parameters.Add("ID", OracleDbType.Int64);
+                        cmd.Parameters.Add("NAME", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("CODE", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("NGUOI_TAO", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("NGAY_TAO", OracleDbType.Date);
+                        cmd.Parameters.Add("STT_HIENTHI", OracleDbType.Int64);
+                        cmd.Parameters.Add("KYHIEU", OracleDbType.Varchar2);
+
+                        cmd.Parameters["ID"].Value = data.Select(dcm_linhvuc => dcm_linhvuc.ID).ToArray();
+                        cmd.Parameters["NAME"].Value = data.Select(dcm_linhvuc => dcm_linhvuc.NAME).ToArray();
+                        cmd.Parameters["CODE"].Value = data.Select(dcm_linhvuc => dcm_linhvuc.CODE).ToArray();
+                        cmd.Parameters["NGUOI_TAO"].Value = data.Select(dcm_linhvuc => dcm_linhvuc.NGUOI_TAO).ToArray();
+                        cmd.Parameters["NGAY_TAO"].Value = data.Select(dcm_linhvuc => dcm_linhvuc.NGAY_TAO).ToArray();
+                        cmd.Parameters["STT_HIENTHI"].Value = data.Select(dcm_linhvuc => dcm_linhvuc.STT_HIENTHI).ToArray();
+                        cmd.Parameters["KYHIEU"].Value = data.Select(dcm_linhvuc => dcm_linhvuc.KYHIEU).ToArray();
+
+                        cmd.ExecuteNonQuery();
+                        cmd.Dispose();
+                        timer.Stop();
+                        Console.WriteLine("Imported data to dcm_type: " + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        timer.Reset();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        protected override string getDataQuery(string fromSchema)
+        {
+            return string.Format(Constants.SQL_SELECT_ALL_DATA, fromSchema, Common.TABLE.DCM_TYPE);
+        }
     }
 }
