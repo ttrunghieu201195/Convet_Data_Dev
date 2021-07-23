@@ -171,8 +171,17 @@ namespace Convert_Data
                     Import_SoVanBan import_SoVanBan = new Import_SoVanBan();
                     DataTable dcm_type = Common.GetDcm_Type(oracleConnection, configs.Schema, Constants.sql_get_dcm_type);
                     string query = string.Format(Constants.sql_danhmuc_sovanban, configs.Donvi_lay_du_lieu);
-                    Import_DCM_SOVB_TEMPLATESINHSO.SEQ_DCM_SOVB_TEMPLATESINHSO = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_SOVB_TEMPLATESINHSO);
-                    Import_DCM_QUYTAC_NHAYSO.SEQ_DCM_QUYTAC_NHAYSO = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_QUYTAC_NHAYSO);
+                    
+                    if (chkBox_AppendData.Checked)
+                    {
+                        Import_DCM_SOVB_TEMPLATESINHSO.SEQ_DCM_SOVB_TEMPLATESINHSO = Common.GetCurrentSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_SOVB_TEMPLATESINHSO);
+                        Import_DCM_QUYTAC_NHAYSO.SEQ_DCM_QUYTAC_NHAYSO = Common.GetCurrentSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_QUYTAC_NHAYSO);
+                    } else
+                    {
+                        Import_DCM_QUYTAC_NHAYSO.SEQ_DCM_QUYTAC_NHAYSO = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_QUYTAC_NHAYSO);
+                        Import_DCM_SOVB_TEMPLATESINHSO.SEQ_DCM_SOVB_TEMPLATESINHSO = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_SOVB_TEMPLATESINHSO);
+                    }
+                    
                     import_SoVanBan.exportdataFromPostgres(postgresConnection, CommandType.Text, query, Common.VB_TYPE.NONE);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported book data from Postgres..."));
                     timer.Stop();
@@ -591,13 +600,17 @@ namespace Convert_Data
             }
             finally
             {
-                // Update seq to db
-                try
+                if (chkBox_AppendData.Checked)
                 {
-                    //Common.UpdateSeqFromProcedure(oracleConnection, configs.Schema);
-                } catch(Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
+                    // Update seq to db
+                    try
+                    {
+                        Common.UpdateSeqFromProcedure(oracleConnection, configs.Schema);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
                 }
                 // Close connection
                 postgresConnection.Close();

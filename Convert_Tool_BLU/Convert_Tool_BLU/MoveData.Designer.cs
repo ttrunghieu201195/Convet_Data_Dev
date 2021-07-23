@@ -59,6 +59,7 @@ namespace Convert_Data
             this.chkBox_Delete = new System.Windows.Forms.CheckBox();
             this.txt_Progress = new System.Windows.Forms.TextBox();
             this.btn_Delete = new System.Windows.Forms.Button();
+            this.chkBox_UpdateSeq = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.grpBox_Category.SuspendLayout();
@@ -187,11 +188,11 @@ namespace Convert_Data
             this.grpBox_Category.Controls.Add(this.chkBox_Priority);
             this.grpBox_Category.Controls.Add(this.chkBox_Book);
             this.grpBox_Category.Font = new System.Drawing.Font("Times New Roman", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grpBox_Category.Location = new System.Drawing.Point(60, 228);
+            this.grpBox_Category.Location = new System.Drawing.Point(60, 241);
             this.grpBox_Category.Margin = new System.Windows.Forms.Padding(4);
             this.grpBox_Category.Name = "grpBox_Category";
             this.grpBox_Category.Padding = new System.Windows.Forms.Padding(4);
-            this.grpBox_Category.Size = new System.Drawing.Size(961, 84);
+            this.grpBox_Category.Size = new System.Drawing.Size(961, 71);
             this.grpBox_Category.TabIndex = 10;
             this.grpBox_Category.TabStop = false;
             this.grpBox_Category.Text = "Danh mục";
@@ -403,12 +404,12 @@ namespace Convert_Data
             this.chkBox_Delete.Checked = true;
             this.chkBox_Delete.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkBox_Delete.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkBox_Delete.Location = new System.Drawing.Point(537, 196);
+            this.chkBox_Delete.Location = new System.Drawing.Point(537, 193);
             this.chkBox_Delete.Margin = new System.Windows.Forms.Padding(4);
             this.chkBox_Delete.Name = "chkBox_Delete";
-            this.chkBox_Delete.Size = new System.Drawing.Size(207, 23);
+            this.chkBox_Delete.Size = new System.Drawing.Size(275, 29);
             this.chkBox_Delete.TabIndex = 12;
-            this.chkBox_Delete.Text = "Delete Before Move Data";
+            this.chkBox_Delete.Text = "Delete Before Moving Data";
             this.chkBox_Delete.UseVisualStyleBackColor = true;
             // 
             // txt_Progress
@@ -432,11 +433,26 @@ namespace Convert_Data
             this.btn_Delete.UseVisualStyleBackColor = true;
             this.btn_Delete.Click += new System.EventHandler(this.btn_Delete_Click);
             // 
+            // chkBox_UpdateSeq
+            // 
+            this.chkBox_UpdateSeq.AutoSize = true;
+            this.chkBox_UpdateSeq.Checked = true;
+            this.chkBox_UpdateSeq.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkBox_UpdateSeq.Font = new System.Drawing.Font("Times New Roman", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkBox_UpdateSeq.Location = new System.Drawing.Point(60, 193);
+            this.chkBox_UpdateSeq.Margin = new System.Windows.Forms.Padding(4);
+            this.chkBox_UpdateSeq.Name = "chkBox_UpdateSeq";
+            this.chkBox_UpdateSeq.Size = new System.Drawing.Size(203, 23);
+            this.chkBox_UpdateSeq.TabIndex = 15;
+            this.chkBox_UpdateSeq.Text = "Update Seq After Moving";
+            this.chkBox_UpdateSeq.UseVisualStyleBackColor = true;
+            // 
             // MoveData
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1067, 689);
+            this.Controls.Add(this.chkBox_UpdateSeq);
             this.Controls.Add(this.btn_Delete);
             this.Controls.Add(this.txt_Progress);
             this.Controls.Add(this.chkBox_Delete);
@@ -494,5 +510,6 @@ namespace Convert_Data
         private System.Windows.Forms.CheckBox chkBox_DCM_DONVI_NHAN;
         private System.Windows.Forms.TextBox txt_Progress;
         private System.Windows.Forms.Button btn_Delete;
+        private System.Windows.Forms.CheckBox chkBox_UpdateSeq;
     }
 }

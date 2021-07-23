@@ -313,9 +313,12 @@ namespace Convert_Data
 
             string toSchema = txt_To_Schema.Text;
             DeleteData(oracleConnection, toSchema);
-            txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start updating sequence"));
-            Common.UpdateSeqFromProcedure(oracleConnection, toSchema);
-            txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Finish updating sequence"));
+            if (chkBox_UpdateSeq.Checked)
+            {
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start updating sequence"));
+                Common.UpdateSeqFromProcedure(oracleConnection, toSchema);
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Finish updating sequence"));
+            }
         }
 
         private List<Common.TABLE> CollectSelectedTables()

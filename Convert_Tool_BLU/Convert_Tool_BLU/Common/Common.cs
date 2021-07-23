@@ -67,6 +67,8 @@ namespace Convert_Data
             return long.Parse(result.ToString());
         }
 
+        //public static long GetTableID(OracleConnection connection, string schema, TABLE)
+
         public static void UpdateSeq(OracleConnection connection, string schema, string seqName, Int64 new_value)
         {
             OracleTransaction oracleTransaction = connection.BeginTransaction();
