@@ -112,10 +112,10 @@ namespace Convert_Data
 						cmd.Parameters["DCM_ID"].Value = data.Select(dcm_log => dcm_log.dcm_id).ToArray();
 						cmd.Parameters["IS_READ"].Value = data.Select(dcm_log => dcm_log.is_read).ToArray();
 
-						cmd.ExecuteNonQuery();
+						int affectedRows = cmd.ExecuteNonQuery();
 						cmd.Dispose();
 						timer.Stop();
-						Console.WriteLine("Imported data to dcm_log: " + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
+						Console.WriteLine("Imported data to dcm_log: " + affectedRows + "/" + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
 						timer.Reset();
 					}
 				}
@@ -193,10 +193,10 @@ namespace Convert_Data
 						cmd.Parameters["DCM_ID"].Value = data.Select(dcm_log => dcm_log.dcm_id).ToArray();
 						cmd.Parameters["IS_READ"].Value = data.Select(dcm_log => dcm_log.is_read).ToArray();
 
-						cmd.ExecuteNonQuery();
+						int affectedRows = cmd.ExecuteNonQuery();
 						cmd.Dispose();
 						timer.Stop();
-						Console.WriteLine("Imported data to dcm_log: " + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
+						Console.WriteLine("Imported data to dcm_log: " + affectedRows + "/" + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
 						timer.Reset();
 					}
 				}

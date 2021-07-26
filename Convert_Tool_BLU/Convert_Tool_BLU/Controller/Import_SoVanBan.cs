@@ -64,10 +64,10 @@ namespace Convert_Data.Controller
                         cmd.Parameters["NGUOI_QUANTRI"].Value = data.Select(dcm_sovanban => dcm_sovanban.nguoi_quantri).ToArray();
                         cmd.Parameters["STT_HIENTHI"].Value = data.Select(dcm_sovanban => dcm_sovanban.stt_hienthi).ToArray();
 
-                        cmd.ExecuteNonQuery();
+                        int affectedRows = cmd.ExecuteNonQuery();
                         cmd.Dispose();
                         timer.Stop();
-                        Console.WriteLine("Imported data to dcm_log: " + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        Console.WriteLine("Imported data to dcm_log: " + affectedRows + "/" + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
                         timer.Reset();
                     }
                 }
@@ -274,10 +274,10 @@ namespace Convert_Data.Controller
                         cmd.Parameters["NGUOI_QUANTRI"].Value = data.Select(dcm_sovanban => dcm_sovanban.nguoi_quantri).ToArray();
                         cmd.Parameters["STT_HIENTHI"].Value = data.Select(dcm_sovanban => dcm_sovanban.stt_hienthi).ToArray();
 
-                        cmd.ExecuteNonQuery();
+                        int affectedRows = cmd.ExecuteNonQuery();
                         cmd.Dispose();
                         timer.Stop();
-                        Console.WriteLine("Imported data to dcm_log: " + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        Console.WriteLine("Imported data to dcm_log: " + affectedRows + "/" + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
                         timer.Reset();
                     }
                 }

@@ -70,11 +70,11 @@ namespace Convert_Data.Controller
                         cmd.Parameters["DCM_ID"].Value = data.Select(dcm_doc_relation => dcm_doc_relation.dcm_id).ToArray();
                         cmd.Parameters["DCM_DOCUMENT_ID"].Value = data.Select(dcm_doc_relation => dcm_doc_relation.dcm_document_id).ToArray();
 
-                        cmd.ExecuteNonQuery();
+                        int affectedRows = cmd.ExecuteNonQuery();
                         cmd.Dispose();
 
                         timer.Stop();
-                        Console.WriteLine("Imported data to Dcm_Doc_Relation: " + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        Console.WriteLine("Imported data to Dcm_Doc_Relation: " + affectedRows + "/" + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
                         timer.Reset();
                     }
                 }

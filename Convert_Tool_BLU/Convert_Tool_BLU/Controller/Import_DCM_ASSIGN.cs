@@ -115,10 +115,10 @@ namespace Convert_Data.Controller
                         cmd.Parameters["ACTIVITI_LOG_ID"].Value = data.Select(dcm_assign => dcm_assign.activiti_log_id).ToArray();
                         cmd.Parameters["TRUOC_BANHANH"].Value = data.Select(dcm_assign => dcm_assign.truoc_banhanh).ToArray();
 
-                        cmd.ExecuteNonQuery();
+                        int affectedRows = cmd.ExecuteNonQuery();
                         cmd.Dispose();
                         timer.Stop();
-                        Console.WriteLine("Imported data to dcm_assign: " + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        Console.WriteLine("Imported data to dcm_assign: " + affectedRows + "/" + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
                         timer.Reset();
                     }
                 }

@@ -348,10 +348,10 @@ namespace Convert_Data
                         cmd.Parameters["FORMID"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.formid).ToArray();
                         cmd.Parameters["ACTION_CODE"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.action_code).ToArray();
 
-                        cmd.ExecuteNonQuery();
+                        int affectedRows = cmd.ExecuteNonQuery();
                         cmd.Dispose();
                         timer.Stop();
-                        Console.WriteLine("Imported data to dcm_activiti_log: " + data.Count + "/" + timer.ElapsedMilliseconds/1000 + "(s)");
+                        Console.WriteLine("Imported data to dcm_activiti_log: " + affectedRows + "/" + data.Count + "/" + timer.ElapsedMilliseconds/1000 + "(s)");
                         timer.Reset();
                     }
                 }
@@ -404,10 +404,10 @@ namespace Convert_Data
                         cmd.Parameters["ACTIVITI_LOG_ID"].Value = data.Select(dcm_assign => dcm_assign.activiti_log_id).ToArray();
                         cmd.Parameters["TRUOC_BANHANH"].Value = data.Select(dcm_assign => dcm_assign.truoc_banhanh).ToArray();
 
-                        cmd.ExecuteNonQuery();
+                        int affectedRows = cmd.ExecuteNonQuery();
                         cmd.Dispose();
                         timer.Stop();
-                        Console.WriteLine("Imported data to dcm_assign: " + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        Console.WriteLine("Imported data to dcm_assign: " + affectedRows + "/" + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
                         timer.Reset();
                     }
                 }
@@ -466,10 +466,10 @@ namespace Convert_Data
                         cmd.Parameters["TRUOC_BANHANH"].Value = data.Select(dcm_donvi_nhan => dcm_donvi_nhan.TRUOC_BANHANH).ToArray();
                         cmd.Parameters["TRANGTHAI_GUI"].Value = data.Select(dcm_donvi_nhan => dcm_donvi_nhan.TRANGTHAI_GUI).ToArray();
 
-                        cmd.ExecuteNonQuery();
+                        int affectedRows = cmd.ExecuteNonQuery();
                         cmd.Dispose();
                         timer.Stop();
-                        Console.WriteLine("Imported data to dcm_donvi_nhan: " + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        Console.WriteLine("Imported data to dcm_donvi_nhan: " + affectedRows + "/" + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
                         timer.Reset();
                     }
                 }
@@ -557,10 +557,10 @@ namespace Convert_Data
                         cmd.Parameters["FORMID"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.formid).ToArray();
                         cmd.Parameters["ACTION_CODE"].Value = data.Select(dcm_activiti_log => dcm_activiti_log.action_code).ToArray();
 
-                        cmd.ExecuteNonQuery();
+                        int affectedRows = cmd.ExecuteNonQuery();
                         cmd.Dispose();
                         timer.Stop();
-                        Console.WriteLine("Imported data to dcm_activiti_log: " + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        Console.WriteLine("Imported data to dcm_activiti_log: " + affectedRows + "/" + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
                         timer.Reset();
                     }
                 }

@@ -82,11 +82,11 @@ namespace Convert_Data.Controller
                         cmd.Parameters["CREATOR"].Value = data.Select(fem_file => fem_file.creator).ToArray();
                         cmd.Parameters["IS_DELETED"].Value = data.Select(fem_file => fem_file.is_delete).ToArray();
 
-                        cmd.ExecuteNonQuery();
+                        int affectedRows = cmd.ExecuteNonQuery();
                         cmd.Dispose();
 
                         timer.Stop();
-                        Console.WriteLine("Imported data to Fem_File: " + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        Console.WriteLine("Imported data to Fem_File: " + affectedRows + "/" + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
                         timer.Reset();
                     }
                 }

@@ -69,7 +69,7 @@ namespace Convert_Data
 
         //public static long GetTableID(OracleConnection connection, string schema, TABLE)
 
-        public static void UpdateSeq(OracleConnection connection, string schema, string seqName, Int64 new_value)
+        /*public static void UpdateSeq(OracleConnection connection, string schema, string seqName, Int64 new_value)
         {
             OracleTransaction oracleTransaction = connection.BeginTransaction();
             try
@@ -89,7 +89,7 @@ namespace Convert_Data
                 Console.WriteLine(ex.Message);
             }
             
-        }
+        }*/
 
         public static string Escape_String(string input)
         {
@@ -177,7 +177,7 @@ namespace Convert_Data
             return vaitro;
         }
 
-        public static void UpdateSeqToDB(OracleConnection oracleConnection, Configs configs)
+        /*public static void UpdateSeqToDB(OracleConnection oracleConnection, Configs configs)
         {
             UpdateSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_DOC_RELATION, ++Import_VanBan.SEQ_DCM_DOC_RELATION - Constants.INCREASEID_OTHERS);
             UpdateSeq(oracleConnection, configs.Schema, Constants.SEQ_FEM_FILE, ++Import_VanBan.SEQ_FEM_FILE - Constants.INCREASEID_OTHERS);
@@ -193,7 +193,7 @@ namespace Convert_Data
 
             UpdateSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_SOVB_TEMPLATESINHSO, ++Import_DCM_SOVB_TEMPLATESINHSO.SEQ_DCM_SOVB_TEMPLATESINHSO - Constants.INCREASEID_OTHERS);
             UpdateSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_QUYTAC_NHAYSO, ++Import_DCM_QUYTAC_NHAYSO.SEQ_DCM_QUYTAC_NHAYSO - Constants.INCREASEID_OTHERS);
-        }
+        }*/
 
         public static void UpdateSeqFromProcedure(OracleConnection oracleConnection, string schema, string seq_list)
         {

@@ -76,11 +76,11 @@ namespace Convert_Data.Controller
                         cmd.Parameters["TRANG_THAI"].Value = data.Select(dcm_doc_attach_file => dcm_doc_attach_file.trang_thai).ToArray();
                         cmd.Parameters["FILE_ID"].Value = data.Select(dcm_doc_attach_file => dcm_doc_attach_file.file_id).ToArray();
 
-                        cmd.ExecuteNonQuery();
+                        int affectedRows = cmd.ExecuteNonQuery();
                         cmd.Dispose();
 
                         timer.Stop();
-                        Console.WriteLine("Imported data to Dcm_Attach_File: " + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        Console.WriteLine("Imported data to Dcm_Attach_File: " + affectedRows + "/" + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
                         timer.Reset();
                     }
                 }

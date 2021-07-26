@@ -911,11 +911,11 @@ namespace Convert_Data
                         cmd.Parameters["NGAY_KY"].Value = data.Select(dcm_doc => dcm_doc.ngay_ky).ToArray();
                         cmd.Parameters["PROCESS_KEY"].Value = data.Select(dcm_doc => dcm_doc.process_key).ToArray();
 
-                        cmd.ExecuteNonQuery();
+                        int affectedRows = cmd.ExecuteNonQuery();
                         cmd.Dispose();
 
                         timer.Stop();
-                        Console.WriteLine("Imported data to dcm_doc: " + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        Console.WriteLine("Imported data to dcm_doc: " + affectedRows + "/" + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
                         timer.Reset();
                     }
                 }
@@ -956,11 +956,11 @@ namespace Convert_Data
                         cmd.Parameters["DCM_ID"].Value = data.Select(dcm_doc_relation => dcm_doc_relation.dcm_id).ToArray();
                         cmd.Parameters["DCM_DOCUMENT_ID"].Value = data.Select(dcm_doc_relation => dcm_doc_relation.dcm_document_id).ToArray();
 
-                        cmd.ExecuteNonQuery();
+                        int affectedRows = cmd.ExecuteNonQuery();
                         cmd.Dispose();
 
                         timer.Stop();
-                        Console.WriteLine("Imported data to Dcm_Doc_Relation: " + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        Console.WriteLine("Imported data to Dcm_Doc_Relation: " + affectedRows + "/" + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
                         timer.Reset();
                     }
                 }
@@ -1012,11 +1012,11 @@ namespace Convert_Data
                         cmd.Parameters["CREATOR"].Value = data.Select(fem_file => fem_file.creator).ToArray();
                         cmd.Parameters["IS_DELETED"].Value = data.Select(fem_file => fem_file.is_delete).ToArray();
 
-                        cmd.ExecuteNonQuery();
+                        int affectedRows = cmd.ExecuteNonQuery();
                         cmd.Dispose();
 
                         timer.Stop();
-                        Console.WriteLine("Imported data to Fem_File: " + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        Console.WriteLine("Imported data to Fem_File: " + affectedRows + "/" + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
                         timer.Reset();
                     }
                 }
@@ -1059,11 +1059,11 @@ namespace Convert_Data
                         cmd.Parameters["TRANG_THAI"].Value = data.Select(dcm_doc_attach_file => dcm_doc_attach_file.trang_thai).ToArray();
                         cmd.Parameters["FILE_ID"].Value = data.Select(dcm_doc_attach_file => dcm_doc_attach_file.file_id).ToArray();
 
-                        cmd.ExecuteNonQuery();
+                        int affectedRows = cmd.ExecuteNonQuery();
                         cmd.Dispose();
 
                         timer.Stop();
-                        Console.WriteLine("Imported data to Dcm_Attach_File: " + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        Console.WriteLine("Imported data to Dcm_Attach_File: " + affectedRows + "/" + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
                         timer.Reset();
                     }
                 }
@@ -1114,11 +1114,11 @@ namespace Convert_Data
                         cmd.Parameters["PARENT"].Value = data.Select(dcm_track => dcm_track.parent).ToArray();
                         cmd.Parameters["CHILD"].Value = data.Select(dcm_track => dcm_track.child).ToArray();
 
-                        cmd.ExecuteNonQuery();
+                         int affectedRows = cmd.ExecuteNonQuery();
                         cmd.Dispose();
 
                         timer.Stop();
-                        Console.WriteLine("Imported data to Dcm_Track: " + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        Console.WriteLine("Imported data to Dcm_Track: " + affectedRows + "/" + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
                         timer.Reset();
                     }
                 }

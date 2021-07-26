@@ -73,10 +73,10 @@ namespace Convert_Data.Controller
                         cmd.Parameters["TRUOC_BANHANH"].Value = data.Select(dcm_donvi_nhan => dcm_donvi_nhan.TRUOC_BANHANH).ToArray();
                         cmd.Parameters["TRANGTHAI_GUI"].Value = data.Select(dcm_donvi_nhan => dcm_donvi_nhan.TRANGTHAI_GUI).ToArray();
 
-                        cmd.ExecuteNonQuery();
+                        int affectedRows = cmd.ExecuteNonQuery();
                         cmd.Dispose();
                         timer.Stop();
-                        Console.WriteLine("Imported data to dcm_donvi_nhan: " + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        Console.WriteLine("Imported data to dcm_donvi_nhan: " + affectedRows + "/" + data.Count + "/" + timer.ElapsedMilliseconds / 1000 + "(s)");
                         timer.Reset();
                     }
                 }
