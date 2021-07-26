@@ -195,14 +195,21 @@ namespace Convert_Data
             UpdateSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_QUYTAC_NHAYSO, ++Import_DCM_QUYTAC_NHAYSO.SEQ_DCM_QUYTAC_NHAYSO - Constants.INCREASEID_OTHERS);
         }
 
-        public static void UpdateSeqFromProcedure(OracleConnection oracleConnection, string schema)
+        public static void UpdateSeqFromProcedure(OracleConnection oracleConnection, string schema, string seq_list)
         {
-            OracleCommand cmd = oracleConnection.CreateCommand();
-            cmd.CommandText = "CLOUD_ADMIN_DEV_BLU_2.SF_UPDATE_SEQ";
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.Add("ps_schema", OracleDbType.Varchar2).Value = schema;
-            cmd.ExecuteNonQuery();
-            cmd.Dispose();
+            try
+            {
+                OracleCommand cmd = oracleConnection.CreateCommand();
+                cmd.CommandText = "CLOUD_ADMIN_DEV_BLU_2.SF_UPDATE_SEQ";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("ps_schema", OracleDbType.Varchar2).Value = schema;
+                cmd.Parameters.Add("json", OracleDbType.Varchar2).Value = seq_list;
+                cmd.ExecuteNonQuery();
+                cmd.Dispose();
+            } catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         public static void TestCallProcFromPostgres(NpgsqlConnection connection)

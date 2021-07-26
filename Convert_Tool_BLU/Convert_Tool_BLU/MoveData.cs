@@ -316,7 +316,7 @@ namespace Convert_Data
             if (chkBox_UpdateSeq.Checked)
             {
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start updating sequence"));
-                Common.UpdateSeqFromProcedure(oracleConnection, toSchema);
+                //Common.UpdateSeqFromProcedure(oracleConnection, toSchema);
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Finish updating sequence"));
             }
         }

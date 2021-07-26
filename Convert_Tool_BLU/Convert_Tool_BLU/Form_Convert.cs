@@ -80,6 +80,7 @@ namespace Convert_Data
             oracleConnection.Open();
             // Initial timer
             Stopwatch timer = new Stopwatch();
+            string list_seq = "";
             try
             {
                 // Open connection
@@ -174,6 +175,8 @@ namespace Convert_Data
                     
                     if (chkBox_AppendData.Checked)
                     {
+                        list_seq += Constants.SEQ_DCM_SOVB_TEMPLATESINHSO + ",";
+                        list_seq += Constants.SEQ_DCM_QUYTAC_NHAYSO + ",";
                         Import_DCM_SOVB_TEMPLATESINHSO.SEQ_DCM_SOVB_TEMPLATESINHSO = Common.GetCurrentSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_SOVB_TEMPLATESINHSO);
                         Import_DCM_QUYTAC_NHAYSO.SEQ_DCM_QUYTAC_NHAYSO = Common.GetCurrentSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_QUYTAC_NHAYSO);
                     } else
@@ -251,9 +254,22 @@ namespace Convert_Data
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exporting data from Postgres ..."));
                     Import_VanBan import_VanBan = new Import_VanBan();
                     string query = configs.IsUBND ? Constants.PROC_UBND_VBDI_INFO : Constants.PROC_SO_VBDI_INFO + "(" + configs.Donvi_lay_du_lieu + ";" + configs.Year + ")";
-                    Import_VanBan.SEQ_DCM_DOC_RELATION = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_DOC_RELATION);
-                    Import_VanBan.SEQ_FEM_FILE = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.FEM_FILE);
-                    Import_VanBan.SEQ_DCM_ATTACH_FILE = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_ATTACH_FILE);
+                    if (chkBox_AppendData.Checked)
+                    {
+                        list_seq = Constants.SEQ_DCM_DOC_RELATION + ",";
+                        list_seq += Constants.SEQ_FEM_FILE + ",";
+                        list_seq += Constants.SEQ_DCM_ATTACH_FILE + ",";
+                        Import_VanBan.SEQ_DCM_DOC_RELATION = Common.GetCurrentSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_DOC_RELATION);
+                        Import_VanBan.SEQ_FEM_FILE = Common.GetCurrentSeq(oracleConnection, configs.Schema, Constants.SEQ_FEM_FILE);
+                        Import_VanBan.SEQ_DCM_ATTACH_FILE = Common.GetCurrentSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_ATTACH_FILE);
+                    }
+                    else
+                    {
+                        Import_VanBan.SEQ_DCM_DOC_RELATION = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_DOC_RELATION);
+                        Import_VanBan.SEQ_FEM_FILE = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.FEM_FILE);
+                        Import_VanBan.SEQ_DCM_ATTACH_FILE = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_ATTACH_FILE);
+                    }
+                    
                     import_VanBan.exportdataFromPostgres(postgresConnection, configs, query, Common.VB_TYPE.VB_DI);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported data from Postgres!"));
                     timer.Stop();
@@ -301,6 +317,11 @@ namespace Convert_Data
                         timer.Stop();
                         Console.WriteLine("Total imported data to dcm_attach_file: " + import_VanBan.GetDcm_Attach_Files().Count);
                         Console.WriteLine("Consumption of imported data to dcm_attach_file: " + timer.ElapsedMilliseconds / 1000 + "(s)");
+                        if (chkBox_AppendData.Checked)
+                        {
+                            // Update seq to db
+                            Common.UpdateSeqFromProcedure(oracleConnection, configs.Schema, list_seq);
+                        }
                     }
                 }
 
@@ -314,9 +335,21 @@ namespace Convert_Data
                     Import_VanBan_Flow import_Outgoing_Doc_Flow = new Import_VanBan_Flow();
                     string query = configs.IsUBND ? Constants.PROC_UBND_VBDI_FLOW : Constants.PROC_SO_VBDI_FLOW + "(" + configs.Donvi_lay_du_lieu + ";" + configs.Year + ")";
                     //string.Format(configs.IsUBND ? Constants.sql_luong_xuly_vb_di : Constants.sql_so_luong_xuly_vbdi, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu, configs.Year);
-                    Import_VanBan_Flow.SEQ_DCM_ACTIVITI_LOG = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_ACTIVITI_LOG);
-                    Import_VanBan_Flow.SEQ_DCM_ASSIGN = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_ASSIGN);
-                    Import_VanBan_Flow.SEQ_DCM_DONVI_NHAN = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_DONVI_NHAN);
+                    if (chkBox_AppendData.Checked)
+                    {
+                        list_seq = Constants.SEQ_DCM_ACTIVITI_LOG + ",";
+                        list_seq += Constants.SEQ_DCM_ASSIGN + ",";
+                        list_seq += Constants.SEQ_DCM_DONVI_NHAN + ",";
+                        Import_VanBan_Flow.SEQ_DCM_ACTIVITI_LOG = Common.GetCurrentSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_ACTIVITI_LOG);
+                        Import_VanBan_Flow.SEQ_DCM_ASSIGN = Common.GetCurrentSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_ASSIGN);
+                        Import_VanBan_Flow.SEQ_DCM_DONVI_NHAN = Common.GetCurrentSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_DONVI_NHAN);
+                    }
+                    else
+                    {
+                        Import_VanBan_Flow.SEQ_DCM_ACTIVITI_LOG = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_ACTIVITI_LOG);
+                        Import_VanBan_Flow.SEQ_DCM_ASSIGN = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_ASSIGN);
+                        Import_VanBan_Flow.SEQ_DCM_DONVI_NHAN = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_DONVI_NHAN);
+                    }
                     import_Outgoing_Doc_Flow.exportdataFromPostgres(postgresConnection, CommandType.StoredProcedure, query, Common.VB_TYPE.VB_DI);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported outgoing doc flow data from Postgres!"));
                     timer.Stop();
@@ -355,6 +388,11 @@ namespace Convert_Data
                         import_Outgoing_Doc_Flow.insert_Dcm_Donvi_Nhan(oracleConnection, configs, Constants.sql_insert_dcm_donvi_nhan, import_Outgoing_Doc_Flow.GetDcm_Donvi_Nhans());
                         txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted outgoing doc to dcm_donvi_nhan!"));
                         timer.Stop();
+                        if (chkBox_AppendData.Checked)
+                        {
+                            // Update seq to db
+                            Common.UpdateSeqFromProcedure(oracleConnection, configs.Schema, list_seq);
+                        }
                         Console.WriteLine("Total imported data to dcm_donvi_nhan: " + import_Outgoing_Doc_Flow.GetDcm_Donvi_Nhans().Count);
                         Console.WriteLine("Consumption of imported data to dcm_donvi_nhan: " + timer.ElapsedMilliseconds / 1000 + "(s)");
                     } else
@@ -373,7 +411,15 @@ namespace Convert_Data
                     Import_VanBan_Log import_VanBan_Log = new Import_VanBan_Log();
                     string query = configs.IsUBND ? Constants.PROC_UBND_VBDI_LOG : Constants.PROC_SO_VBDI_LOG + "(" + configs.Donvi_lay_du_lieu + ";" + configs.Year + ")";
                     //string.Format(configs.IsUBND ? Constants.sql_log_xuly_vb_di : Constants.sql_so_log_xuly_vbdi, configs.Donvi_lay_du_lieu, configs.Year);
-                    Import_VanBan_Log.SEQ_DCM_LOG = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_LOG);
+                    if (chkBox_AppendData.Checked)
+                    {
+                        list_seq = Constants.SEQ_DCM_LOG;
+                        Import_VanBan_Log.SEQ_DCM_LOG = Common.GetCurrentSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_LOG);
+                    }
+                    else
+                    {
+                        Import_VanBan_Log.SEQ_DCM_LOG = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_LOG);
+                    }                    
                     import_VanBan_Log.exportdataFromPostgres(postgresConnection, CommandType.StoredProcedure, query, Common.VB_TYPE.VB_DI);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported outgoing doc log data from Postgres!"));
                     timer.Stop();
@@ -399,6 +445,11 @@ namespace Convert_Data
                         import_VanBan_Log.insert_Dcm_Log(oracleConnection, configs, Constants.sql_insert_dcm_log_read, import_VanBan_Log.getDcm_Log_Reads());
                         txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted outgoing doc to dcm_log_read!"));
                         timer.Stop();
+                        if (chkBox_AppendData.Checked)
+                        {
+                            // Update seq to db
+                            Common.UpdateSeqFromProcedure(oracleConnection, configs.Schema, list_seq);
+                        }
                         Console.WriteLine("Total imported data to dcm_log_read: " + import_VanBan_Log.getDcm_Log_Reads().Count);
                         Console.WriteLine("Consumption of imported data to dcm_log_read: " + timer.ElapsedMilliseconds / 1000 + "(s)");
                     }
@@ -418,10 +469,24 @@ namespace Convert_Data
                     string query = configs.IsUBND ? Constants.PROC_UBND_VBDEN_INFO : Constants.PROC_SO_VBDEN_INFO + "(" + configs.Donvi_lay_du_lieu + ";" + configs.Year + ")";
                     //string.Format(configs.IsUBND ? Constants.sql_thongtin_vb_den : Constants.sql_so_thongtin_vbden, configs.Donvi_lay_du_lieu, configs.Year);
                     Import_VanBan import_VanBan = new Import_VanBan();
-                    Import_VanBan.SEQ_DCM_DOC_RELATION = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_DOC_RELATION);
-                    Import_VanBan.SEQ_FEM_FILE = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.FEM_FILE);
-                    Import_VanBan.SEQ_DCM_ATTACH_FILE = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_ATTACH_FILE);
-                    Import_VanBan.SEQ_DCM_TRACK = Common.GetMaxID(oracleConnection, "CLOUD_ADMIN_DEV_BLU_2.", Common.TABLE.DCM_TRACK);
+                    if (chkBox_AppendData.Checked)
+                    {
+                        list_seq = Constants.SEQ_DCM_DOC_RELATION + ",";
+                        list_seq += Constants.SEQ_FEM_FILE + ",";
+                        list_seq += Constants.SEQ_DCM_ATTACH_FILE + ",";
+                        list_seq += Constants.SEQ_DCM_TRACK + ",";
+                        Import_VanBan.SEQ_DCM_DOC_RELATION = Common.GetCurrentSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_DOC_RELATION);
+                        Import_VanBan.SEQ_FEM_FILE = Common.GetCurrentSeq(oracleConnection, configs.Schema, Constants.SEQ_FEM_FILE);
+                        Import_VanBan.SEQ_DCM_ATTACH_FILE = Common.GetCurrentSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_ATTACH_FILE);
+                        Import_VanBan.SEQ_DCM_TRACK = Common.GetCurrentSeq(oracleConnection, "CLOUD_ADMIN_DEV_BLU_2.", Constants.SEQ_DCM_TRACK);
+                    }
+                    else
+                    {
+                        Import_VanBan.SEQ_DCM_DOC_RELATION = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_DOC_RELATION);
+                        Import_VanBan.SEQ_FEM_FILE = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.FEM_FILE);
+                        Import_VanBan.SEQ_DCM_ATTACH_FILE = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_ATTACH_FILE);
+                        Import_VanBan.SEQ_DCM_TRACK = Common.GetMaxID(oracleConnection, "CLOUD_ADMIN_DEV_BLU_2.", Common.TABLE.DCM_TRACK);
+                    }                    
                     import_VanBan.exportdataFromPostgres(postgresConnection, configs, query, Common.VB_TYPE.VB_DEN);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported incoming doc data from Postgres!"));
                     timer.Stop();
@@ -478,6 +543,11 @@ namespace Convert_Data
                         import_VanBan.insert_Dcm_Track(oracleConnection, configs, Constants.sql_insert_dcm_track, import_VanBan.GetDcm_Tracks());
                         txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted incoming doc to dcm_track!"));
                         timer.Stop();
+                        if (chkBox_AppendData.Checked)
+                        {
+                            // Update seq to db
+                            Common.UpdateSeqFromProcedure(oracleConnection, configs.Schema, list_seq);
+                        }
                         Console.WriteLine("Total imported data to dcm_track: " + import_VanBan.GetDcm_Tracks().Count);
                         Console.WriteLine("Consumption of imported data to dcm_track: " + timer.ElapsedMilliseconds / 1000 + "(s)");
                     }
@@ -492,20 +562,21 @@ namespace Convert_Data
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exporting incoming doc flow data from Postgres ..."));
                     Import_VanBan_Flow import_Incoming_Doc_Flow = new Import_VanBan_Flow();
                     string query = configs.IsUBND ? Constants.PROC_UBND_VBDEN_FLOW : Constants.PROC_SO_VBDEN_FLOW + "(" + configs.Donvi_lay_du_lieu + ";" + configs.Year + ")";
-                    /*if (configs.IsUBND)
+                    if (chkBox_AppendData.Checked)
                     {
-                        query = string.Format(Constants.sql_luong_xuly_vb_den, configs.Year, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu
-                        , configs.Year, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu
-                        , configs.Year, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu);
-                    } else
+                        list_seq = Constants.SEQ_DCM_ACTIVITI_LOG + ",";
+                        list_seq += Constants.SEQ_DCM_ASSIGN + ",";
+                        list_seq += Constants.SEQ_DCM_DONVI_NHAN + ",";
+                        Import_VanBan_Flow.SEQ_DCM_ACTIVITI_LOG = Common.GetCurrentSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_ACTIVITI_LOG);
+                        Import_VanBan_Flow.SEQ_DCM_ASSIGN = Common.GetCurrentSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_ASSIGN);
+                        Import_VanBan_Flow.SEQ_DCM_DONVI_NHAN = Common.GetCurrentSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_DONVI_NHAN);
+                    }
+                    else
                     {
-                        query = Constants.PROC_SO_VBDEN_FLOW + "(" + configs.Donvi_lay_du_lieu + ";" + configs.Year + ")";
-                        *//*string.Format(Constants.sql_so_luong_xuly_vbden, configs.Year, configs.Donvi_lay_du_lieu, configs.Year, configs.Donvi_lay_du_lieu
-                    , configs.Year, configs.Donvi_lay_du_lieu);*//*
-                    }*/
-                    Import_VanBan_Flow.SEQ_DCM_ACTIVITI_LOG = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_ACTIVITI_LOG);
-                    Import_VanBan_Flow.SEQ_DCM_ASSIGN = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_ASSIGN);
-                    Import_VanBan_Flow.SEQ_DCM_DONVI_NHAN = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_DONVI_NHAN);
+                        Import_VanBan_Flow.SEQ_DCM_ACTIVITI_LOG = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_ACTIVITI_LOG);
+                        Import_VanBan_Flow.SEQ_DCM_ASSIGN = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_ASSIGN);
+                        Import_VanBan_Flow.SEQ_DCM_DONVI_NHAN = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_DONVI_NHAN);
+                    }
                     import_Incoming_Doc_Flow.exportdataFromPostgres(postgresConnection, CommandType.StoredProcedure, query, Common.VB_TYPE.VB_DEN);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported outgoing doc flow data from Postgres!"));
                     timer.Stop();
@@ -540,6 +611,11 @@ namespace Convert_Data
                         import_Incoming_Doc_Flow.insert_Dcm_Donvi_Nhan(oracleConnection, configs, Constants.sql_insert_dcm_donvi_nhan, import_Incoming_Doc_Flow.GetDcm_Donvi_Nhans());
                         txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted incoming doc to dcm_donvi_nhan!"));
                         timer.Stop();
+                        if (chkBox_AppendData.Checked)
+                        {
+                            // Update seq to db
+                            Common.UpdateSeqFromProcedure(oracleConnection, configs.Schema, list_seq);
+                        }
                         Console.WriteLine("Total imported data to dcm_donvi_nhan: " + import_Incoming_Doc_Flow.GetDcm_Donvi_Nhans().Count);
                         Console.WriteLine("Consumption of imported data to dcm_donvi_nhan: " + timer.ElapsedMilliseconds / 1000 + "(s)");
                     }
@@ -559,7 +635,15 @@ namespace Convert_Data
                     Import_VanBan_Log import_VanBan_Log = new Import_VanBan_Log();
                     string query = configs.IsUBND ? Constants.PROC_UBND_VBDEN_LOG : Constants.PROC_SO_VBDEN_LOG + "(" + configs.Donvi_lay_du_lieu + ";" + configs.Year + ")";
                     //string.Format(configs.IsUBND ? Constants.sql_log_xuly_vb_den : Constants.sql_so_log_xuly_vbden, configs.Donvi_lay_du_lieu, configs.Year);
-                    Import_VanBan_Log.SEQ_DCM_LOG = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_LOG);
+                    if (chkBox_AppendData.Checked)
+                    {
+                        list_seq = Constants.SEQ_DCM_LOG;
+                        Import_VanBan_Log.SEQ_DCM_LOG = Common.GetCurrentSeq(oracleConnection, configs.Schema, Constants.SEQ_DCM_LOG);
+                    }
+                    else
+                    {
+                        Import_VanBan_Log.SEQ_DCM_LOG = Common.GetMaxID(oracleConnection, configs.Schema, Common.TABLE.DCM_LOG);
+                    }
                     import_VanBan_Log.exportdataFromPostgres(postgresConnection, CommandType.StoredProcedure, query, Common.VB_TYPE.VB_DEN);
                     txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Exported incoming doc data from Postgres!"));
                     timer.Stop();
@@ -585,6 +669,11 @@ namespace Convert_Data
                         import_VanBan_Log.insert_Dcm_Log(oracleConnection, configs, Constants.sql_insert_dcm_log_read, import_VanBan_Log.getDcm_Log_Reads());
                         txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Inserted incoming doc to dcm_log_read!"));
                         timer.Stop();
+                        if (chkBox_AppendData.Checked)
+                        {
+                            // Update seq to db
+                            Common.UpdateSeqFromProcedure(oracleConnection, configs.Schema, list_seq);
+                        }
                         Console.WriteLine("Total imported data to dcm_log_read: " + import_VanBan_Log.getDcm_Log_Reads().Count);
                         Console.WriteLine("Consumption of imported data to dcm_log_read: " + timer.ElapsedMilliseconds / 1000 + "(s)");
                     }
@@ -599,19 +688,7 @@ namespace Convert_Data
                 Console.WriteLine(ex.Message);
             }
             finally
-            {
-                if (chkBox_AppendData.Checked)
-                {
-                    // Update seq to db
-                    try
-                    {
-                        Common.UpdateSeqFromProcedure(oracleConnection, configs.Schema);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-                }
+            {                
                 // Close connection
                 postgresConnection.Close();
                 oracleConnection.Close();

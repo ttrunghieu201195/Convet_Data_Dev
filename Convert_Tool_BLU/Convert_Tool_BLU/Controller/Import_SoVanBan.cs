@@ -157,7 +157,7 @@ namespace Convert_Data.Controller
             cell_value = row["ID"].ToString();
             if (cell_value != null && cell_value != string.Empty)
             {
-                dcm_SoVanBan.id = long.Parse(cell_value) + Constants.INCREASEID_OTHERS;
+                dcm_SoVanBan.id = long.Parse(cell_value);
             }
 
             cell_value = row["NAME"].ToString();
