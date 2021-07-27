@@ -57,119 +57,120 @@ namespace Convert_Data
 
         private void executeAction(OracleConnection oracleConnection, string fromSchema, string toSchema)
         {
-            DeleteData(oracleConnection, toSchema);
+            if (chkBox_Delete.Checked)
+            {
+                DeleteData(oracleConnection, toSchema);
+            }
             MovingData(oracleConnection, fromSchema, toSchema);
         }
 
         private void DeleteData(OracleConnection oracleConnection, string toSchema)
         {
-            if (chkBox_Delete.Checked)
+
+            txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Delete Data"));
+            if (chkBox_HinhThuc.Checked)
             {
-                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Delete Data"));
-                if (chkBox_HinhThuc.Checked)
-                {
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Deleting " + Common.TABLE.DCM_TYPE));
-                    Common.DeleteTable(oracleConnection, toSchema, Common.TABLE.DCM_TYPE);
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Finish Deleting " + Common.TABLE.DCM_TYPE));
-                }
-
-                if (chkBox_Linhvuc.Checked)
-                {
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Deleting " + Common.TABLE.DCM_LINHVUC));
-                    Common.DeleteTable(oracleConnection, toSchema, Common.TABLE.DCM_LINHVUC);
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Finish Deleting " + Common.TABLE.DCM_LINHVUC));
-                }
-
-                if (chkBox_Book.Checked)
-                {
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Deleting " + Common.TABLE.DCM_SOVANBAN));
-                    Common.DeleteTable(oracleConnection, toSchema, Common.TABLE.DCM_SOVANBAN);
-                    Common.DeleteTable(oracleConnection, toSchema, Common.TABLE.DCM_QUYTAC_NHAYSO);
-                    Common.DeleteTable(oracleConnection, toSchema, Common.TABLE.DCM_SOVB_TEMPLATESINHSO);
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Finish Deleting " + Common.TABLE.DCM_SOVANBAN));
-                }
-
-                if (chkBox_Confidential.Checked)
-                {
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Deleting " + Common.TABLE.DCM_CONFIDENTIAL));
-                    Common.DeleteTable(oracleConnection, toSchema, Common.TABLE.DCM_CONFIDENTIAL);
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Finish Deleting " + Common.TABLE.DCM_CONFIDENTIAL));
-                }
-
-                if (chkBox_Priority.Checked)
-                {
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Deleting " + Common.TABLE.DCM_PRIORITY));
-                    Common.DeleteTable(oracleConnection, toSchema, Common.TABLE.DCM_PRIORITY);
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Finish Deleting " + Common.TABLE.DCM_PRIORITY));
-                }
-
-                if (chkBox_DCM_DOC.Checked)
-                {
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Deleting " + Common.TABLE.DCM_DOC));
-                    Common.DeleteTable(oracleConnection, toSchema, Common.TABLE.DCM_DOC);
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Finish Deleting " + Common.TABLE.DCM_DOC));
-                }
-
-                if (chkBox_DCM_DOC_RELATION.Checked)
-                {
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Deleting " + Common.TABLE.DCM_DOC_RELATION));
-                    Common.DeleteTable(oracleConnection, toSchema, Common.TABLE.DCM_DOC_RELATION);
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Finish Deleting " + Common.TABLE.DCM_DOC_RELATION));
-                }
-
-                if (chkbox_FEM_FILE.Checked)
-                {
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Deleting " + Common.TABLE.FEM_FILE));
-                    Common.DeleteTable(oracleConnection, toSchema, Common.TABLE.FEM_FILE);
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Finish Deleting " + Common.TABLE.FEM_FILE));
-                }
-
-                if (chkbox_DCM_ATTACH_FILE.Checked)
-                {
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Deleting " + Common.TABLE.DCM_ATTACH_FILE));
-                    Common.DeleteTable(oracleConnection, toSchema, Common.TABLE.DCM_ATTACH_FILE);
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Finish Deleting " + Common.TABLE.DCM_ATTACH_FILE));
-                }
-
-                if (chkbox_DCM_ACTIVITI_LOG.Checked)
-                {
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Deleting " + Common.TABLE.DCM_ACTIVITI_LOG));
-                    Common.DeleteTable(oracleConnection, toSchema, Common.TABLE.DCM_ACTIVITI_LOG);
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Finish Deleting " + Common.TABLE.DCM_ACTIVITI_LOG));
-                }
-
-                if (chkbox_DCM_ASSIGN.Checked)
-                {
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Deleting " + Common.TABLE.DCM_ASSIGN));
-                    Common.DeleteTable(oracleConnection, toSchema, Common.TABLE.DCM_ASSIGN);
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Finish Deleting " + Common.TABLE.DCM_ASSIGN));
-                }
-
-                if (chkBox_DCM_DONVI_NHAN.Checked)
-                {
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Deleting " + Common.TABLE.DCM_DONVI_NHAN));
-                    Common.DeleteTable(oracleConnection, toSchema, Common.TABLE.DCM_DONVI_NHAN);
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Finish Deleting " + Common.TABLE.DCM_DONVI_NHAN));
-                }
-
-                if (chkBox_DCM_LOG.Checked)
-                {
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Deleting " + Common.TABLE.DCM_LOG));
-                    Common.DeleteTable(oracleConnection, toSchema, Common.TABLE.DCM_LOG);
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Finish Deleting " + Common.TABLE.DCM_LOG));
-                }
-
-                if (chkBox_DCM_LOG_READ.Checked)
-                {
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Deleting " + Common.TABLE.DCM_LOG_READ));
-                    Common.DeleteTable(oracleConnection, toSchema, Common.TABLE.DCM_LOG_READ);
-                    txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Finish Deleting " + Common.TABLE.DCM_LOG_READ));
-                }
-
-                Console.WriteLine("====Finished Deleting Data====");
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Deleting " + Common.TABLE.DCM_TYPE));
+                Common.DeleteTable(oracleConnection, toSchema, Common.TABLE.DCM_TYPE);
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Finish Deleting " + Common.TABLE.DCM_TYPE));
             }
+
+            if (chkBox_Linhvuc.Checked)
+            {
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Deleting " + Common.TABLE.DCM_LINHVUC));
+                Common.DeleteTable(oracleConnection, toSchema, Common.TABLE.DCM_LINHVUC);
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Finish Deleting " + Common.TABLE.DCM_LINHVUC));
+            }
+
+            if (chkBox_Book.Checked)
+            {
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Deleting " + Common.TABLE.DCM_SOVANBAN));
+                Common.DeleteTable(oracleConnection, toSchema, Common.TABLE.DCM_SOVANBAN);
+                Common.DeleteTable(oracleConnection, toSchema, Common.TABLE.DCM_QUYTAC_NHAYSO);
+                Common.DeleteTable(oracleConnection, toSchema, Common.TABLE.DCM_SOVB_TEMPLATESINHSO);
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Finish Deleting " + Common.TABLE.DCM_SOVANBAN));
+            }
+
+            if (chkBox_Confidential.Checked)
+            {
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Deleting " + Common.TABLE.DCM_CONFIDENTIAL));
+                Common.DeleteTable(oracleConnection, toSchema, Common.TABLE.DCM_CONFIDENTIAL);
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Finish Deleting " + Common.TABLE.DCM_CONFIDENTIAL));
+            }
+
+            if (chkBox_Priority.Checked)
+            {
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Deleting " + Common.TABLE.DCM_PRIORITY));
+                Common.DeleteTable(oracleConnection, toSchema, Common.TABLE.DCM_PRIORITY);
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Finish Deleting " + Common.TABLE.DCM_PRIORITY));
+            }
+
+            if (chkBox_DCM_DOC.Checked)
+            {
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Deleting " + Common.TABLE.DCM_DOC));
+                Common.DeleteTable(oracleConnection, toSchema, Common.TABLE.DCM_DOC);
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Finish Deleting " + Common.TABLE.DCM_DOC));
+            }
+
+            if (chkBox_DCM_DOC_RELATION.Checked)
+            {
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Deleting " + Common.TABLE.DCM_DOC_RELATION));
+                Common.DeleteTable(oracleConnection, toSchema, Common.TABLE.DCM_DOC_RELATION);
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Finish Deleting " + Common.TABLE.DCM_DOC_RELATION));
+            }
+
+            if (chkbox_FEM_FILE.Checked)
+            {
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Deleting " + Common.TABLE.FEM_FILE));
+                Common.DeleteTable(oracleConnection, toSchema, Common.TABLE.FEM_FILE);
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Finish Deleting " + Common.TABLE.FEM_FILE));
+            }
+
+            if (chkbox_DCM_ATTACH_FILE.Checked)
+            {
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Deleting " + Common.TABLE.DCM_ATTACH_FILE));
+                Common.DeleteTable(oracleConnection, toSchema, Common.TABLE.DCM_ATTACH_FILE);
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Finish Deleting " + Common.TABLE.DCM_ATTACH_FILE));
+            }
+
+            if (chkbox_DCM_ACTIVITI_LOG.Checked)
+            {
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Deleting " + Common.TABLE.DCM_ACTIVITI_LOG));
+                Common.DeleteTable(oracleConnection, toSchema, Common.TABLE.DCM_ACTIVITI_LOG);
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Finish Deleting " + Common.TABLE.DCM_ACTIVITI_LOG));
+            }
+
+            if (chkbox_DCM_ASSIGN.Checked)
+            {
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Deleting " + Common.TABLE.DCM_ASSIGN));
+                Common.DeleteTable(oracleConnection, toSchema, Common.TABLE.DCM_ASSIGN);
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Finish Deleting " + Common.TABLE.DCM_ASSIGN));
+            }
+
+            if (chkBox_DCM_DONVI_NHAN.Checked)
+            {
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Deleting " + Common.TABLE.DCM_DONVI_NHAN));
+                Common.DeleteTable(oracleConnection, toSchema, Common.TABLE.DCM_DONVI_NHAN);
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Finish Deleting " + Common.TABLE.DCM_DONVI_NHAN));
+            }
+
+            if (chkBox_DCM_LOG.Checked)
+            {
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Deleting " + Common.TABLE.DCM_LOG));
+                Common.DeleteTable(oracleConnection, toSchema, Common.TABLE.DCM_LOG);
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Finish Deleting " + Common.TABLE.DCM_LOG));
+            }
+
+            if (chkBox_DCM_LOG_READ.Checked)
+            {
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Deleting " + Common.TABLE.DCM_LOG_READ));
+                Common.DeleteTable(oracleConnection, toSchema, Common.TABLE.DCM_LOG_READ);
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Finish Deleting " + Common.TABLE.DCM_LOG_READ));
+            }
+
+            Console.WriteLine("====Finished Deleting Data====");
         }
-        
+
         private void MovingData(OracleConnection oracleConnection, string fromSchema, string toSchema)
         {
             txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Moving Data"));

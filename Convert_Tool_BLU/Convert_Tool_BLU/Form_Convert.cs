@@ -231,6 +231,11 @@ namespace Convert_Data
                     timer.Stop();
                     Console.WriteLine("Total imported data to DCM_QUYTAC_NHAYSO: " + import_DCM_QUYTAC_NHAYSO.GetDCM_QUYTAC_NHAYSOs().Count);
                     Console.WriteLine("Consumption of imported data to DCM_QUYTAC_NHAYSO: " + timer.ElapsedMilliseconds / 1000 + "(s)");
+                    if (chkBox_AppendData.Checked)
+                    {
+                        // Update seq to db
+                        Common.UpdateSeqFromProcedure(oracleConnection, configs.Schema, list_seq);
+                    }
                 }
 
                 // Do mat

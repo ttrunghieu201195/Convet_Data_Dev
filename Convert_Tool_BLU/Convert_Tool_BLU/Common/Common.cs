@@ -206,9 +206,10 @@ namespace Convert_Data
                 cmd.Parameters.Add("json", OracleDbType.Varchar2).Value = seq_list;
                 cmd.ExecuteNonQuery();
                 cmd.Dispose();
+                Console.WriteLine("Updated seq of " + seq_list);
             } catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine("UpdateSeqFromProcedure: " + ex.Message);
             }
         }
 
