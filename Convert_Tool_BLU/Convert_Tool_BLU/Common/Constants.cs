@@ -1043,9 +1043,9 @@ namespace Convert_Data
         #region CHECKING_COVERTED_DATA
         public static string SQL_GET_CONVERTED_DATA_COUNT = "SELECT COUNT(1) FROM {0}{1}";
         public static string SQL_GET_CONVERTED_DATA = "SELECT ID FROM {0}{1}";
-        public static string SQL_INSERT_CONVERTED_DATA = "INSERT INTO CLOUD_ADMIN_DEV_BLU_4.{0}_TEST(ID) VALUES(:ID)";
+        public static string SQL_INSERT_CONVERTED_DATA = "INSERT INTO CLOUD_ADMIN_DEV_BLU_4.{0}(ID) VALUES(:ID)";
 
-        public static string SQL_INSERT_CONVERTED_DATA_DCM_ACTIVITI_LOG = "INSERT INTO CLOUD_ADMIN_DEV_BLU_4.DCM_ACTIVITI_LOG_TEST(ID) VALUES(:ID)";
+        public static string SQL_INSERT_CONVERTED_DATA_DCM_ACTIVITI_LOG = "INSERT INTO CLOUD_ADMIN_DEV_BLU_4.DCM_ACTIVITI_LOG(ID) VALUES(:ID)";
         #endregion
 
         #region MOVING DATA

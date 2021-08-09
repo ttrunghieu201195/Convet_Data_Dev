@@ -36,7 +36,13 @@ namespace Convert_Data.Controller.Verify
 
             foreach(DataRow row in dataTable.Rows)
             {
-                dataList.Add(long.Parse(row["ID"].ToString()));
+                if (query.IndexOf("DCM_ATTACH_FILE") > -1)
+                {
+                    dataList.Add(long.Parse(row["ATTACHMENT_ID"].ToString()));
+                } else
+                {
+                    dataList.Add(long.Parse(row["ID"].ToString()));
+                }                
             }
 
             return dataList;
@@ -46,18 +52,21 @@ namespace Convert_Data.Controller.Verify
         {
             try
             {
-                OracleCommand cmd = connection.CreateCommand();
-                cmd.CommandType = CommandType.Text;
+                if (data.Count > 0)
+                {
+                    OracleCommand cmd = connection.CreateCommand();
+                    cmd.CommandType = CommandType.Text;
 
-                cmd.ArrayBindCount = data.Count;
+                    cmd.ArrayBindCount = data.Count;
 
-                cmd.CommandText = string.Format(query);
+                    cmd.CommandText = string.Format(query);
 
-                cmd.Parameters.Add("ID", OracleDbType.Int64);
-                cmd.Parameters["ID"].Value = data.ToArray();
+                    cmd.Parameters.Add("ID", OracleDbType.Int64);
+                    cmd.Parameters["ID"].Value = data.ToArray();
 
-                cmd.ExecuteNonQuery();
-                cmd.Dispose();
+                    cmd.ExecuteNonQuery();
+                    cmd.Dispose();
+                }
                 return true;
             } catch (Exception ex)
             {

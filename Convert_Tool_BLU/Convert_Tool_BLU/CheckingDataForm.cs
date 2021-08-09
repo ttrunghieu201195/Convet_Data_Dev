@@ -20,16 +20,7 @@ namespace Convert_Data
 
         private void CheckingDataForm_Load(object sender, EventArgs e)
         {
-            /*            CheckingConvertedData checkingConvertedData = new CheckingConvertedData();
-                        if (checkingConvertedData.Prepare_Data())
-                        {
-                            Console.WriteLine("=====Done=====");
-                        } else
-                        {
-                            Console.WriteLine("=====Wtf====");
-                        }*/
 
-            
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -55,7 +46,7 @@ namespace Convert_Data
                 txtProgress_Checking.Invoke(new Action(() => txtProgress_Checking.Text = "Collecting Data..."));
 
                 // DCM_DOC
-                string query = string.Format(Constants.SQL_GET_CONVERTED_DATA_COUNT, configs.Old_schema, Common.TABLE.DCM_DOC);
+                string query = string.Format(Constants.SQL_GET_CONVERTED_DATA_COUNT + " WHERE ID < 3000000", configs.Old_schema, Common.TABLE.DCM_DOC);
                 countBlu = checkingConvertedData.GetDataCountFromTable(bluConnection, query);
                 txtBlu_Doc.Invoke(new Action(() => txtBlu_Doc.Text = countBlu.ToString()));
                 countDev = checkingConvertedData.GetDataCountFromTable(devConnection, query);
@@ -64,7 +55,7 @@ namespace Convert_Data
 
 
                 // DCM_DOC_RELATION
-                query = string.Format(Constants.SQL_GET_CONVERTED_DATA_COUNT, configs.Old_schema, Common.TABLE.DCM_DOC_RELATION);
+                query = string.Format(Constants.SQL_GET_CONVERTED_DATA_COUNT + " WHERE ID >= 20000000", configs.Old_schema, Common.TABLE.DCM_DOC_RELATION);
                 countBlu = checkingConvertedData.GetDataCountFromTable(bluConnection, query);
                 txtBlu_DocRelation.Invoke(new Action(() => txtBlu_DocRelation.Text = countBlu.ToString()));
                 countDev = checkingConvertedData.GetDataCountFromTable(devConnection, query);
@@ -72,7 +63,7 @@ namespace Convert_Data
                 txtMiss_DocRelation.Invoke(new Action(() => txtMiss_DocRelation.Text = (countDev - countBlu).ToString()));
 
                 // FEM_FILE
-                query = string.Format(Constants.SQL_GET_CONVERTED_DATA_COUNT, configs.Old_schema, Common.TABLE.FEM_FILE);
+                query = string.Format(Constants.SQL_GET_CONVERTED_DATA_COUNT + " WHERE ID >= 20000000", configs.Old_schema, Common.TABLE.FEM_FILE);
                 countBlu = checkingConvertedData.GetDataCountFromTable(bluConnection, query);
                 txtBlu_Femfile.Invoke(new Action(() => txtBlu_Femfile.Text = countBlu.ToString()));
                 countDev = checkingConvertedData.GetDataCountFromTable(devConnection, query);
@@ -80,7 +71,7 @@ namespace Convert_Data
                 txtMiss_Femfile.Invoke(new Action(() => txtMiss_Femfile.Text = (countDev - countBlu).ToString()));
 
                 // DCM_ATTACH_FILE
-                query = string.Format(Constants.SQL_GET_CONVERTED_DATA_COUNT, configs.Old_schema, Common.TABLE.DCM_ATTACH_FILE);
+                query = string.Format(Constants.SQL_GET_CONVERTED_DATA_COUNT + " WHERE ATTACHMENT_ID >= 20000000", configs.Old_schema, Common.TABLE.DCM_ATTACH_FILE);
                 countBlu = checkingConvertedData.GetDataCountFromTable(bluConnection, query);
                 txtBlu_Attachfile.Invoke(new Action(() => txtBlu_Attachfile.Text = countBlu.ToString()));
                 countDev = checkingConvertedData.GetDataCountFromTable(devConnection, query);
@@ -88,7 +79,7 @@ namespace Convert_Data
                 txtMiss_Attachfile.Invoke(new Action(() => txtMiss_Attachfile.Text = (countDev - countBlu).ToString()));
 
                 // DCM_ACTIVITI_LOG
-                query = string.Format(Constants.SQL_GET_CONVERTED_DATA_COUNT, configs.Old_schema, Common.TABLE.DCM_ACTIVITI_LOG);
+                query = string.Format(Constants.SQL_GET_CONVERTED_DATA_COUNT + " WHERE ID >= 20000000", configs.Old_schema, Common.TABLE.DCM_ACTIVITI_LOG);
                 countBlu = checkingConvertedData.GetDataCountFromTable(bluConnection, query);
                 txtBlu_ActivitiLog.Invoke(new Action(() => txtBlu_ActivitiLog.Text = countBlu.ToString()));
                 countDev = checkingConvertedData.GetDataCountFromTable(devConnection, query);
@@ -96,7 +87,7 @@ namespace Convert_Data
                 txtMiss_ActivitiLog.Invoke(new Action(() => txtMiss_ActivitiLog.Text = (countDev - countBlu).ToString()));
 
                 // DCM_ASSIGN
-                query = string.Format(Constants.SQL_GET_CONVERTED_DATA_COUNT, configs.Old_schema, Common.TABLE.DCM_ASSIGN);
+                query = string.Format(Constants.SQL_GET_CONVERTED_DATA_COUNT + " WHERE ID >= 20000000", configs.Old_schema, Common.TABLE.DCM_ASSIGN);
                 countBlu = checkingConvertedData.GetDataCountFromTable(bluConnection, query);
                 txtBlu_Assign.Invoke(new Action(() => txtBlu_Assign.Text = countBlu.ToString()));
                 countDev = checkingConvertedData.GetDataCountFromTable(devConnection, query);
@@ -104,7 +95,7 @@ namespace Convert_Data
                 txtMiss_Assign.Invoke(new Action(() => txtMiss_Assign.Text = (countDev - countBlu).ToString()));
 
                 // DCM_DONVI_NHAN
-                query = string.Format(Constants.SQL_GET_CONVERTED_DATA_COUNT, configs.Old_schema, Common.TABLE.DCM_DONVI_NHAN);
+                query = string.Format(Constants.SQL_GET_CONVERTED_DATA_COUNT + " WHERE ID >= 20000000", configs.Old_schema, Common.TABLE.DCM_DONVI_NHAN);
                 countBlu = checkingConvertedData.GetDataCountFromTable(bluConnection, query);
                 txtBlu_DonviNhan.Invoke(new Action(() => txtBlu_DonviNhan.Text = countBlu.ToString()));
                 countDev = checkingConvertedData.GetDataCountFromTable(devConnection, query);
@@ -112,7 +103,7 @@ namespace Convert_Data
                 txtMiss_DonviNhan.Invoke(new Action(() => txtMiss_DonviNhan.Text = (countDev - countBlu).ToString()));
 
                 // DCM_LOG
-                query = string.Format(Constants.SQL_GET_CONVERTED_DATA_COUNT, configs.Old_schema, Common.TABLE.DCM_LOG);
+                query = string.Format(Constants.SQL_GET_CONVERTED_DATA_COUNT + " WHERE ID >= 20000000", configs.Old_schema, Common.TABLE.DCM_LOG);
                 countBlu = checkingConvertedData.GetDataCountFromTable(bluConnection, query);
                 txtBlu_Log.Invoke(new Action(() => txtBlu_Log.Text = countBlu.ToString()));
                 countDev = checkingConvertedData.GetDataCountFromTable(devConnection, query);
@@ -120,7 +111,7 @@ namespace Convert_Data
                 txtMiss_Log.Invoke(new Action(() => txtMiss_Log.Text = (countDev - countBlu).ToString()));
 
                 // DCM_LOG_READ
-                query = string.Format(Constants.SQL_GET_CONVERTED_DATA_COUNT, configs.Old_schema, Common.TABLE.DCM_LOG_READ);
+                query = string.Format(Constants.SQL_GET_CONVERTED_DATA_COUNT + " WHERE ID >= 20000000", configs.Old_schema, Common.TABLE.DCM_LOG_READ);
                 countBlu = checkingConvertedData.GetDataCountFromTable(bluConnection, query);
                 txtBlu_LogRead.Invoke(new Action(() => txtBlu_LogRead.Text = countBlu.ToString()));
                 countDev = checkingConvertedData.GetDataCountFromTable(devConnection, query);
@@ -153,10 +144,40 @@ namespace Convert_Data
             {
                 foreach(string table in Common.table_arr)
                 {
-                    string query = string.Format(Constants.SQL_GET_CONVERTED_DATA, configs.Old_schema, table);
+                    txtProgress_Checking.Invoke(new Action(() => txtProgress_Checking.Text = "Copying data from " + table));
+                    string query = "";
+                    if (table == Common.TABLE.DCM_ATTACH_FILE.ToString())
+                    {
+                        query = string.Format("SELECT ATTACHMENT_ID FROM {0}{1}", configs.Old_schema, table);
+                    }
+                    else if (table == Common.TABLE.DCM_TRACK.ToString())
+                    {
+                        query = string.Format("SELECT ID FROM CLOUD_ADMIN.DCM_TRACK ");// WHERE SCHEMA_ID = {0}", configs.Old_schema);
+                    }
+                    else
+                    {
+                        if (table == Common.TABLE.DCM_DOC.ToString())
+                        {
+                            query = string.Format(Constants.SQL_GET_CONVERTED_DATA + " WHERE ID < 3000000", configs.Old_schema, table);
+                        }
+                        else
+                        {
+                            query = string.Format(Constants.SQL_GET_CONVERTED_DATA, configs.Old_schema, table);
+                        }
+                    }
                     List<long> data = checkingConvertedData.GetDataFromTable(Connection.getInstance().GetBLUConnection(), query);
-                    query = string.Format(Constants.SQL_INSERT_CONVERTED_DATA, table);
+
+                    if (table == Common.TABLE.DCM_TRACK.ToString())
+                    {
+                        query = string.Format(Constants.SQL_INSERT_CONVERTED_DATA, "DCM_TRACK_");
+                    }
+                    else
+                    {
+                        query = string.Format(Constants.SQL_INSERT_CONVERTED_DATA, table);
+                    }
+                    
                     bool result = checkingConvertedData.ImportDataToTable(Connection.getInstance().GetOracleConnection(), query, data);
+                    txtProgress_Checking.Invoke(new Action(() => txtProgress_Checking.Text = "Copied data from " + table + ":" + result));
                     Console.WriteLine("Copied data from " + table + ":" + result);
                 }
             }

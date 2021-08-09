@@ -40,6 +40,8 @@ namespace Convert_Data
 
         public static string[] table_arr = {"DCM_DOC", "DCM_DOC_RELATION", "FEM_FILE", "DCM_ATTACH_FILE", "DCM_ACTIVITI_LOG", "DCM_ASSIGN", "DCM_DONVI_NHAN", "DCM_LOG", "DCM_LOG_READ" };
 
+        //public static string[] table_arr = { "DCM_TRACK" };
+
         public static long GetCurrentSeq(OracleConnection connection, string schema, string seqName)
         {
             string sql = "select " + schema + seqName + ".NextVal from dual";
@@ -53,7 +55,14 @@ namespace Convert_Data
             decimal result = 0;
             try
             {
-                string sql = "SELECT MAX(ID) FROM " + schema + table;
+                string sql = "";
+                if (table == Common.TABLE.DCM_ATTACH_FILE)
+                {
+                    sql = "SELECT MAX(ATTACHMENT_ID) FROM " + schema + table;
+                } else
+                {
+                    sql = "SELECT MAX(ID) FROM " + schema + table;
+                }
                 OracleCommand cmd = new OracleCommand(sql, connection);
                 if (!string.IsNullOrEmpty(cmd.ExecuteScalar().ToString()))
                 {
