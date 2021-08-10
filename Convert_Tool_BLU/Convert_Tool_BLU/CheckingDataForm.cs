@@ -18,6 +18,12 @@ namespace Convert_Data
             checkingConvertedData = new CheckingConvertedData();
         }
 
+        public CheckingDataForm()
+        {
+            InitializeComponent();
+            checkingConvertedData = new CheckingConvertedData();
+        }
+
         private void CheckingDataForm_Load(object sender, EventArgs e)
         {
 

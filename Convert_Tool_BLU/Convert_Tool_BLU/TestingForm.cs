@@ -23,7 +23,8 @@ namespace Convert_Data
             {
                 {0, "Convert Data" },
                 {1, "Move Data" },
-                {2, "Delete Data" }
+                {2, "Delete Data" },
+                {3, "Verify Converted Data" }
             };
             cb_Services.DataSource = new BindingSource(services, null);
             cb_Services.DisplayMember = "Value";
@@ -46,6 +47,10 @@ namespace Convert_Data
                     break;
                 case 2:
                     // Delete Data
+                    break;
+                case 3:
+                    CheckingDataForm checkingDataForm = new CheckingDataForm();
+                    checkingDataForm.Show();
                     break;
                 default:
                     // Do nothing
