@@ -38,27 +38,30 @@ namespace Convert_Data
             // 
             this.cb_Services.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cb_Services.FormattingEnabled = true;
-            this.cb_Services.Location = new System.Drawing.Point(213, 124);
+            this.cb_Services.Location = new System.Drawing.Point(160, 101);
+            this.cb_Services.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.cb_Services.Name = "cb_Services";
-            this.cb_Services.Size = new System.Drawing.Size(229, 33);
+            this.cb_Services.Size = new System.Drawing.Size(216, 28);
             this.cb_Services.TabIndex = 0;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(91, 127);
+            this.label1.Location = new System.Drawing.Point(68, 103);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(84, 25);
+            this.label1.Size = new System.Drawing.Size(65, 20);
             this.label1.TabIndex = 1;
             this.label1.Text = "Service:";
             // 
             // btn_StartService
             // 
             this.btn_StartService.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_StartService.Location = new System.Drawing.Point(256, 216);
+            this.btn_StartService.Location = new System.Drawing.Point(192, 176);
+            this.btn_StartService.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btn_StartService.Name = "btn_StartService";
-            this.btn_StartService.Size = new System.Drawing.Size(134, 53);
+            this.btn_StartService.Size = new System.Drawing.Size(100, 43);
             this.btn_StartService.TabIndex = 2;
             this.btn_StartService.Text = "Start";
             this.btn_StartService.UseVisualStyleBackColor = true;
@@ -66,12 +69,13 @@ namespace Convert_Data
             // 
             // TestingForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(682, 347);
+            this.ClientSize = new System.Drawing.Size(512, 282);
             this.Controls.Add(this.btn_StartService);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.cb_Services);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "TestingForm";
             this.Text = "TestingForm";
             this.Load += new System.EventHandler(this.TestingForm_Load);
