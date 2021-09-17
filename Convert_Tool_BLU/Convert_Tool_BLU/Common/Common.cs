@@ -38,7 +38,11 @@ namespace Convert_Data
             DCM_LOG_READ
         }
 
-        public static string[] table_arr = {"DCM_DOC", "DCM_DOC_RELATION", "FEM_FILE", "DCM_ATTACH_FILE", "DCM_ACTIVITI_LOG", "DCM_ASSIGN", "DCM_DONVI_NHAN", "DCM_LOG", "DCM_LOG_READ" };
+        public static string[] table_arr = {/*"DCM_PRIORITY", "DCM_CONFIDENTIAL", "DCM_TYPE", "DCM_LINHVUC"
+                , "DCM_SOVANBAN", "DCM_QUYTAC_NHAYSO", "DCM_SOVB_TEMPLATESINHSO"
+                ,*/ "DCM_DOC", "DCM_DOC_RELATION", "FEM_FILE", "DCM_ATTACH_FILE"
+                , "DCM_ACTIVITI_LOG", "DCM_ASSIGN", "DCM_DONVI_NHAN"
+                , "DCM_LOG", "DCM_LOG_READ" };
 
         //public static string[] table_arr = { "DCM_TRACK" };
 

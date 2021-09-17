@@ -2,6 +2,7 @@
 using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -18,13 +19,25 @@ namespace Convert_Data
             checkingConvertedData = new CheckingConvertedData();
         }
 
-        private void CheckingDataForm_Load(object sender, EventArgs e)
+        public CheckingDataForm()
         {
-
+            InitializeComponent();
+            this.configs = new Configs();
+            checkingConvertedData = new CheckingConvertedData();
         }
 
-        private void label1_Click(object sender, EventArgs e)
+        private void CheckingDataForm_Load(object sender, EventArgs e)
         {
+            Load_ComboBox_Schema();
+        }
+
+        private void Load_ComboBox_Schema()
+        {
+            OracleConnection bluConnection = Connection.getInstance().GetBLUConnection();
+            cbBox_SchemaChecking.DataSource = Common.GetSchemasFromBLU(bluConnection, Constants.SQL_SCHEMAS_BLU);
+            cbBox_SchemaChecking.DisplayMember = "schema";
+            cbBox_SchemaChecking.ValueMember = "schema";
+            cbBox_SchemaChecking.SelectedIndex = cbBox_SchemaChecking.FindString("QLVB_BLU_TINHBACLIEU.");
 
         }
 
@@ -181,6 +194,13 @@ namespace Convert_Data
                     Console.WriteLine("Copied data from " + table + ":" + result);
                 }
             }
+        }
+
+        private void cbBox_SchemaChecking_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DataRowView row = (DataRowView)cbBox_SchemaChecking.SelectedItem;
+            configs.Old_schema = row["schema"].ToString();
+            Console.WriteLine(configs.Old_schema);
         }
     }
 }
