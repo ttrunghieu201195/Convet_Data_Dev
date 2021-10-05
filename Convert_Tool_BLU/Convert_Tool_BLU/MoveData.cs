@@ -46,22 +46,27 @@ namespace Convert_Data
         private void button1_Click(object sender, EventArgs e)
         {
             int toServer = cb_To_Server.SelectedIndex;
-            OracleConnection oracleConnection = Connection.getInstance().GetOracleConnection();
-            
+            int fromServer = cb_From_Server.SelectedIndex;
+            /*OracleConnection devConnection = Connection.getInstance().GetOracleConnection();
+            OracleConnection bluConnection = Connection.getInstance().GetBLUConnection();*/
+
+            OracleConnection fromConnection = fromServer == 0 ? Connection.getInstance().GetOracleConnection() : Connection.getInstance().GetBLUConnection();
+            OracleConnection toConnection = toServer == 0 ? Connection.getInstance().GetOracleConnection() : Connection.getInstance().GetBLUConnection();
+
             string toSchema = txt_To_Schema.Text;
             string fromSchema = txt_From_Schema.Text;
             
-            Thread thread = new Thread(() => executeAction(oracleConnection, fromSchema, toSchema)) ;
+            Thread thread = new Thread(() => executeAction(fromConnection, toConnection, fromSchema, toSchema)) ;
             thread.Start();
         }
 
-        private void executeAction(OracleConnection oracleConnection, string fromSchema, string toSchema)
+        private void executeAction(OracleConnection fromConnection, OracleConnection toConnection, string fromSchema, string toSchema)
         {
             if (chkBox_Delete.Checked)
             {
-                DeleteData(oracleConnection, toSchema);
+                DeleteData(toConnection, toSchema);
             }
-            MovingData(oracleConnection, fromSchema, toSchema);
+            MovingData(fromConnection, toConnection, fromSchema, toSchema);
         }
 
         private void DeleteData(OracleConnection oracleConnection, string toSchema)
@@ -171,7 +176,7 @@ namespace Convert_Data
             Console.WriteLine("====Finished Deleting Data====");
         }
 
-        private void MovingData(OracleConnection oracleConnection, string fromSchema, string toSchema)
+        private void MovingData(OracleConnection fromConnection, OracleConnection toConnection, string fromSchema, string toSchema)
         {
             txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Moving Data"));
             string query = "";
@@ -179,7 +184,7 @@ namespace Convert_Data
             {
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Moving DCM_TYPE"));
                 Import_DCM_TYPE import_DCM_TYPE = new Import_DCM_TYPE();
-                import_DCM_TYPE.MoveData(oracleConnection, fromSchema, toSchema);
+                import_DCM_TYPE.MoveData(fromConnection, toConnection, fromSchema, toSchema);
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Moved DCM_TYPE"));
             }
 
@@ -187,7 +192,7 @@ namespace Convert_Data
             {
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Moving DCM_LINHVUC"));
                 Import_LinhVuc import_LinhVuc = new Import_LinhVuc();
-                import_LinhVuc.MoveData(oracleConnection, fromSchema, toSchema);
+                import_LinhVuc.MoveData(fromConnection, toConnection, fromSchema, toSchema);
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Moved DCM_LINHVUC"));
             }
 
@@ -196,17 +201,17 @@ namespace Convert_Data
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Moving DCM_SOVANBAN"));
                 Import_SoVanBan import_SoVanBan = new Import_SoVanBan();
                 //import_SoVanBan.
-                import_SoVanBan.MoveData(oracleConnection, fromSchema, toSchema);
+                import_SoVanBan.MoveData(fromConnection, toConnection, fromSchema, toSchema);
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Moved DCM_SOVANBAN"));
 
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Moving DCM_QUYTAC_NHAYSO"));
                 Import_DCM_QUYTAC_NHAYSO import_DCM_QUYTAC_NHAYSO = new Import_DCM_QUYTAC_NHAYSO();
-                import_DCM_QUYTAC_NHAYSO.MoveData(oracleConnection, fromSchema, toSchema);
+                import_DCM_QUYTAC_NHAYSO.MoveData(fromConnection, toConnection, fromSchema, toSchema);
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Moved DCM_QUYTAC_NHAYSO"));
 
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Moving DCM_SOVB_TEMPLATESINHSO"));
                 Import_DCM_SOVB_TEMPLATESINHSO import_DCM_SOVB_TEMPLATESINHSO = new Import_DCM_SOVB_TEMPLATESINHSO();
-                import_DCM_SOVB_TEMPLATESINHSO.MoveData(oracleConnection, fromSchema, toSchema);
+                import_DCM_SOVB_TEMPLATESINHSO.MoveData(fromConnection, toConnection, fromSchema, toSchema);
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Moved DCM_SOVB_TEMPLATESINHSO"));
             }
 
@@ -229,10 +234,10 @@ namespace Convert_Data
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Moving DCM_DOC"));
                 Import_VanBan import_VanBan = new Import_VanBan();
                 query = string.Format(Constants.SQL_SELECT_DCM_DOC, fromSchema);
-                import_VanBan.ExportData(oracleConnection, query);
+                import_VanBan.ExportData(fromConnection, query);
 
                 query = string.Format(Constants.sql_insert_dcm_doc, toSchema);
-                import_VanBan.insert_Dcm_Doc(oracleConnection, query, import_VanBan.GetDcm_Docs());
+                import_VanBan.insert_Dcm_Doc(toConnection, query, import_VanBan.GetDcm_Docs());
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Moved DCM_DOC"));
             }
 
@@ -240,7 +245,7 @@ namespace Convert_Data
             {
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Moving DCM_DOC_RELATION"));
                 Import_DCM_DOC_RELATION import_DCM_DOC_RELATION = new Import_DCM_DOC_RELATION();
-                import_DCM_DOC_RELATION.MoveData(oracleConnection, fromSchema, toSchema);
+                import_DCM_DOC_RELATION.MoveData(fromConnection, toConnection, fromSchema, toSchema);
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Moved DCM_DOC_RELATION"));
             }
 
@@ -248,7 +253,7 @@ namespace Convert_Data
             {
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Moving FEM_FILE"));
                 Import_FEM_FILE import_FEM_FILE = new Import_FEM_FILE();
-                import_FEM_FILE.MoveData(oracleConnection, fromSchema, toSchema);
+                import_FEM_FILE.MoveData(fromConnection, toConnection, fromSchema, toSchema);
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Moved FEM_FILE"));
             }
 
@@ -256,7 +261,7 @@ namespace Convert_Data
             {
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Moving DCM_ATTACH_FILE"));
                 Import_DCM_ATTACH_FILE import_DCM_ATTACH_FILE = new Import_DCM_ATTACH_FILE();
-                import_DCM_ATTACH_FILE.MoveData(oracleConnection, fromSchema, toSchema);
+                import_DCM_ATTACH_FILE.MoveData(fromConnection, toConnection, fromSchema, toSchema);
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Moved DCM_ATTACH_FILE"));
             }
 
@@ -264,7 +269,7 @@ namespace Convert_Data
             {
                 Import_VanBan_Flow import_VanBan_Flow = new Import_VanBan_Flow();
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Moving DCM_ACTIVITI_LOG"));
-                import_VanBan_Flow.MoveData(oracleConnection, fromSchema, toSchema);
+                import_VanBan_Flow.MoveData(fromConnection, toConnection, fromSchema, toSchema);
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Moved DCM_ACTIVITI_LOG"));
             }
 
@@ -272,7 +277,7 @@ namespace Convert_Data
             {
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Moving DCM_ASSIGN"));
                 Import_DCM_ASSIGN import_DCM_ASSIGN = new Import_DCM_ASSIGN();
-                import_DCM_ASSIGN.MoveData(oracleConnection, fromSchema, toSchema);
+                import_DCM_ASSIGN.MoveData(fromConnection, toConnection, fromSchema, toSchema);
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Moved DCM_ASSIGN"));
             }
 
@@ -280,7 +285,7 @@ namespace Convert_Data
             {
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Moving DCM_DONVI_NHAN"));
                 Import_DCM_DONVI_NHAN import_DCM_DONVI_NHAN = new Import_DCM_DONVI_NHAN();
-                import_DCM_DONVI_NHAN.MoveData(oracleConnection, fromSchema, toSchema);
+                import_DCM_DONVI_NHAN.MoveData(fromConnection, toConnection, fromSchema, toSchema);
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Moved DCM_DONVI_NHAN"));
             }
 
@@ -288,7 +293,7 @@ namespace Convert_Data
             {
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Moving DCM_LOG"));
                 Import_VanBan_Log import_VanBan_Log = new Import_VanBan_Log();
-                import_VanBan_Log.MoveData(oracleConnection, fromSchema, toSchema);
+                import_VanBan_Log.MoveData(fromConnection, toConnection, fromSchema, toSchema);
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Moved DCM_LOG"));
             }
 
@@ -296,7 +301,7 @@ namespace Convert_Data
             {
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Moving DCM_LOG_READ"));
                 Import_DCM_LOG_READ import_DCM_LOG_READ = new Import_DCM_LOG_READ();
-                import_DCM_LOG_READ.MoveData(oracleConnection, fromSchema, toSchema);
+                import_DCM_LOG_READ.MoveData(fromConnection, toConnection, fromSchema, toSchema);
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Moved DCM_LOG_READ"));
             }
         }

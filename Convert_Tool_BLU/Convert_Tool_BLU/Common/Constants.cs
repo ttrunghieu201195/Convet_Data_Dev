@@ -9,7 +9,7 @@ namespace Convert_Data
     class Constants
     {
         #region postgres conntion
-        private static string postgres_host = "10.82.24.106";
+        private static string postgres_host = "TRANTRUNGHIEU"/*"10.82.24.106"*/;
         private static string postgres_port = "5432";
         private static string postgres_db = "dms_ubnd_baclieu_release";
         private static string postgres_user = "postgres";

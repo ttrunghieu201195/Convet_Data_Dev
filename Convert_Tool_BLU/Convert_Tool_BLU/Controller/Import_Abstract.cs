@@ -146,10 +146,10 @@ namespace Convert_Data
         }
 
         protected abstract void Insert(OracleConnection oracleConnection, string toSchema);
-        public void MoveData(OracleConnection oracleConnection, string fromSchema, string toSchema)
+        public void MoveData(OracleConnection fromConnection, OracleConnection toConnection, string fromSchema, string toSchema)
         {
-            ExportData(oracleConnection, fromSchema);
-            Insert(oracleConnection, toSchema);
+            ExportData(fromConnection, fromSchema);
+            Insert(toConnection, toSchema);
         }
         protected abstract string getDataQuery(string fromSchema);
     }
