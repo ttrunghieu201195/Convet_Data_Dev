@@ -24,30 +24,6 @@ namespace Convert_Data.Controller.Verify
             return long.Parse(result.ToString());
         }
 
-        public List<long> GetDataFromTable(OracleConnection connection, string query)
-        {
-            List<long> dataList = new List<long>();
-            OracleCommand cmd = new OracleCommand(query, connection);
-            OracleDataAdapter dataAdapter = new OracleDataAdapter(cmd);
-            DataSet dataSet = new DataSet();
-            DataTable dataTable = new DataTable();
-            dataAdapter.Fill(dataSet);
-            dataTable = dataSet.Tables[0];
-
-            foreach(DataRow row in dataTable.Rows)
-            {
-                if (query.IndexOf("DCM_ATTACH_FILE") > -1)
-                {
-                    dataList.Add(long.Parse(row["ATTACHMENT_ID"].ToString()));
-                } else
-                {
-                    dataList.Add(long.Parse(row["ID"].ToString()));
-                }                
-            }
-
-            return dataList;
-        }
-
         public bool ImportDataToTable(OracleConnection connection, string query, List<long> data)
         {
             try

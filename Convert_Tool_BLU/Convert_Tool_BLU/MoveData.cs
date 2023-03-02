@@ -138,6 +138,13 @@ namespace Convert_Data
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Finish Deleting " + Common.TABLE.DCM_ATTACH_FILE));
             }
 
+            if (chkbox_DCM_TRACK.Checked)
+            {
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Deleting " + Common.TABLE.DCM_TRACK));
+                Common.DeleteTable(oracleConnection, toSchema, Common.TABLE.DCM_TRACK);
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Finish Deleting " + Common.TABLE.DCM_TRACK));
+            }
+
             if (chkbox_DCM_ACTIVITI_LOG.Checked)
             {
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Start Deleting " + Common.TABLE.DCM_ACTIVITI_LOG));
@@ -263,6 +270,31 @@ namespace Convert_Data
                 Import_DCM_ATTACH_FILE import_DCM_ATTACH_FILE = new Import_DCM_ATTACH_FILE();
                 import_DCM_ATTACH_FILE.MoveData(fromConnection, toConnection, fromSchema, toSchema);
                 txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Moved DCM_ATTACH_FILE"));
+            }
+
+            if (chkbox_DCM_TRACK.Checked)
+            {
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Moving DCM_TRACK"));
+                Import_DCM_TRACK import_DCM_TRACK = new Import_DCM_TRACK();
+                string fromSchema_ = "";
+                string toSchema_ = "";
+                if (fromConnection.ConnectionString.IndexOf("HOST = 10.163.8.36") > 0)
+                {
+                    fromSchema_ = Common.SCHEMA.CLOUD_ADMIN.ToString() + ".";
+                } else if (fromConnection.ConnectionString.IndexOf("HOST = 123.31.40.153") > 0)
+                {
+                    fromSchema_ = Common.SCHEMA.CLOUD_ADMIN_DEV_BLU_2.ToString() + ".";
+                }
+
+                if (toConnection.ConnectionString.IndexOf("HOST = 123.31.40.153") > 0)
+                {
+                    toSchema_ = Common.SCHEMA.CLOUD_ADMIN_DEV_BLU_2.ToString() + ".";
+                } else if (fromConnection.ConnectionString.IndexOf("HOST = 10.163.8.36") > 0)
+                {
+                    toSchema_ = Common.SCHEMA.CLOUD_ADMIN.ToString() + ".";
+                }
+                import_DCM_TRACK.MoveData(fromConnection, toConnection, fromSchema, toSchema);
+                txt_Progress.Invoke(new Action(() => txt_Progress.Text = "Moved DCM_TRACK"));
             }
 
             if (chkbox_DCM_ACTIVITI_LOG.Checked)

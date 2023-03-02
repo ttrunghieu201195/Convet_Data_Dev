@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="IronXL, Version=2021.12.0.0, Culture=neutral, PublicKeyToken=0f5804b6690bad1e, processorArchitecture=MSIL">
+      <HintPath>..\packages\IronXL.Excel.2021.12.0\lib\net45\IronXL.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
@@ -46,6 +49,7 @@
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
     </Reference>
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.3\lib\netstandard2.0\System.Memory.dll</HintPath>
@@ -112,6 +116,7 @@
     <Compile Include="Controller\Import_DCM_LOG_READ.cs" />
     <Compile Include="Controller\Import_DCM_QUYTAC_NHAYSO.cs" />
     <Compile Include="Controller\Import_DCM_SOVB_TEMPLATESINHSO.cs" />
+    <Compile Include="Controller\Import_DCM_TRACK.cs" />
     <Compile Include="Controller\Import_DCM_TYPE.cs" />
     <Compile Include="Controller\Import_FEM_FILE.cs" />
     <Compile Include="Controller\Import_LinhVuc.cs" />
@@ -120,6 +125,12 @@
     <Compile Include="Controller\Import_VanBan_Flow.cs" />
     <Compile Include="Controller\Import_VanBan_Log.cs" />
     <Compile Include="Controller\Verify\CheckingConvertedData.cs" />
+    <Compile Include="ImportData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ImportData.Designer.cs">
+      <DependentUpon>ImportData.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Dcm_Activiti_Log.cs" />
     <Compile Include="Models\Dcm_Assign.cs" />
     <Compile Include="Models\Dcm_Attach_File.cs" />
@@ -141,6 +152,7 @@
     <Compile Include="Models\DCM_SOVB_TEMPLATESINHSO.cs" />
     <Compile Include="Models\Dcm_Track.cs" />
     <Compile Include="Models\DCM_TYPE.cs" />
+    <Compile Include="Models\DOC_FILE_PATH.cs" />
     <Compile Include="Models\Fem_File.cs" />
     <Compile Include="Models\IDCM_.cs" />
     <Compile Include="MoveData.cs">
@@ -169,6 +181,9 @@
     <EmbeddedResource Include="Form_Convert.resx">
       <DependentUpon>Form_Convert.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ImportData.resx">
+      <DependentUpon>ImportData.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MoveData.resx">
       <DependentUpon>MoveData.cs</DependentUpon>

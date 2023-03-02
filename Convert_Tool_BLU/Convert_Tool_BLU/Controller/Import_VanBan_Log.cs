@@ -17,6 +17,8 @@ namespace Convert_Data
 
 		public static long SEQ_DCM_LOG;
 
+		List<long> currRecords = new List<long>();
+
 		public List<Dcm_Log> getDcm_Logs()
 		{
 			return dcm_Logs;
@@ -41,6 +43,11 @@ namespace Convert_Data
 				{
 					dcm_Log.dcm_id = vb_type == Common.VB_TYPE.VB_DI ? long.Parse(cell_value) + Constants.INCREASEID_VBDI : long.Parse(cell_value);
 				}
+				
+				if (currRecords.IndexOf(dcm_Log.dcm_id) >= 0)
+                {
+					return;
+                }
 
 				cell_value = row["nguoi_xu_ly"].ToString();
 				if (cell_value != null && cell_value != string.Empty)
@@ -211,5 +218,10 @@ namespace Convert_Data
         {
 			return string.Format(Constants.SQL_SELECT_ALL_DATA, fromSchema, Common.TABLE.DCM_LOG);
 		}
-    }
+
+		public void StandardizedData(OracleConnection oracleConnection, string schema, string table)
+		{
+			currRecords = Common.GetDataIDFromTable(oracleConnection, string.Format("SELECT DISTINCT DCM_ID ID FROM {0}{1} where dcm_id < 3000000", schema, Common.TABLE.DCM_LOG.ToString()));
+		}
+	}
 }

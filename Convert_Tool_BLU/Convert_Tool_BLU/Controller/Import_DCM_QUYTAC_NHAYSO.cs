@@ -38,6 +38,7 @@ namespace Convert_Data.Controller
         {
             try
             {
+
                 if (data_list.Count > 0)
                 {
                     Stopwatch timer = new Stopwatch();
@@ -54,17 +55,17 @@ namespace Convert_Data.Controller
 
                         cmd.ArrayBindCount = data.Count;
 
-                        cmd.CommandText = query;
+                        cmd.CommandText = "INSERT INTO QLVB_BLU_SKHDT.DCM_QUYTAC_NHAYSO(ID,MA_QUYTAC,SOVANBAN_CODE,TYPE_CODE)  VALUES(:ID,:MA_QUYTAC,:SOVANBAN_CODE,:TYPE_CODE)";
 
                         cmd.Parameters.Add("ID", OracleDbType.Int64);
-                        cmd.Parameters.Add("MA_QUYTAC", OracleDbType.Varchar2);
-                        cmd.Parameters.Add("TYPE_CODE", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("MA_QUYTAC", OracleDbType.Varchar2);                        
                         cmd.Parameters.Add("SOVANBAN_CODE", OracleDbType.Varchar2);
+                        cmd.Parameters.Add("TYPE_CODE", OracleDbType.Varchar2);
 
                         cmd.Parameters["ID"].Value = data.Select(dcm_template_sinhso => dcm_template_sinhso.ID).ToArray();
                         cmd.Parameters["MA_QUYTAC"].Value = data.Select(dcm_template_sinhso => dcm_template_sinhso.MA_QUYTAC).ToArray();
-                        cmd.Parameters["TYPE_CODE"].Value = data.Select(dcm_template_sinhso => dcm_template_sinhso.TYPE_CODE).ToArray();
                         cmd.Parameters["SOVANBAN_CODE"].Value = data.Select(dcm_template_sinhso => dcm_template_sinhso.SOVANBAN_CODE).ToArray();
+                        cmd.Parameters["TYPE_CODE"].Value = data.Select(dcm_template_sinhso => dcm_template_sinhso.TYPE_CODE).ToArray();
 
                         int affectedRows = cmd.ExecuteNonQuery();
                         cmd.Dispose();

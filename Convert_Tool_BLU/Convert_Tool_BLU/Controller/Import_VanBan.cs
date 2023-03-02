@@ -27,6 +27,8 @@ namespace Convert_Data
         // list dcm_track
         private List<Dcm_Track> dcm_Tracks = new List<Dcm_Track>();
 
+        private List<long> currRecords = new List<long>();
+
         // SEQ
         public static long SEQ_DCM_DOC_RELATION;
         public static long SEQ_FEM_FILE;
@@ -99,7 +101,8 @@ namespace Convert_Data
 
                 dataTable = dataSet.Tables[0];
                 resetListData();
-                foreach (DataRow row in dataTable.Rows)
+                DataRow[] dataRows = dataTable.Select("id=1598403");
+                foreach (DataRow row in dataRows)
                 {
                     if (type_vb == Common.VB_TYPE.VB_DI)
                     {
@@ -233,7 +236,10 @@ namespace Convert_Data
                 Dcm_Doc dcm_Doc = new Dcm_Doc();
                 // 1 - id van ban
                 dcm_Doc.id_VanBan = int.Parse(row["id"].ToString()) + Constants.INCREASEID_VBDI;
-
+                if (currRecords.IndexOf(dcm_Doc.id_VanBan) >= 0)
+                {
+                    return;
+                }
                 // 2 - thoi gian tao
                 string ngay_tao = row["thoigian_tao"].ToString();
                 if (ngay_tao != null && ngay_tao != String.Empty)
@@ -546,6 +552,11 @@ namespace Convert_Data
                 // 1 - id van ban
                 dcm_Doc.id_VanBan = int.Parse(row["id"].ToString());
 
+                if (currRecords.IndexOf(dcm_Doc.id_VanBan) >= 0)
+                {
+                    return;
+                }
+
                 // 2 - thoi gian tao
                 string ngay_tao = row["thoigian_tao"].ToString();
                 if (ngay_tao != null && ngay_tao != String.Empty)
@@ -734,7 +745,7 @@ namespace Convert_Data
                         string schema = row["schema"].ToString();
                         if (schema != null && schema != String.Empty)
                         {
-                            appendToListDcmTrack(dcm_Doc.id_VanBan, configs.Old_schema, vb_banhanh_den_donvi + Constants.INCREASEID_VBDI, schema, dcm_Doc.ngay_van_ban);
+                            appendToListDcmTrack(dcm_Doc.id_VanBan, configs.Old_schema.Equals("QLVB_BLU_TINHBACLIEU.") ? "QLVB_BLU_TINHBACLIEU_1." : configs.Old_schema, vb_banhanh_den_donvi + Constants.INCREASEID_VBDI, schema, dcm_Doc.ngay_van_ban);
                         }
                     }
                 }
@@ -1134,6 +1145,11 @@ namespace Convert_Data
             dcm_Doc_Relations.Clear();
             fem_Files.Clear();
             dcm_Attach_Files.Clear();
+        }
+
+        public void StandardizedData(OracleConnection oracleConnection, string schema, string table)
+        {
+            currRecords = Common.GetDataIDFromTable(oracleConnection, string.Format("SELECT {0} FROM {1}{2}", table.Equals(Common.TABLE.DCM_ATTACH_FILE) ? "ATTACHMENT_ID" : "ID", schema, table));
         }
     }
 }

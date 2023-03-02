@@ -292,5 +292,12 @@ namespace Convert_Data.Controller
         {
             return string.Format(Constants.SQL_SELECT_DCM_SOVANBAN, fromSchema);
         }
+
+        public void StandardizedData(OracleConnection oracleConnection, string schema, string table)
+        {
+            // Get current records
+            List<long> data = Common.GetDataIDFromTable(oracleConnection, string.Format("SELECT {0} FROM {1}{2}", table.Equals(Common.TABLE.DCM_ATTACH_FILE) ? "ATTACHMENT_ID" : "ID", schema, table));
+            dcm_SoVanBans.RemoveAll(r => data.Any(a => a == r.id));
+        }
     }
 }

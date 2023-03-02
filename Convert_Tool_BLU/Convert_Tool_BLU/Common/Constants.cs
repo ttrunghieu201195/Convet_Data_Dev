@@ -36,6 +36,11 @@ namespace Convert_Data
             "( ADDRESS_LIST = ( ADDRESS = ( PROTOCOL = TCP )( HOST = {0} )(PORT = {1} ) ) )" +
             "(CONNECT_DATA = (SERVER = DEDICATED )(SERVICE_NAME = {2}) ) ); " +
             "User Id = {3}; Password = {4};";*/
+
+        public static string DEV_BLU_2_CONNSTR = string.Format("Data Source=( DESCRIPTION = " +
+            "( ADDRESS_LIST = ( ADDRESS = ( PROTOCOL = TCP )( HOST = {0} )(PORT = {1} ) ) )" +
+            "(CONNECT_DATA = (SERVER = DEDICATED )(SERVICE_NAME = {2}) ) ); " +
+            "User Id = {3}; Password = {4};", oracle_host, oracle_port, oracle_service_name, "CLOUD_ADMIN_DEV_BLU_2", oracle_pass);
         #endregion oracle connection
 
         #region BLU_CONNECTION
@@ -889,7 +894,8 @@ namespace Convert_Data
             ", so_vanban_phong_id, so_kyhieu_phong,loai_coquan_banhanh_id, log_update, vb_ky_so, vb_giay,vanban_chidao, noidung_chidao, vbcd_hoanthanh,bussiness_doc_type" +
             ", ds_user_taoviec,nguoi_xulychinh_cuoi, has_file_attach,xulychinh_cuoi_ketthuc, ma_dinh_danh, doc_type, mahoso,ma_duthao, nguoi_soanthao, ioffice_number" +
             ",ds_display_cogiaoviec, info_search, language_code,chucvu_nguoiky, doc_note, xulychinh_cuoi_all,publish_ttdt, bnv_announcement, bnv_processtype,ngay_trinh_ky" +
-            ", ngay_ky, vb_trinh_ky, so_trinh_ky,check_phuc_dap, vb_kyuyquyen,dong_bang, vanban_bancansu FROM {0}DCM_DOC";
+            ", ngay_ky, vb_trinh_ky, so_trinh_ky,check_phuc_dap, vb_kyuyquyen,dong_bang, vanban_bancansu FROM {0}DCM_DOC" +
+            " WHERE ID < 3000000";
         public static string sql_insert_dcm_doc = @"INSERT INTO {0}DCM_DOC(ID,DCMTYPE_CODE,TRICH_YEU,SO_KYHIEU,SO_DEN_DI"
             + ",NGUOI_KY_CHINH,NGUOI_SOAN,SO_VANBAN_CODE,NGAY_TAO,NGAY_VAN_BAN,NGAY_DEN_DI,SO_BAN,SO_TRANG,PRIORITY_CODE,CONFIDENTIAL_CODE"
             + ",LINHVUC_CODE, HINHTHUC_GUI_CODE,HAN_GIAIQUYET,CONGVAN_DENDI,TRANG_THAI,ngay_ban_hanh,donvi_soanthao,DONVI_BANHANH, unit_id"
@@ -919,6 +925,10 @@ namespace Convert_Data
         public static string sql_insert_dcm_track = @"INSERT INTO CLOUD_ADMIN_DEV_BLU_2.DCM_TRACK (ID,DOC_ID,SCHEMA_ID, DOC_ID_SOURCE, SCHEMA_ID_SOURCE, DATE_INS, PARENT, CHILD) "
             + " VALUES (:ID,:DOC_ID,:SCHEMA_ID,:DOC_ID_SOURCE,:SCHEMA_ID_SOURCE,:DATE_INS,:PARENT,:CHILD)";
         #endregion sql_insert_dcm_track
+
+        #region
+        public static string SQL_SELECT_DCM_TRACK = @"SELECT ID, DOC_ID, SCHEMA_ID, DOC_ID_SOURCE, SCHEMA_ID_SOURCE, DATE_INS, PARENT, CHILD FROM {0}DCM_TRACK WHERE DOC_ID < 3000000";
+        #endregion
 
         #region sql_insert_dcm_activiti_log
         public static string SQL_SELECT_DCM_ACTIVITI_LOG = "SELECT ID,TASK_KEY,UPDATED_DATE,UPDATED_BY,ACTION"
@@ -999,8 +1009,8 @@ namespace Convert_Data
 
         #region DCM_QUYTAC_NHAYSO
         public static string SQL_SELECT_DCM_QUYTAC_NHAYSO = "SELECT ID,MA_QUYTAC,SOVANBAN_CODE,TYPE_CODE FROM {0}DCM_QUYTAC_NHAYSO";
-        public static string sql_insert_DCM_QUYTAC_NHAYSO = "INSERT INTO {0}DCM_QUYTAC_NHAYSO(ID,MA_QUYTAC,SOVANBAN_CODE,TYPE_CODE) "
-            +" VALUES(:ID,:MA_QUYTAC,:SOVANBAN_CODE,:TYPE_CODE)";
+        public static string sql_insert_DCM_QUYTAC_NHAYSO = "INSERT INTO {0}DCM_QUYTAC_NHAYSO(ID,MA_QUYTAC,TYPE_CODE,SOVANBAN_CODE) "
+            + " VALUES(:ID,:MA_QUYTAC,:TYPE_CODE,:SOVANBAN_CODE)";
         #endregion DCM_QUYTAC_NHAYSO
 
         #region DCM_PRIORITY

@@ -42,7 +42,8 @@ namespace Convert_Data
 
                 dataTable = dataSet.Tables[0];
                 resetListData();
-                foreach (DataRow row in dataTable.Rows)
+                DataRow[] dataRows = dataTable.Select("id_vanban=1598403");
+                foreach (DataRow row in dataRows)
                 {
                     ParseData(row, type_vb);
                 }

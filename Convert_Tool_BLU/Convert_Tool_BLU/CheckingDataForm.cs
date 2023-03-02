@@ -58,29 +58,53 @@ namespace Convert_Data
 
                 txtProgress_Checking.Invoke(new Action(() => txtProgress_Checking.Text = "Collecting Data..."));
 
-                // DCM_TYPE
-                string query = string.Format(Constants.SQL_GET_CONVERTED_DATA_COUNT + " WHERE ID < 3000000", configs.Old_schema, Common.TABLE.DCM_DOC);
+                // DCM_SOVANBAN
+                string query = string.Format(Constants.SQL_GET_CONVERTED_DATA_COUNT + " WHERE ID >= 20000000", configs.Old_schema, Common.TABLE.DCM_SOVANBAN);
                 countBlu = checkingConvertedData.GetDataCountFromTable(bluConnection, query);
-                txtBlu_Doc.Invoke(new Action(() => txtBlu_Doc.Text = countBlu.ToString()));
+                txtBlu_Doc.Invoke(new Action(() => txtBlu_sovb.Text = countBlu.ToString()));
                 countDev = checkingConvertedData.GetDataCountFromTable(devConnection, query);
-                txtDev_Doc.Invoke(new Action(() => txtDev_Doc.Text = countDev.ToString()));
-                txtMiss_Doc.Invoke(new Action(() => txtMiss_Doc.Text = (countDev - countBlu).ToString()));
+                txtDev_Doc.Invoke(new Action(() => txtDev_sovb.Text = countDev.ToString()));
+                txtMiss_Doc.Invoke(new Action(() => txtMiss_sovb.Text = (countDev - countBlu).ToString()));
 
-               /* // DCM_LINHVUC
-                string query = string.Format(Constants.SQL_GET_CONVERTED_DATA_COUNT + " WHERE ID < 3000000", configs.Old_schema, Common.TABLE.DCM_DOC);
+                // DCM_SOVB_TEMPLATESINHSO
+                query = string.Format(Constants.SQL_GET_CONVERTED_DATA_COUNT + " WHERE ID >= 20000000", configs.Old_schema, Common.TABLE.DCM_SOVB_TEMPLATESINHSO);
                 countBlu = checkingConvertedData.GetDataCountFromTable(bluConnection, query);
-                txtBlu_Doc.Invoke(new Action(() => txtBlu_Doc.Text = countBlu.ToString()));
+                txtBlu_Doc.Invoke(new Action(() => txtBlu_TempSinhso.Text = countBlu.ToString()));
                 countDev = checkingConvertedData.GetDataCountFromTable(devConnection, query);
-                txtDev_Doc.Invoke(new Action(() => txtDev_Doc.Text = countDev.ToString()));
-                txtMiss_Doc.Invoke(new Action(() => txtMiss_Doc.Text = (countDev - countBlu).ToString()));
+                txtDev_Doc.Invoke(new Action(() => txtDev_TempSinhso.Text = countDev.ToString()));
+                txtMiss_Doc.Invoke(new Action(() => txtMiss_TempSinhso.Text = (countDev - countBlu).ToString()));
+
+                // DCM_TYPE
+                query = string.Format(Constants.SQL_GET_CONVERTED_DATA_COUNT + " WHERE ID >= 20000000", configs.Old_schema, Common.TABLE.DCM_QUYTAC_NHAYSO);
+                countBlu = checkingConvertedData.GetDataCountFromTable(bluConnection, query);
+                txtBlu_Doc.Invoke(new Action(() => txtBlu_QuytacNhayso.Text = countBlu.ToString()));
+                countDev = checkingConvertedData.GetDataCountFromTable(devConnection, query);
+                txtDev_Doc.Invoke(new Action(() => txtDev_QuytacNhayso.Text = countDev.ToString()));
+                txtMiss_Doc.Invoke(new Action(() => txtMiss_QuytacNhayso.Text = (countDev - countBlu).ToString()));
+
+                // DCM_TYPE
+                query = string.Format(Constants.SQL_GET_CONVERTED_DATA_COUNT + " WHERE ID >= 20000000", configs.Old_schema, Common.TABLE.DCM_TYPE);
+                countBlu = checkingConvertedData.GetDataCountFromTable(bluConnection, query);
+                txtBlu_Doc.Invoke(new Action(() => txtBlu_type.Text = countBlu.ToString()));
+                countDev = checkingConvertedData.GetDataCountFromTable(devConnection, query);
+                txtDev_Doc.Invoke(new Action(() => txtDev_type.Text = countDev.ToString()));
+                txtMiss_Doc.Invoke(new Action(() => txtMiss_type.Text = (countDev - countBlu).ToString()));
+
+                // DCM_LINHVUC
+                query = string.Format(Constants.SQL_GET_CONVERTED_DATA_COUNT + " WHERE ID >= 20000000", configs.Old_schema, Common.TABLE.DCM_LINHVUC);
+                countBlu = checkingConvertedData.GetDataCountFromTable(bluConnection, query);
+                txtBlu_Doc.Invoke(new Action(() => txtBlu_linhvuc.Text = countBlu.ToString()));
+                countDev = checkingConvertedData.GetDataCountFromTable(devConnection, query);
+                txtDev_Doc.Invoke(new Action(() => txtDev_linhvuc.Text = countDev.ToString()));
+                txtMiss_Doc.Invoke(new Action(() => txtMiss_linhvuc.Text = (countDev - countBlu).ToString()));
 
                 // DCM_DOC
-                string query = string.Format(Constants.SQL_GET_CONVERTED_DATA_COUNT + " WHERE ID < 3000000", configs.Old_schema, Common.TABLE.DCM_DOC);
+                query = string.Format(Constants.SQL_GET_CONVERTED_DATA_COUNT + " WHERE ID < 3000000", configs.Old_schema, Common.TABLE.DCM_DOC);
                 countBlu = checkingConvertedData.GetDataCountFromTable(bluConnection, query);
                 txtBlu_Doc.Invoke(new Action(() => txtBlu_Doc.Text = countBlu.ToString()));
                 countDev = checkingConvertedData.GetDataCountFromTable(devConnection, query);
                 txtDev_Doc.Invoke(new Action(() => txtDev_Doc.Text = countDev.ToString()));
-                txtMiss_Doc.Invoke(new Action(() => txtMiss_Doc.Text = (countDev - countBlu).ToString()));*/
+                txtMiss_Doc.Invoke(new Action(() => txtMiss_Doc.Text = (countDev - countBlu).ToString()));
 
 
                 // DCM_DOC_RELATION
@@ -190,7 +214,7 @@ namespace Convert_Data
                     }
                     else if (table == Common.TABLE.DCM_TRACK.ToString())
                     {
-                        query = string.Format("SELECT ID FROM CLOUD_ADMIN.DCM_TRACK WHERE SCHEMA_ID = {0}", configs.Old_schema);// WHERE SCHEMA_ID = {0}", configs.Old_schema);
+                        query = string.Format("SELECT ID FROM CLOUD_ADMIN.DCM_TRACK WHERE ID > 20000000 AND DOC_ID < 3000000 AND SCHEMA_ID = '{0}'", configs.Old_schema);// WHERE SCHEMA_ID = {0}", configs.Old_schema);
                     }
                     else
                     {
@@ -203,7 +227,7 @@ namespace Convert_Data
                             query = string.Format(Constants.SQL_GET_CONVERTED_DATA, configs.Old_schema, table);
                         }
                     }
-                    List<long> data = checkingConvertedData.GetDataFromTable(Connection.getInstance().GetBLUConnection(), query);
+                    List<long> data = Common.GetDataIDFromTable(Connection.getInstance().GetBLUConnection(), query);
 
                     if (table == Common.TABLE.DCM_TRACK.ToString())
                     {
@@ -219,6 +243,7 @@ namespace Convert_Data
                     Console.WriteLine("Copied data from " + table + ":" + result);
                 }
             }
+            txtProgress_Checking.Invoke(new Action(() => txtProgress_Checking.Text = "DONE"));
         }
 
         private void cbBox_SchemaChecking_SelectedIndexChanged(object sender, EventArgs e)
@@ -226,211 +251,6 @@ namespace Convert_Data
             DataRowView row = (DataRowView)cbBox_SchemaChecking.SelectedItem;
             configs.Old_schema = row["schema"].ToString();
             Console.WriteLine(configs.Old_schema);
-        }
-
-        private void txtDev_Doc_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtDev_LogRead_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtBlu_LogRead_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lbl_LogRead_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtMiss_Log_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtDev_Log_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtBlu_Log_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lbl_Log_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtMiss_DonviNhan_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtDev_DonviNhan_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtBlu_DonviNhan_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lbl_DonviNhan_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtMiss_Assign_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtDev_Assign_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtBlu_Assign_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lbl_Assign_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtMiss_ActivitiLog_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtDev_ActivitiLog_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtBlu_ActivitiLog_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lbl_ActivitiLog_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtMiss_Attachfile_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtDev_Attachfile_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtBlu_Attachfile_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label3_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtMiss_Femfile_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtDev_Femfile_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtBlu_Femfile_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lbl_Femfile_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtMiss_DocRelation_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtDev_DocRelation_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtBlu_DocRelation_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lbl_DocRelation_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtMiss_Doc_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtMiss_LogRead_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtBlu_Doc_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lbl_Doc_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox2_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox3_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox6_TextChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }

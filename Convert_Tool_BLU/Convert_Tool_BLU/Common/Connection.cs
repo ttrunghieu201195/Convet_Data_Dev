@@ -14,12 +14,14 @@ namespace Convert_Data
         private NpgsqlConnection postgresConnection;
         private OracleConnection oracleConnection;
         private OracleConnection bluConnection;
+        private OracleConnection devBlu2Connection;
         private static Connection connection;
         private Connection()
         {
             postgresConnection = new NpgsqlConnection(Constants.postgres_connstring);
             oracleConnection = new OracleConnection(Constants.oracle_connstring);
             bluConnection = new OracleConnection(Constants.BLU_CONNSTRING);
+            devBlu2Connection = new OracleConnection(Constants.DEV_BLU_2_CONNSTR);
         }
 
         public static Connection getInstance()
@@ -48,6 +50,15 @@ namespace Convert_Data
                 bluConnection.Open();
             }
             return bluConnection;
+        }
+
+        public OracleConnection GetDevBlu2Connection()
+        {
+            if (devBlu2Connection.State != ConnectionState.Open)
+            {
+                devBlu2Connection.Open();
+            }
+            return devBlu2Connection;
         }
 
         public NpgsqlConnection GetPostgresConnection()

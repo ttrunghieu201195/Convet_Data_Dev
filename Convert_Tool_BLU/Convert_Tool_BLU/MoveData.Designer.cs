@@ -46,6 +46,7 @@ namespace Convert_Data
             this.chkBox_Priority = new System.Windows.Forms.CheckBox();
             this.chkBox_Book = new System.Windows.Forms.CheckBox();
             this.grpBox_DocInfo = new System.Windows.Forms.GroupBox();
+            this.chkbox_DCM_TRACK = new System.Windows.Forms.CheckBox();
             this.chkBox_DCM_LOG_READ = new System.Windows.Forms.CheckBox();
             this.chkBox_DCM_LOG = new System.Windows.Forms.CheckBox();
             this.chkBox_DCM_DONVI_NHAN = new System.Windows.Forms.CheckBox();
@@ -240,6 +241,7 @@ namespace Convert_Data
             // 
             // grpBox_DocInfo
             // 
+            this.grpBox_DocInfo.Controls.Add(this.chkbox_DCM_TRACK);
             this.grpBox_DocInfo.Controls.Add(this.chkBox_DCM_LOG_READ);
             this.grpBox_DocInfo.Controls.Add(this.chkBox_DCM_LOG);
             this.grpBox_DocInfo.Controls.Add(this.chkBox_DCM_DONVI_NHAN);
@@ -252,10 +254,21 @@ namespace Convert_Data
             this.grpBox_DocInfo.Font = new System.Drawing.Font("Times New Roman", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.grpBox_DocInfo.Location = new System.Drawing.Point(45, 281);
             this.grpBox_DocInfo.Name = "grpBox_DocInfo";
-            this.grpBox_DocInfo.Size = new System.Drawing.Size(721, 203);
+            this.grpBox_DocInfo.Size = new System.Drawing.Size(721, 240);
             this.grpBox_DocInfo.TabIndex = 9;
             this.grpBox_DocInfo.TabStop = false;
             this.grpBox_DocInfo.Text = "Thông tin văn bản";
+            // 
+            // chkbox_DCM_TRACK
+            // 
+            this.chkbox_DCM_TRACK.AutoSize = true;
+            this.chkbox_DCM_TRACK.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkbox_DCM_TRACK.Location = new System.Drawing.Point(20, 201);
+            this.chkbox_DCM_TRACK.Name = "chkbox_DCM_TRACK";
+            this.chkbox_DCM_TRACK.Size = new System.Drawing.Size(125, 23);
+            this.chkbox_DCM_TRACK.TabIndex = 10;
+            this.chkbox_DCM_TRACK.Text = "DCM_TRACK";
+            this.chkbox_DCM_TRACK.UseVisualStyleBackColor = true;
             // 
             // chkBox_DCM_LOG_READ
             // 
@@ -359,7 +372,7 @@ namespace Convert_Data
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(461, 502);
+            this.button1.Location = new System.Drawing.Point(460, 538);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(88, 35);
             this.button1.TabIndex = 11;
@@ -382,7 +395,7 @@ namespace Convert_Data
             // 
             // txt_Progress
             // 
-            this.txt_Progress.Location = new System.Drawing.Point(45, 502);
+            this.txt_Progress.Location = new System.Drawing.Point(44, 538);
             this.txt_Progress.Multiline = true;
             this.txt_Progress.Name = "txt_Progress";
             this.txt_Progress.Size = new System.Drawing.Size(324, 35);
@@ -391,7 +404,7 @@ namespace Convert_Data
             // btn_Delete
             // 
             this.btn_Delete.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_Delete.Location = new System.Drawing.Point(583, 502);
+            this.btn_Delete.Location = new System.Drawing.Point(582, 538);
             this.btn_Delete.Name = "btn_Delete";
             this.btn_Delete.Size = new System.Drawing.Size(88, 35);
             this.btn_Delete.TabIndex = 14;
@@ -416,7 +429,7 @@ namespace Convert_Data
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 560);
+            this.ClientSize = new System.Drawing.Size(805, 585);
             this.Controls.Add(this.chkBox_UpdateSeq);
             this.Controls.Add(this.btn_Delete);
             this.Controls.Add(this.txt_Progress);
@@ -475,5 +488,6 @@ namespace Convert_Data
         private System.Windows.Forms.TextBox txt_Progress;
         private System.Windows.Forms.Button btn_Delete;
         private System.Windows.Forms.CheckBox chkBox_UpdateSeq;
+        private System.Windows.Forms.CheckBox chkbox_DCM_TRACK;
     }
 }

@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Convert_Data.Controller
 {
@@ -196,6 +194,13 @@ namespace Convert_Data.Controller
         protected override string getDataQuery(string fromSchema)
         {
             return string.Format(Constants.SQL_SELECT_ALL_DATA, fromSchema, Common.TABLE.DCM_LINHVUC);
+        }
+
+        public void StandardizedData(OracleConnection oracleConnection, string schema, string table)
+        {
+            // Get current records
+            List<long> data = Common.GetDataIDFromTable(oracleConnection, string.Format("SELECT {0} FROM {1}{2}", table.Equals(Common.TABLE.DCM_ATTACH_FILE) ? "ATTACHMENT_ID" : "ID", schema, table));
+            DCM_LINHVUCs.RemoveAll(r => data.Any(a => a == r.ID));
         }
     }
 }

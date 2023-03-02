@@ -22,6 +22,10 @@ namespace Convert_Data
         public static long SEQ_DCM_ASSIGN;
         public static long SEQ_DCM_DONVI_NHAN;
 
+        List<long> currRecords_Activiti_Log = new List<long>();
+        List<long> currRecords_Assign = new List<long>();
+        List<long> currRecords_Donvi_Nhan = new List<long>();
+
         public List<Dcm_Activiti_Log> GetDcm_Activiti_Logs()
         {
             return dcm_Activiti_Logs;
@@ -52,6 +56,11 @@ namespace Convert_Data
                 if (cell_value != null && cell_value != string.Empty)
                 {
                     dcm_Activiti_Log.doc_id = vb_type == Common.VB_TYPE.VB_DI ? long.Parse(cell_value.Trim()) + Constants.INCREASEID_VBDI : long.Parse(cell_value.Trim());
+                }
+
+                if (currRecords_Activiti_Log.IndexOf(dcm_Activiti_Log.doc_id) >= 0)
+                {
+                    return;
                 }
 
                 // 3 - nguoi_gui/updated_by
@@ -211,6 +220,11 @@ namespace Convert_Data
         {
             try
             {
+                if (currRecords_Assign.IndexOf(idVB) >= 0)
+                {
+                    return;
+                }
+
                 string[] nguoi_nhan_arr = ds_nguoinhan.Split(';');
                 string[] dsvaitro_nguoinhan_arr = ds_vaitro_nguoinhan.Split(';');
                 string[] ds_trangthai_xuly_arr = ds_trangthai_xuly.Split(';');
@@ -262,6 +276,11 @@ namespace Convert_Data
         {
             try
             {
+                if (currRecords_Donvi_Nhan.IndexOf(id_vb) >= 0)
+                {
+                    return;
+                }
+
                 string[] ds_donvi_arr = ds_donvi.Split(';');
                 string[] ds_vaitro_donvi_arr = ds_vaitro_donvi.Split(';');
                 string[] ds_trangthai_xuly_donvi_arr = ds_trangthai_xuly_donvi.Split(';');
@@ -574,6 +593,13 @@ namespace Convert_Data
         protected override string getDataQuery(string fromSchema)
         {
             return string.Format(Constants.SQL_SELECT_DCM_ACTIVITI_LOG, fromSchema);
+        }
+
+        public void StandardizedData(OracleConnection oracleConnection, string schema, string table)
+        {
+            currRecords_Activiti_Log = Common.GetDataIDFromTable(oracleConnection, string.Format("SELECT DISTINCT DOC_ID ID FROM {0}{1}", schema, Common.TABLE.DCM_ACTIVITI_LOG.ToString()));
+            currRecords_Assign = Common.GetDataIDFromTable(oracleConnection, string.Format("SELECT DISTINCT DOCUMENT_ID ID FROM {0}{1}", schema, Common.TABLE.DCM_ASSIGN.ToString()));
+            currRecords_Donvi_Nhan = Common.GetDataIDFromTable(oracleConnection, string.Format("SELECT DISTINCT DOC_ID ID FROM {0}{1}", schema, Common.TABLE.DCM_DONVI_NHAN.ToString()));
         }
     }
 }

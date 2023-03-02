@@ -38,9 +38,15 @@ namespace Convert_Data
             DCM_LOG_READ
         }
 
-        public static string[] table_arr = {/*"DCM_PRIORITY", "DCM_CONFIDENTIAL", "DCM_TYPE", "DCM_LINHVUC"
+        public enum SCHEMA
+        {
+            CLOUD_ADMIN_DEV_BLU_2,
+            CLOUD_ADMIN
+        }
+
+        public static string[] table_arr = {/*"DCM_PRIORITY", "DCM_CONFIDENTIAL",*/ "DCM_TYPE", "DCM_LINHVUC"
                 , "DCM_SOVANBAN", "DCM_QUYTAC_NHAYSO", "DCM_SOVB_TEMPLATESINHSO"
-                ,*/ "DCM_DOC", "DCM_DOC_RELATION", "FEM_FILE", "DCM_ATTACH_FILE"//, "DCM_TRACK"
+                , "DCM_DOC", "DCM_DOC_RELATION", "FEM_FILE", "DCM_ATTACH_FILE", "DCM_TRACK"
                 , "DCM_ACTIVITI_LOG", "DCM_ASSIGN", "DCM_DONVI_NHAN"
                 , "DCM_LOG", "DCM_LOG_READ" };
 
@@ -325,22 +331,28 @@ namespace Convert_Data
             return list_obj;
         }
 
-        public static void DeleteTable(OracleConnection connection, string schema, Common.TABLE table)
+        public static void DeleteTable(OracleConnection connection, string schema, TABLE table)
         {
             OracleCommand cmd = connection.CreateCommand();
             try
             {
-                string query = string.Format(Constants.SQL_GET_CONVERTED_DATA_COUNT, schema, table);
-                
+                string query = string.Format(Constants.SQL_GET_CONVERTED_DATA_COUNT, table.Equals(TABLE.DCM_TRACK) ? SCHEMA.CLOUD_ADMIN_DEV_BLU_2 + "." : schema, table);
+                if (table.Equals(TABLE.DCM_TRACK))
+                {
+                    query += string.Format(" WHERE SCHEMA_ID = '{0}'", schema);
+                }
                 cmd.CommandText = query;
                 int totalRecs = int.Parse(((decimal)cmd.ExecuteScalar()).ToString());
                 Console.WriteLine("Total records in " + table + ": " + totalRecs);
                 int threshold = 10000;
                 int count_loop = totalRecs / threshold + (totalRecs % threshold > 0 ? 1 : 0);
-
+                query = string.Format(Constants.sql_delete_table, table.Equals(TABLE.DCM_TRACK) ? SCHEMA.CLOUD_ADMIN_DEV_BLU_2 + "." : schema, table, threshold);
+                if (table.Equals(TABLE.DCM_TRACK))
+                {
+                    query += string.Format(" AND SCHEMA_ID = '{0}'", schema);
+                }
                 for (int i = 0; i < count_loop; i++)
                 {
-                    query = string.Format(Constants.sql_delete_table, schema, table, threshold);
                     cmd.CommandText = query;
                     cmd.ExecuteNonQuery();
                     Console.WriteLine("Deleted " + threshold + " records in " + table);
@@ -392,6 +404,30 @@ namespace Convert_Data
             dataTable = dataSet.Tables[0];
 
             return dataTable;
+        }
+
+        public static List<long> GetDataIDFromTable(OracleConnection connection, string query)
+        {
+            List<long> dataList = new List<long>();
+            OracleCommand cmd = new OracleCommand(query, connection);
+            OracleDataAdapter dataAdapter = new OracleDataAdapter(cmd);
+            DataSet dataSet = new DataSet();
+            DataTable dataTable = new DataTable();
+            dataAdapter.Fill(dataSet);
+            dataTable = dataSet.Tables[0];
+
+            foreach (DataRow row in dataTable.Rows)
+            {
+                if (query.IndexOf("DCM_ATTACH_FILE") > -1 && !string.IsNullOrEmpty(row["ATTACHMENT_ID"].ToString()))
+                {
+                    dataList.Add(long.Parse(row["ATTACHMENT_ID"].ToString()));
+                } else if (!string.IsNullOrEmpty(row["ID"].ToString()))
+                {
+                    dataList.Add(long.Parse(row["ID"].ToString()));
+                }
+            }
+
+            return dataList;
         }
     }
 }
