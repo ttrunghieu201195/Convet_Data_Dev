@@ -20,7 +20,7 @@ namespace Convert_Data
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new TestingForm());
+            Application.Run(new MainForm());
         }
 
     }

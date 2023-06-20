@@ -3,7 +3,7 @@ using System;
 
 namespace Convert_Data.Models
 {
-    class Dcm_Doc : IDCM_
+    class Dcm_Doc
     {
         public int id_VanBan { get; set; } = -1;
         public int? congvan_dendi { get; set; } = null;

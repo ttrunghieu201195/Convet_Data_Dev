@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Convert_Data.Models
 {
-    class Dcm_SoVanBan : IDCM_
+    class Dcm_SoVanBan
     {
         public long id { get; set; }
         public string name { get; set; }

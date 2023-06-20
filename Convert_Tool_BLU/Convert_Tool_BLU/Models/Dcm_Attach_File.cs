@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Convert_Data.Models
 {
-    class Dcm_Attach_File : IDCM_
+    class Dcm_Attach_File
     {
         public Int64 id { get; set; }
         public Int64 id_vb { get; set; }

@@ -410,18 +410,6 @@ namespace Convert_Data
             this.cbBox_Donvi.TabIndex = 20;
             this.cbBox_Donvi.SelectedIndexChanged += new System.EventHandler(this.cbBox_Donvi_SelectedIndexChanged);
             // 
-            // btn_OpenVerify
-            // 
-            this.btn_OpenVerify.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_OpenVerify.Location = new System.Drawing.Point(383, 747);
-            this.btn_OpenVerify.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.btn_OpenVerify.Name = "btn_OpenVerify";
-            this.btn_OpenVerify.Size = new System.Drawing.Size(109, 39);
-            this.btn_OpenVerify.TabIndex = 20;
-            this.btn_OpenVerify.Text = "Checking";
-            this.btn_OpenVerify.UseVisualStyleBackColor = true;
-            this.btn_OpenVerify.Click += new System.EventHandler(this.btn_OpenVerifyForm);
-            // 
             // bindingNavigatorMoveFirstItem
             // 
             this.bindingNavigatorMoveFirstItem.Name = "bindingNavigatorMoveFirstItem";

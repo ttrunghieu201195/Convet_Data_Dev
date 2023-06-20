@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Convert_Data.Models
 {
-    class DCM_TYPE : IDCM_
+    class DCM_TYPE
     {
         public long ID { get; set; }
         public string NAME { get; set; }

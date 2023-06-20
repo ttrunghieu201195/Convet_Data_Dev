@@ -48,8 +48,6 @@ namespace Convert_Data
         private void Load_ComboBox_Donvi()
         {
             postgresConnection = Connection.getInstance().GetPostgresConnection();
-            //string postgres_ConnStr = string.Format(Constants.postgres_connstring, configs.Source_IP, configs.Source_Port, configs.Source_User, configs.Source_Pass, configs.Source_Service);
-            //postgresConnection = new NpgsqlConnection(postgres_ConnStr);
             cbBox_Donvi.DataSource = Common.GetDanhMucDonvi(postgresConnection, Constants.sql_danhmuc_donvi_schema);
             cbBox_Donvi.DisplayMember = "name";
             cbBox_Donvi.ValueMember = "organizationid";
@@ -85,14 +83,6 @@ namespace Convert_Data
             try
             {
                 // Open connection
-                /* if (oracleConnection.State != ConnectionState.Open)
-                 {
-                     oracleConnection.Open();
-                 }*/
-
-                // Initial seq from db
-                //Common.InitialSeqFromDB(oracleConnection, configs);
-
                 if (chkbox_deleteCategory.Checked)
                 {
                     timer.Reset();
@@ -753,24 +743,11 @@ namespace Convert_Data
             Console.WriteLine(cb_Schemas.SelectedValue.ToString());
         }
 
-        private void btn_OpenVerifyForm(object sender, EventArgs e)
-        {
-            CollectConfigs();
-            CheckingDataForm checkingDataForm = new CheckingDataForm(configs);
-            checkingDataForm.Show();
-        }
-
         private void cbBox_Donvi_SelectedIndexChanged(object sender, EventArgs e)
         {
             DataRowView row = (DataRowView)cbBox_Donvi.SelectedItem;
             configs.Old_schema = row["schema"].ToString();
             Console.WriteLine(configs.Old_schema);
-        }
-
-        private void btn_Load_Config_Click(object sender, EventArgs e)
-        {
-            /*Configuration configuration = new Configuration(configs);
-            configuration.Show();*/
         }
 
         private void cb_Schemas_SelectedIndexChanged(object sender, EventArgs e)

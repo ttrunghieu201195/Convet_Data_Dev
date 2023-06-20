@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Convert_Data.Models
 {
-    class Dcm_Donvi_Nhan : IDCM_
+    class Dcm_Donvi_Nhan
     {
         public long ID { get; set; }
         public long DOC_ID { get; set; }

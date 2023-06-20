@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Convert_Data.Models
 {
-    class Fem_File : IDCM_
+    class Fem_File
     {
         public long id { get; set; }
         public int file_type_id { get; set; } = 18;

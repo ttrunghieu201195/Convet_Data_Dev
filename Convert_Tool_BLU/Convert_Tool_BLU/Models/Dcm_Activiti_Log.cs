@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Convert_Data.Models
 {
-    class Dcm_Activiti_Log : IDCM_
+    class Dcm_Activiti_Log
     {
         public long id { get; set; }
         public string task_key { get; set; }

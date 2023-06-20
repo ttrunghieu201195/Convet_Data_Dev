@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Convert_Data.Models
 {
-    class DCM_SOVB_TEMPLATESINHSO : IDCM_
+    class DCM_SOVB_TEMPLATESINHSO
     {
         public long id { get; set; }
         public string SOVANBAN_CODE { get; set; }
