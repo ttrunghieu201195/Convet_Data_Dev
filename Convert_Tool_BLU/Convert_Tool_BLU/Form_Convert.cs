@@ -28,8 +28,8 @@ namespace Convert_Data
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            Load_ComboBox_Donvi();
-            Load_ComboBox_Schema();
+            //Load_ComboBox_Donvi();
+            //Load_ComboBox_Schema();
             Console.WriteLine(configs.Des_IP);
             Console.WriteLine(configs.Source_IP);
         }
